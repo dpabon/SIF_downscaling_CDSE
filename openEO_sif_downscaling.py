@@ -61,11 +61,6 @@ cube_OTCI_median = cube_OTCI.reduce_temporal(reducer = "median")
 
 cube_IWV_median = cube_IWV.reduce_temporal(reducer = "median")
 
-#%%
-#cube_IWV_median.download('test.tif')
-
-#%% Loading TROPOMI SIF local
-cube_SIF_original_median = connection.load_url(url='https://nextcloud.bgc-jena.mpg.de/s/Bd8ngMmeM86Lr9f', format='GTiff')
 
 #%%
 cube_SIF_original = connection.load_collection(
@@ -77,17 +72,6 @@ cube_SIF_original = connection.load_collection(
 
 #%%
 cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
-
-#%%
-result = cube_SIF_original_median.save_result(format = "GTiff")
-
-job = result.execute_batch(
-    outputfile="openeo.tif",
-    title="SIF",
-    description="Testing SIF extraction",
-    job_options={"image-name": "python311-staging"}
-)
- 
 
 # %%
 # resample cubes at SIF original resolution
@@ -217,13 +201,6 @@ def optimize_params_window(SIF_w: xarray.DataArray, VI_w: xarray.DataArray, ET_w
 )
 #%%
 my_udf
-#%%
-dataset_SIF_low.execute_batch(
-     outputfile="openeo_test.tif",
-    title="SIF",
-    description="Testing SIF extraction",
-    job_options={"image-name": "python311-staging"}
-)
 # %%
 parameters_cube_low = dataset_SIF_low.apply_neighborhood(my_udf,
     size=[
