@@ -6,48 +6,8 @@ import xarray as xr
 import zarr
 import netCDF4
 import pathlib
-import dask
 import pandas as pd
 import rioxarray as rio
-#%%
-#Preprocessing TROPOMI SIF
-sif = rio.open_rasterio('/home/dpabon/Documents/sif_prototype/s5p-l3grd-sif-001-day-20230701-20240325.nc')
-#%%
-sif
-#%%
-sif['datetime_start'].values
-#%%
-sif['datetime_stop'].values
-
-#%%
-files = sorted(list(pathlib.Path('/home/dpabon/Documents/sif_prototype/').glob('*.nc')))
-
-cubes_sif =  [xr.open_dataset(i, chunks = {}) for i in files]
-
-#%%
-empty_vec = []
-empty_vec
-#%%
-
-
-cubes_sif[0]['solar_induced_fluorescence'].assign_coords({'time': cubes_sif[0]['datetime_start'].values})
-type(cubes_sif)
-
-#%%
-for i in range(len(cubes_sif)):
-    print(i)
-    empty_vec.append(cubes_sif[i]['solar_induced_fluorescence'].assign_coords({'time': cubes_sif[i]['datetime_start'].values}))
-
-#%%
-sif_concatenado = xr.concat(empty_vec, dim = 'time')
-    
-#%%
-
-sif_median = sif_concatenado.median(dim = 'time', skipna = True)
-
-
-sif_median.rio.to_raster("/home/dpabon/Documents/sif_2023-07-01_prototype.tiff",  driver="GTiff", compress="LZW")
-
 
 #%%
 connection = openeo.connect('https://openeofed.dataspace.copernicus.eu/')
