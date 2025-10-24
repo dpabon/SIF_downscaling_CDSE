@@ -52,10 +52,6 @@ cube_IWV = connection.load_collection(
   bands = ["IWV"]
 )
 
-
-#%%
-#cube_IWV.download('test.nc')
-#cube_IWV.execute()
 #%%
 # Collapsing time dimension
 
@@ -71,59 +67,6 @@ cube_IWV_median = cube_IWV.reduce_temporal(reducer = "median")
 #%% Loading TROPOMI SIF local
 cube_SIF_original_median = connection.load_url(url='https://nextcloud.bgc-jena.mpg.de/s/Bd8ngMmeM86Lr9f', format='GTiff')
 
-cube_SIF_original_median
-#%%
-cube_SIF_original_median.execute()
-
-#%%
-test = connection.load_url('https://data-portal.s5p-pal.com/api/s5p-l3/sif/day/2023/s5p-l3grd-sif-001-day-20230701-20240325.json', format = 'GeoJSON')
-test
-
-#%%
-test.execute()
-
-#%%
-connection.list_file_types()
-
-#%%
-test = connection.load_url('https://data-portal.s5p-pal.com/download/s5p-l3/9ab0950a-e594-4ea6-b83c-f5aa83e3d616', format = 'netCDF')
-
-#%%
-test.execute()
-# %%
-# Loading Sentinel-5p
-
-cube_SIF_original = connection.load_stac(url = 'https://data-portal.s5p-pal.com/api/s5p-l3/sif/day',
-        spatial_extent= spatial_extent_prototype,
-        temporal_extent=temporal_extent_prototype,
-        )
-#%%
-
-cube_SIF_original = connection.load_stac(url = 'https://data-portal.s5p-pal.com/api/s5p-l3/sif/day/2023/s5p-l3grd-sif-001-day-20230701-20240325.json',
-        spatial_extent= spatial_extent_prototype,
-        temporal_extent=temporal_extent_prototype,
-        )
-#%%
-
-
-cube_SIF_original.execute()
-#%%
-cube_SIF_original.execute()
-#connection.load_stac()
-#%%
-#cube_SIF_original.download(outputfile='test.zarr', format= 'zarr')
-
-#%%
-cube_SIF_original_median = cube_SIF_original.reduce_dimension(reducer = 'median', dimension = 't')
-
-
-#%%
-cube_SIF_original = connection.load_collection(
-  "TERRASCOPE_S5P_L3_CH4_TD",
-  spatial_extent=spatial_extent_prototype,
-  temporal_extent= temporal_extent_prototype,
-  bands = 'CH4'
-)
 #%%
 cube_SIF_original = connection.load_collection(
   "SENTINEL_5P_L2",
