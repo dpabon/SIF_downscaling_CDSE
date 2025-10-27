@@ -28,6 +28,21 @@ spatial_extent_prototype = { "west": 10.36625050263503,
 
 temporal_extent_prototype = ["2023-07-01", "2023-07-07"]
 
+temporal_extent_prototype = ["2018-06-25", "2018-06-30"]
+
+#%%
+
+# Testing SIF - Dong Li
+
+cube_SIF = connection.load_stac("https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json", spatial_extent= spatial_extent_prototype, temporal_extent=temporal_extent_prototype, bands = ["SIF"])
+
+#%%
+cube_SIF.execute_batch(
+    outputfile="openeo_test.tif",
+    title="SIF",
+    description="Testing SIF extraction",
+    job_options={"image-name": "python311-staging"}
+)
 #%%
 
 # Preparing Sentinel-3 data
