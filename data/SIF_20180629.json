@@ -60,7 +60,7 @@
       "type": "image/tiff; application=geotiff; profile=cloud-optimized",
       "eo:bands": [
         {
-        "name": "SIF"
+          "name": "SIF"
         }
       ]
     }
