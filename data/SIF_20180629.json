@@ -55,7 +55,7 @@
   },
   "assets": {
     "SIF": {
-      "href": "SIF_20180629.tif",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/data/SIF_20180629.tif",
       "title": "Daily SIF",
       "type": "image/tiff; application=geotiff; profile=cloud-optimized",
       "eo:bands": {
