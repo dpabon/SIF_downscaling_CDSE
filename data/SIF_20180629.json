@@ -1,0 +1,66 @@
+{
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/eo/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "id": "SIF_20180629",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -180,
+          -90
+        ],
+        [
+          180,
+          -90
+        ],
+        [
+          180,
+          90
+        ],
+        [
+          -180,
+          90
+        ],
+        [
+          -180,
+          -90
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    -180,
+    -90,
+    180,
+    90
+  ],
+  "properties": {
+    "proj:epsg": 4326,
+    "proj:shape": [
+      1800,
+      3600
+    ],
+    "proj:bbox": [
+      -180,
+      -90,
+      180,
+      90
+    ],
+    "datetime": "2018-06-29T00:00:00Z"
+  },
+  "assets": {
+    "SIF": {
+      "href": "SIF_20180629.tif",
+      "title": "Daily SIF",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "eo:bands": {
+        "name": "SIF"
+      }
+    }
+  }
+}
