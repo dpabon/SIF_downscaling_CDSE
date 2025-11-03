@@ -117,7 +117,12 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
 #param_max = np.array([1.5, 5.0, -290.0, 50.0])
 #param_bounds = np.array([param_min, param_max])
 
-dataset_SIF_low.dimension_labels()
+dataset_SIF_low.execute_batch(
+     outputfile="openeo_test.nc",
+    title="SIF",
+    description="Testing SIF extraction",
+    job_options={"image-name": "python311-staging"}
+)
 #%%
 
 my_udf = openeo.UDF("""
@@ -125,129 +130,140 @@ import xarray
 import numpy as np
 from scipy.optimize import minimize
 
-def optimize_params_window(input_cube: xarray.DataArray, context: dict)  -> xarray.DataArray:
-
-    sd
+def optimize_params_window(input_cube: xarray.Dataset, context: dict)  -> xarray.DataArray:
   
     param_ini = np.array(context["param_ini"])
     param_min = np.array(context["param_min"])
     param_max = np.array(context["param_max"])
     param_bounds = np.array([param_min, param_max])
+    min_obs = context["min_obs"]
   
     # Nested functions, not elegant but looks like the correct way when defining openEO.UDF
 
-  def vegetation(vi, b1, b2):
+    def vegetation(vi, b1, b2):
     # Ensure inputs are numpy arrays for vectorized operations
-    vi_np = np.asarray(vi)
-    veg = b2 * np.power(vi_np, b1) 
-    return veg
+        vi_np = np.asarray(vi)
+        veg = b2 * np.power(vi_np, b1) 
+        return veg
 
-  def water(et, b3, b4):
+    def water(et, b3, b4):
 
-    et_np = np.asarray(et)
+        et_np = np.asarray(et)
   
-    wat = 1.0 / (1.0 + np.exp(b3 * (b4-et_np)))
-    return wat
+        wat = 1.0 / (1.0 + np.exp(b3 * (b4-et_np)))
+        return wat
 
-  def temperature(lst, b5, b6):
+    def temperature(lst, b5, b6):
     
-    # Gaussian function, ensure b6 (std dev) is positive
-    lst_np = np.asarray(lst)
-    temp = np.exp(-0.5 * np.power((lst_np + b5) / b6, 2))
-    return temp
+        # Gaussian function, ensure b6 (std dev) is positive
+        lst_np = np.asarray(lst)
+        temp = np.exp(-0.5 * np.power((lst_np + b5) / b6, 2))
+        return temp
 
-  def sif_model(vi, et, lst, params):
-    # Calculates SIF based on the model components.
-    b1, b2, b3, b4, b5, b6 = params
-    sif_pred = (vegetation(vi, b1, b2) *
+    def sif_model(vi, et, lst, params):
+        # Calculates SIF based on the model components.
+        b1, b2, b3, b4, b5, b6 = params
+        sif_pred = (vegetation(vi, b1, b2) *
                 water(et, b3, b4) *
                 temperature(lst, b5, b6))
-    return sif_pred
+        return sif_pred
 
 
-  def cost_function(params, vi, et, lst, sif_observed):
+    def cost_function(params, vi, et, lst, sif_observed):
     
-    #Least squares cost function for optimization.
-    sif_pred = sif_model(vi, et, lst, params)
+        #Least squares cost function for optimization.
+        sif_pred = sif_model(vi, et, lst, params)
     
-    # Calculate sum of squares, ignoring NaNs
-    cost = np.nansum((sif_pred - sif_observed)**2)
+        # Calculate sum of squares, ignoring NaNs
+        cost = np.nansum((sif_pred - sif_observed)**2)
     
-    return cost
+        return cost
 
 
-  # Preparing output xarray.Datarray
+    # Preparing output xarray.Datarray
 
-  # get the coodinates of the datacube
-  size_x = len(input_cube['x'].values)
-  size_y = len(input_cube['y'].values)
+    # get the coodinates of the datacube
+    size_x = len(input_cube['x'].values)
+    size_y = len(input_cube['y'].values)
 
-  center_index_x = size_x // 2
-  center_index_y = size_y // 2
+    center_index_x = size_x // 2
+    center_index_y = size_y // 2
 
-  coord_x = input_cube.coords['x'].isel(x = center_index_x)
-  coord_y = input_cube.coords['y'].isel(y = center_index_y)
+    coord_x = input_cube.coords['x'].isel(x = center_index_x)
+    coord_y = input_cube.coords['y'].isel(y = center_index_y)
+    coord_t = input_cube.coords['t']
 
-  # processing data
+    # processing data
 
-  SIF_w = input_cube.sel(bands = "SIF")
-  SIF_w_valid = SIF_w.count.values
+    SIF_w = input_cube["SIF"]
+    SIF_w_valid = SIF_w.count().to_numpy()
+
+    print('SIF_valid ' + str(SIF_w_valid))
   
-  VI_w = input_cube.sel(bands = "OTCI")
-  VI_w_valid = VI_w.count.values
+    VI_w = input_cube["OTCI"]
+    VI_w_valid = VI_w.count().to_numpy()
+    print('OTCI_valid ' + str(VI_w_valid))
   
-  ET_w = input_cube.sel(bands = "IWV")
+    ET_w = input_cube["IWV"]
+    ET_w_valid = ET_w.count().to_numpy()
+    print('ET_valid ' + str(ET_w_valid))
   
-  ET_w_valid = ET_w.count.values
-  
-  LST_w =  input_cube.sel(bands = "LST")
-  LST_w_valid = ET_w.count.values
+    LST_w =  input_cube["LST"]
+    LST_w_valid = LST_w.count().to_numpy()
+    print('LST valid: ' + str(LST_w_valid))
 
-  output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
-
+    output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
 
 
-  if any([SIF_w_valid, VI_w_valid, ET_w_valid, LST_w_valid]) < min_obs:
-      # Not enough valid observations in the window
-      #return np.full(len(param_ini), np.nan, dtype=np.float32)
-      return  xarray.DataArray(np.full(len(param_ini), np.nan, dtype=np.float32),
-                                  dims=['bands','y', 'x'],
-                                  coords=dict(bands=output_bands, x=coord_x, y=coord_y))
+
+    if any(local < min_obs for local in [SIF_w_valid, VI_w_valid, ET_w_valid, LST_w_valid]):
+        print("conditional activated")
+        # Not enough valid observations in the window
+        #return np.full(len(param_ini), np.nan, dtype=np.float32)
+        return  xarray.DataArray(np.reshape(np.full(len(param_ini), np.nan, dtype=np.float32), shape = (1,1,1,6)),
+                                 dims=['t','y', 'x', 'bands'],
+                                 coords=dict(t=coord_t, 
+                                             x=coord_x,
+                                             y=coord_y, 
+                                             bands = output_bands))
   
       
 
-  sif_obs_f = SIF_w.flatten()
-  vi_f = VI_w.flatten()
-  et_f = ET_w.flatten()
-  lst_f = LST_w.flatten()
+    sif_obs_f = SIF_w.to_numpy().flatten()
+    vi_f = VI_w.to_numpy().flatten()
+    et_f = ET_w.to_numpy().flatten()
+    lst_f = LST_w.to_numpy().flatten()
 
-  # Define bounds for L-BFGS-B
-  bounds_scipy = list(zip(*param_bounds)) # [(min1, max1), (min2, max2), ...]
+    # Define bounds for L-BFGS-B
+    bounds_scipy = list(zip(*param_bounds)) # [(min1, max1), (min2, max2), ...]
 
   
-  result = minimize(cost_function,
+    result = minimize(cost_function,
                             x0=param_ini,
-                            args=(vi_f, lst_f, sif_obs_f),
+                            args=(vi_f, et_f, lst_f, sif_obs_f),
                             method='L-BFGS-B',
                             bounds=bounds_scipy,
                             options={'maxiter': 1000, 'ftol': 1e-7, 'gtol': 1e-5}) # Adjust options as needed
 
-  optimized_params = np.array(np.clip(result.x, param_bounds[0], param_bounds[1]))
+    optimized_params = np.array(np.clip(result.x, param_bounds[0], param_bounds[1]))
 
   # This needs to be transformed into a XarrayDataCube object
   # as we're optimizing a local moving window and saving the results of the optimization in the central moving window the output needs to be a x,y,band, object. Where band correspond to b1 to bx parameters.
   
   
-  return XarrayDataCube(xr.DataArray(optimized_params,
-                                  dims=['bands','y', 'x'],
-                                  coords=dict(bands=output_bands, x=coord_x, y=coord_y)))
+    return xarray.DataArray(np.reshape(optimized_params, (1,1,1,6)),
+                                  dims=['t','y', 'x', 'bands'],
+                                 coords=dict(t=coord_t, 
+                                             x=coord_x,
+                                             y=coord_y, 
+                                             bands = output_bands))
 """,
 context={"from_parameter": "context"}
 )
 #%%
-param_ini = [1.0, 2.0, -295.0, 10.0]
-param_min = [0.5, 0.1, -310.0, 1.0]
-param_max = [1.5, 5.0, -290.0, 50.0]
+param_ini=[1, 2, 50.0, 0, -295, 10]
+param_min=[0.5, 0.1, 0.0, -1, -310, 1]
+param_max=[1.5, 5, 500.0, 1, -290, 50]
 #%%
 my_udf
 #%%
@@ -269,7 +285,7 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
 #parameters_cube_low.download("test.nc")
 #%%
 job = parameters_cube_low.execute_batch(
-     outputfile="openeo_test.tif",
+     outputfile="openeo_sif_parameters.nc",
     title="SIF",
     description="Testing SIF extraction",
     job_options={"image-name": "python311-staging"}
