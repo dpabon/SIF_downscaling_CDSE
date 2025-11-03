@@ -2,6 +2,7 @@
 import openeo
 import os
 import numpy as np
+import openeo.udf
 import xarray as xr
 import zarr
 import netCDF4
@@ -37,12 +38,7 @@ temporal_extent_prototype = ["2018-06-25", "2018-06-30"]
 cube_SIF = connection.load_stac("https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json", spatial_extent= spatial_extent_prototype, temporal_extent=temporal_extent_prototype, bands = ["SIF"])
 
 #%%
-cube_SIF.execute_batch(
-    outputfile="openeo_test.tif",
-    title="SIF",
-    description="Testing SIF extraction",
-    job_options={"image-name": "python311-staging"}
-)
+#cube_SIF.execute_batch(outputfile="openeo_test.tif", title="SIF", description="Testing SIF extraction", job_options={"image-name": "python311-staging"})
 #%%
 
 # Preparing Sentinel-3 data
@@ -78,16 +74,15 @@ cube_IWV_median = cube_IWV.reduce_temporal(reducer = "median")
 
 
 #%%
-cube_SIF_original = connection.load_collection(
-  "SENTINEL_5P_L2",
+cube_SIF_original = connection.load_stac("https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json", bands = ["SIF"],
   spatial_extent=spatial_extent_prototype,
-  temporal_extent= temporal_extent_prototype,
-  bands = 'CH4'
+  temporal_extent= temporal_extent_prototype
 )
 
 #%%
-cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
+#cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
 
+cube_SIF_original_median = cube_SIF_original
 # %%
 # resample cubes at SIF original resolution
 
@@ -113,29 +108,33 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_OTCI_median_low)
 dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
 
 #%%
-dataset_SIF_low
+#dataset_SIF_low.execute_batch()
 
 #%%
 # init parameters
-param_ini = np.array([1.0, 2.0, -295.0, 10.0])
-param_min = np.array([0.5, 0.1, -310.0, 1.0])
-param_max = np.array([1.5, 5.0, -290.0, 50.0])
-param_bounds = np.array([param_min, param_max])
+#param_ini = np.array([1.0, 2.0, -295.0, 10.0])
+#param_min = np.array([0.5, 0.1, -310.0, 1.0])
+#param_max = np.array([1.5, 5.0, -290.0, 50.0])
+#param_bounds = np.array([param_min, param_max])
 
-my_udf = openeo.UDF(
-"""
+dataset_SIF_low.dimension_labels()
+#%%
+
+my_udf = openeo.UDF("""
 import xarray
 import numpy as np
 from scipy.optimize import minimize
 
-def optimize_params_window(SIF_w: xarray.DataArray, VI_w: xarray.DataArray, ET_w: xarray.DataArray, LST_w: xarray.DataArray)  -> xarray.DataArray:
+def optimize_params_window(input_cube: xarray.DataArray, context: dict)  -> xarray.DataArray:
 
-  param_ini = np.array([1.0, 2.0, -295.0, 10.0])
-  param_min = np.array([0.5, 0.1, -310.0, 1.0])
-  param_max = np.array([1.5, 5.0, -290.0, 50.0])
-  param_bounds = np.array([param_min, param_max])
+    sd
   
-  # Nested functions, not elegant but looks like the correct way when defining openEO.UDF
+    param_ini = np.array(context["param_ini"])
+    param_min = np.array(context["param_min"])
+    param_max = np.array(context["param_max"])
+    param_bounds = np.array([param_min, param_max])
+  
+    # Nested functions, not elegant but looks like the correct way when defining openEO.UDF
 
   def vegetation(vi, b1, b2):
     # Ensure inputs are numpy arrays for vectorized operations
@@ -176,26 +175,51 @@ def optimize_params_window(SIF_w: xarray.DataArray, VI_w: xarray.DataArray, ET_w
     
     return cost
 
-    
-    # Wrapper function to optimize SIF parameters for a single window.
-    # Designed to be used with apply_ufunc or iteration.
-    # Assumes input arrays (sif_w, etc.) are 2D numpy arrays (window data).
-    
-    # Flatten the window arrays and filter out NaNs
-    # Important: Filter consistently across all variables
-    
-  mask = ~np.isnan(SIF_w) & ~np.isnan(VI_w) & ~np.isnan(LST_w)
-  n_valid = np.sum(mask)
 
-  if n_valid < min_obs:
-      # Not enough valid observations in the window
-      return np.full(len(param_ini), np.nan, dtype=np.float32)
+  # Preparing output xarray.Datarray
+
+  # get the coodinates of the datacube
+  size_x = len(input_cube['x'].values)
+  size_y = len(input_cube['y'].values)
+
+  center_index_x = size_x // 2
+  center_index_y = size_y // 2
+
+  coord_x = input_cube.coords['x'].isel(x = center_index_x)
+  coord_y = input_cube.coords['y'].isel(y = center_index_y)
+
+  # processing data
+
+  SIF_w = input_cube.sel(bands = "SIF")
+  SIF_w_valid = SIF_w.count.values
   
+  VI_w = input_cube.sel(bands = "OTCI")
+  VI_w_valid = VI_w.count.values
+  
+  ET_w = input_cube.sel(bands = "IWV")
+  
+  ET_w_valid = ET_w.count.values
+  
+  LST_w =  input_cube.sel(bands = "LST")
+  LST_w_valid = ET_w.count.values
 
-  sif_obs_f = SIF_w[mask]
-  vi_f = VI_w[mask]
-  et_f = ET_w[mask] 
-  lst_f = LST_w[mask]
+  output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
+
+
+
+  if any([SIF_w_valid, VI_w_valid, ET_w_valid, LST_w_valid]) < min_obs:
+      # Not enough valid observations in the window
+      #return np.full(len(param_ini), np.nan, dtype=np.float32)
+      return  xarray.DataArray(np.full(len(param_ini), np.nan, dtype=np.float32),
+                                  dims=['bands','y', 'x'],
+                                  coords=dict(bands=output_bands, x=coord_x, y=coord_y))
+  
+      
+
+  sif_obs_f = SIF_w.flatten()
+  vi_f = VI_w.flatten()
+  et_f = ET_w.flatten()
+  lst_f = LST_w.flatten()
 
   # Define bounds for L-BFGS-B
   bounds_scipy = list(zip(*param_bounds)) # [(min1, max1), (min2, max2), ...]
@@ -209,15 +233,25 @@ def optimize_params_window(SIF_w: xarray.DataArray, VI_w: xarray.DataArray, ET_w
                             options={'maxiter': 1000, 'ftol': 1e-7, 'gtol': 1e-5}) # Adjust options as needed
 
   optimized_params = np.array(np.clip(result.x, param_bounds[0], param_bounds[1]))
+
+  # This needs to be transformed into a XarrayDataCube object
+  # as we're optimizing a local moving window and saving the results of the optimization in the central moving window the output needs to be a x,y,band, object. Where band correspond to b1 to bx parameters.
   
   
-  return optimized_params
-"""
+  return XarrayDataCube(xr.DataArray(optimized_params,
+                                  dims=['bands','y', 'x'],
+                                  coords=dict(bands=output_bands, x=coord_x, y=coord_y)))
+""",
+context={"from_parameter": "context"}
 )
 #%%
+param_ini = [1.0, 2.0, -295.0, 10.0]
+param_min = [0.5, 0.1, -310.0, 1.0]
+param_max = [1.5, 5.0, -290.0, 50.0]
+#%%
 my_udf
-# %%
-parameters_cube_low = dataset_SIF_low.apply_neighborhood(my_udf,
+#%%
+parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
     size=[
         {"dimension": "x", "value": 7, "unit": "px"},
         {"dimension": "y", "value": 7, "unit": "px"},
@@ -226,7 +260,13 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(my_udf,
         {"dimension": "x", "value": 6, "unit": "px"},
         {"dimension": "y", "value": 6, "unit": "px"},
     ],
+     context={"param_ini": param_ini,
+              "paramin_min": param_min,
+             "param_max": param_max}
     )
+
+#%%
+#parameters_cube_low.download("test.nc")
 #%%
 job = parameters_cube_low.execute_batch(
      outputfile="openeo_test.tif",
