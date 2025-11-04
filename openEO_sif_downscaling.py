@@ -144,8 +144,8 @@ my_udf
 #%%
 parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
     size=[
-        {"dimension": "x", "value": 7, "unit": "px"},
-        {"dimension": "y", "value": 7, "unit": "px"},
+        {"dimension": "x", "value": 1, "unit": "px"},
+        {"dimension": "y", "value": 1, "unit": "px"},
     ],
     overlap=[
         {"dimension": "x", "value": 6, "unit": "px"},
