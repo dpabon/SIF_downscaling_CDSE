@@ -22,14 +22,14 @@ connection.authenticate_oidc()
 
 #%%
 
-spatial_extent_prototype = { "west": 10.36625050263503,
-          "east": 11.550495280885006,
-          "south": 50.1971815956687,
-          "north": 50.701974766278234}
+spatial_extent_prototype = {"west": 0.08431253773658387,
+          "east": 8.450284686186247,
+          "south": 44.739501978947025,
+          "north": 49.062384818441544}
 
 temporal_extent_prototype = ["2023-07-01", "2023-07-07"]
 
-temporal_extent_prototype = ["2018-06-25", "2018-06-30"]
+temporal_extent_prototype = ["2018-06-20", "2018-06-30"]
 
 #%%
 
@@ -46,7 +46,8 @@ cube_SIF = connection.load_stac("https://raw.githubusercontent.com/dpabon/SIF_do
 cube_LST = connection.load_collection(
   "SENTINEL3_SLSTR_L2_LST",
   spatial_extent=spatial_extent_prototype,
-  temporal_extent= temporal_extent_prototype
+  temporal_extent= temporal_extent_prototype,
+  bands = ["LST"]
 )
 
 cube_OTCI = connection.load_collection(
@@ -118,7 +119,7 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
 #param_bounds = np.array([param_min, param_max])
 
 dataset_SIF_low.execute_batch(
-     outputfile="openeo_sif_low.tif",
+     outputfile="openeo_sif_low.nc",
     title="SIF",
     description="Testing SIF extraction",
     job_options={"image-name": "python311-staging"}
