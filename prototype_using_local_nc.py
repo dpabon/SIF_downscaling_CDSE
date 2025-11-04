@@ -3,9 +3,21 @@ import numpy as np
 import xarray as xr
 import netCDF4
 from scipy.optimize import minimize
+import rioxarray as rio
 #%%
-local_nc = xr.open_dataset("openeo_test.nc")
+local_nc = xr.open_dataset("openeo_sif_low.nc")
 local_nc
+#%%
+local_nc['LST'].plot()
+
+#%%
+local_nc['SIF'].plot()
+
+#%%
+local_nc['OTCI'].plot()
+
+#%%
+local_nc['IWV'].plot()
 #%%
 SIF_w = local_nc["SIF"]
 SIF_w_valid = SIF_w.count().values
@@ -14,7 +26,7 @@ SIF_w_valid
 local_nc
 # %%
 import xarray
-def optimize_params_window(input_cube: xarray.Dataset, context: dict)  -> xarray.DataArray:
+def apply_datacube(input_cube: xarray.Dataset, context: dict)  -> xarray.DataArray:
   
     param_ini = np.array(context["param_ini"])
     param_min = np.array(context["param_min"])
