@@ -117,13 +117,14 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
 #param_min = np.array([0.5, 0.1, -310.0, 1.0])
 #param_max = np.array([1.5, 5.0, -290.0, 50.0])
 #param_bounds = np.array([param_min, param_max])
-
+"""
 dataset_SIF_low.execute_batch(
      outputfile="openeo_sif_low.nc",
     title="SIF",
     description="Testing SIF extraction",
     job_options={"image-name": "python311-staging"}
 )
+"""
 #%%
 param_ini=[1, 2, 50.0, 0, -295, 10]
 param_min=[0.5, 0.1, 0.0, -1, -310, 1]
