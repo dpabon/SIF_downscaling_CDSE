@@ -148,8 +148,8 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
         {"dimension": "y", "value": 1, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 6, "unit": "px"},
-        {"dimension": "y", "value": 6, "unit": "px"},
+        {"dimension": "x", "value": 3, "unit": "px"},
+        {"dimension": "y", "value": 3, "unit": "px"},
     ]
     )
 
@@ -160,6 +160,7 @@ job = parameters_cube_low.execute_batch(
     description="Testing SIF extraction",
     job_options={"image-name": "python311-staging"}
 )
+
 
 # %%
 parameters_cube_high = parameters_cube_low.resample_cube_spatial(target = cube_LST_median, method="cubic")
