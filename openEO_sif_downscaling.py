@@ -199,72 +199,17 @@ cube_to_upscale
 # %%
 # predicting SIF at 1 km resolution
 
-udf_sif_prediction = openeo.UDF(
-    
-"""
-def sif_downscaling_window(VI_hw, ET_hw LST_hw, PARAMS_hw):
-
-    #Calculates downscaled SIF for a central pixel based on window means.
-    #Inputs are 3D numpy arrays (window_x, window_y, [parameters]).
-    #Calculate mean parameters within the window (ignore NaNs)
-    # Need to handle case where all params in window are NaN
-    def vegetation(vi, b1, b2):
-      
-      # Ensure inputs are numpy arrays for vectorized operations
-      vi_np = np.asarray(vi)
-      veg = b2 * np.power(vi_np, b1) 
-      return veg
-
-    def water(et, b3, b4):
-
-      et_np = np.asarray(et)
-    
-      wat = 1.0 / (1.0 + np.exp(b3 * (b4-et_np)))
-      return wat
-
-    def temperature(lst, b5, b6):
-      
-      # Gaussian function, ensure b6 (std dev) is positive
-      lst_np = np.asarray(lst)
-      temp = np.exp(-0.5 * np.power((lst_np + b5) / b6, 2))
-      return temp
-
-    def sif_model(vi, et, lst, params):
-      # Calculates SIF based on the model components.
-      b1, b2, b3, b4, b5, b6 = params
-      sif_pred = (vegetation(vi, b1, b2) *
-                  water(et, b3, b4) *
-                  temperature(lst, b5, b6))
-      return sif_pred
-
-    mean_params = np.nanmean(params_hw, axis=(0,1))
-
-    if np.all(np.isnan(mean_params)):
-        return np.array([np.nan]) # Cannot calculate if no valid parameters in window)
-
-    # Calculate mean predictors within the window (ignore NaNs)
-    mean_ogvi = np.nanmean(ogvi_hw)
-    mean_ndwi = np.nanmean(ndwi_hw)
-    mean_lst = np.nanmean(lst_hw)
-
-    # Check if any mean predictor is NaN (means all values in window were NaN)
-    if np.isnan(mean_ogvi) or np.isnan(mean_lst):
-        return np.array([np.nan])
-
-    # Apply SIF model using mean values
-    sif_ds = sif_model(mean_ogvi, mean_ndwi, mean_lst, mean_params)
-    return np.array([sif_ds])
-
-"""
-)
+udf_sif_prediction = openeo.UDF.from_file("udf_sif_downscaling.py", runtime = "python311-staging",
+     context={"window_size_lat":5,
+             "window_size_lon":5})
 # %%
 sif_downscaled = cube_to_upscale.apply_neighborhood(udf_sif_prediction, size=[
-        {"dimension": "x", "value": 3, "unit": "px"},
-        {"dimension": "y", "value": 3, "unit": "px"},
+        {"dimension": "x", "value": 512, "unit": "px"},
+        {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 2, "unit": "px"},
-        {"dimension": "y", "value": 2, "unit": "px"},
+        {"dimension": "x", "value": 0, "unit": "px"},
+        {"dimension": "y", "value": 0, "unit": "px"},
     ],)
 
 # %%
@@ -272,8 +217,8 @@ sif_downscaled = cube_to_upscale.apply_neighborhood(udf_sif_prediction, size=[
 #result = sif_downscaled.save_result(format = "GTiff")
 
 job = sif_downscaled.execute_batch(
-    outputfile="openeo_test.tif",
-    title="SIF",
+    outputfile="openeo_sif_downscaled.tif",
+    title="SIF_downscaling",
     description="Testing SIF extraction",
     job_options={"image-name": "python311-staging"}
 )
