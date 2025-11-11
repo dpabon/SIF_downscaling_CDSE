@@ -132,7 +132,7 @@ param_max=[1.5, 5, 500.0, 1, -290, 50]
 
 #%%
 
-my_udf = openeo.UDF.from_file("udf.py", runtime = "python311-staging",
+my_udf = openeo.UDF.from_file("udf_parameters_optim_low_res.py", runtime = "python311-staging",
      context={"param_ini": param_ini,
               "param_min": param_min,
              "param_max": param_max,
@@ -167,8 +167,15 @@ job = parameters_cube_low.execute_batch(
     job_options={"image-name": "python311-staging"}
 )
 
+#%% changing the name of the ouput
+output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
+parameters_cube_low = parameters_cube_low.rename_labels('bands', output_bands)
+parameters_cube_low
 #%%
+#Checking the low parameters cube
 
+low_resolution_parameters = xr.open_dataset("openeo_sif_parameters.nc")
+low_resolution_parameters
 # %%
 parameters_cube_high = parameters_cube_low.resample_cube_spatial(target = cube_LST_median, method="cubic")
 # %%
