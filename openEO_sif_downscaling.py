@@ -136,20 +136,26 @@ my_udf = openeo.UDF.from_file("udf.py", runtime = "python311-staging",
      context={"param_ini": param_ini,
               "param_min": param_min,
              "param_max": param_max,
-             "min_obs": 25})
+             "min_obs": 25,
+             "window_size_lat":5,
+             "window_size_lon":5})
 
 
 #%%
 my_udf
+
+#%%
+# Checking the dimensions of the cube
+dataset_SIF_low
 #%%
 parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
     size=[
-        {"dimension": "x", "value": 1, "unit": "px"},
-        {"dimension": "y", "value": 1, "unit": "px"},
+        {"dimension": "x", "value": 512, "unit": "px"},
+        {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 3, "unit": "px"},
-        {"dimension": "y", "value": 3, "unit": "px"},
+        {"dimension": "x", "value": 0, "unit": "px"},
+        {"dimension": "y", "value": 0, "unit": "px"},
     ]
     )
 
@@ -161,6 +167,7 @@ job = parameters_cube_low.execute_batch(
     job_options={"image-name": "python311-staging"}
 )
 
+#%%
 
 # %%
 parameters_cube_high = parameters_cube_low.resample_cube_spatial(target = cube_LST_median, method="cubic")
