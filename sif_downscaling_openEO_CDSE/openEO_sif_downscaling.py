@@ -134,7 +134,7 @@ param_max=[1.5, 5, 500.0, 1, -290, 50]
 
 #%%
 
-my_udf = openeo.UDF.from_file("udf_parameters_optim_low_res.py", runtime = "python311-staging",
+my_udf = openeo.UDF.from_file("udf/udf_parameters_optim_low_res.py", runtime = "python311-staging",
      context={"param_ini": param_ini,
               "param_min": param_min,
              "param_max": param_max,
@@ -165,8 +165,7 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
 job = parameters_cube_low.execute_batch(
      outputfile="openeo_sif_parameters.nc",
     title="SIF",
-    description="Testing SIF extraction",
-    job_options={"image-name": "python311-staging"}
+    description="Testing SIF extraction"
 )
 
 #%% changing the name of the ouput
@@ -213,7 +212,7 @@ cube_to_upscale
 # %%
 # predicting SIF at 1 km resolution
 
-udf_sif_prediction = openeo.UDF.from_file("udf_sif_downscaling.py", runtime = "python311-staging",
+udf_sif_prediction = openeo.UDF.from_file("udf/udf_sif_downscaling.py", runtime = "python311-staging",
      context={"window_size_lat":3,
              "window_size_lon":3})
 # %%
