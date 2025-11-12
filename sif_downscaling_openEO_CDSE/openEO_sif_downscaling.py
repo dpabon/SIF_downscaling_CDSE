@@ -63,6 +63,8 @@ cube_IWV = connection.load_collection(
   temporal_extent= temporal_extent_prototype,
   bands = ["IWV"]
 )
+#%%
+cube_LST
 
 #%%
 # Collapsing time dimension
@@ -176,8 +178,20 @@ parameters_cube_low
 
 low_resolution_parameters = xr.open_dataset("openeo_sif_parameters.nc")
 low_resolution_parameters
+#%%
+parameters_cube_high = parameters_cube_low.resample_cube_spatial(target=cube_LST_median)
+
+#%%
+
 # %%
-parameters_cube_high = parameters_cube_low.resample_cube_spatial(target = cube_LST_median, method="cubic")
+parameters_cube_high = parameters_cube_low.resample_spatial(resolution=0.008928571428571, projection="EPSG:4326", method='bilinear')
+#%% 
+job = parameters_cube_high.execute_batch(
+     outputfile="openeo_sif_parameters_high.nc",
+    title="SIF",
+    description="Testing SIF extraction"
+)
+
 # %%
 
 # resampling VI and ET at 1 km to match LST
@@ -200,8 +214,8 @@ cube_to_upscale
 # predicting SIF at 1 km resolution
 
 udf_sif_prediction = openeo.UDF.from_file("udf_sif_downscaling.py", runtime = "python311-staging",
-     context={"window_size_lat":5,
-             "window_size_lon":5})
+     context={"window_size_lat":3,
+             "window_size_lon":3})
 # %%
 sif_downscaled = cube_to_upscale.apply_neighborhood(udf_sif_prediction, size=[
         {"dimension": "x", "value": 512, "unit": "px"},
