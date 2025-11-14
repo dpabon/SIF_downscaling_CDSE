@@ -162,11 +162,12 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(process = my_udf,
     )
 
 #%%
-job = parameters_cube_low.execute_batch(
-     outputfile="openeo_sif_parameters.nc",
-    title="SIF",
-    description="Testing SIF extraction"
-)
+
+#job = parameters_cube_low.execute_batch(
+#     outputfile="openeo_sif_parameters.nc",
+#    title="SIF",
+#    description="Testing SIF extraction"
+#)
 
 #%% changing the name of the ouput
 output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
@@ -175,15 +176,13 @@ parameters_cube_low
 #%%
 #Checking the low parameters cube
 
-low_resolution_parameters = xr.open_dataset("openeo_sif_parameters.nc")
-low_resolution_parameters
 #%%
 parameters_cube_high = parameters_cube_low.resample_cube_spatial(target=cube_LST_median)
 
 #%%
 
 # %%
-parameters_cube_high = parameters_cube_low.resample_spatial(resolution=0.008928571428571, projection="EPSG:4326", method='bilinear')
+#parameters_cube_high = parameters_cube_low.resample_spatial(resolution=0.008928571428571, projection="EPSG:4326", method='bilinear')
 #%% 
 job = parameters_cube_high.execute_batch(
      outputfile="openeo_sif_parameters_high.nc",
