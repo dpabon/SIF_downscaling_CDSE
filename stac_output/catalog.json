@@ -1,0 +1,21 @@
+{
+  "type": "Catalog",
+  "id": "sif_downscaling_catalog_dong_li",
+  "stac_version": "1.1.0",
+  "description": "Sun Induced Fluorescence (SIF) data provided by Dong Li.",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "title": "SIF Downscaling from Dong Li"
+    },
+    {
+      "rel": "child",
+      "href": "./SIF_sample_dong_li/collection.json",
+      "type": "application/json",
+      "title": "SIF Data from Dong Li"
+    }
+  ],
+  "title": "SIF Downscaling from Dong Li"
+}
