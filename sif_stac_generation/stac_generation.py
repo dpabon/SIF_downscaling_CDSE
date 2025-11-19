@@ -8,7 +8,7 @@ import pystac
 from pystac.extensions.eo import EOExtension, Band
 from pystac.extensions.projection import ProjectionExtension
 #%%
-os.chdir("/home/dpabon/Nextcloud/work/SIF_downscaling_CDSE")
+
 # Configuration
 DATA_DIR = "./data"
 CATALOG_ID = "sif_downscaling_catalog_dong_li"
