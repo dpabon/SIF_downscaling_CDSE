@@ -138,7 +138,7 @@ def create_catalog():
                 item.add_asset(
                     key="data",
                     asset=pystac.Asset(
-                        href=f"./data/{filename}",
+                        href=f"https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/{filename}",
                         media_type=pystac.MediaType.GEOTIFF,
                         roles=["data"],
                         title="SIF Data",

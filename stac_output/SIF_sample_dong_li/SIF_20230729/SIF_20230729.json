@@ -84,7 +84,7 @@
   ],
   "assets": {
     "data": {
-      "href": "./data/SIF_20230729.tif",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/SIF_20230729.tif",
       "type": "image/tiff; application=geotiff",
       "title": "SIF Data",
       "eo:bands": [

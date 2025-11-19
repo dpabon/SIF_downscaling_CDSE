@@ -37,15 +37,15 @@ temporal_extent_prototype = ["2018-06-20", "2018-06-30"]
 
 # Testing SIF - Dong Li
 
-cube_SIF = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json",
+cube_SIF_original = connection.load_stac(
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/catalog.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["SIF"],
 )
-
+cube_SIF_original
 # %%
-# cube_SIF.execute_batch(outputfile="openeo_test.tif", title="SIF", description="Testing SIF extraction", job_options={"image-name": "python311-staging"})
+cube_SIF_original.execute_batch(outputfile="openeo_test.tif", title="SIF", description="Testing SIF extraction", job_options={"image-name": "python311-staging"})
 # %%
 
 # Preparing Sentinel-3 data
@@ -70,11 +70,11 @@ cube_IWV = connection.load_collection(
     temporal_extent=temporal_extent_prototype,
     bands=["IWV"],
 )
-# %%
-cube_LST
 
 # %%
 # Collapsing time dimension
+
+cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
 
 cube_LST_median = cube_LST.reduce_temporal(reducer="median")
 
@@ -82,17 +82,8 @@ cube_OTCI_median = cube_OTCI.reduce_temporal(reducer="median")
 
 cube_IWV_median = cube_IWV.reduce_temporal(reducer="median")
 
-
 # %%
-cube_SIF_original = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json",
-    bands=["SIF"],
-    spatial_extent=spatial_extent_prototype,
-    temporal_extent=temporal_extent_prototype,
-)
 
-# %%
-# cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
 
 cube_SIF_original_median = cube_SIF_original
 # %%
