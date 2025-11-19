@@ -31,7 +31,6 @@ spatial_extent_prototype = {
 
 temporal_extent_prototype = ["2023-07-01", "2023-07-07"]
 
-temporal_extent_prototype = ["2018-06-20", "2018-06-30"]
 
 # %%
 
@@ -43,9 +42,10 @@ cube_SIF_original = connection.load_stac(
     temporal_extent=temporal_extent_prototype,
     bands=["SIF"],
 )
-cube_SIF_original
+
 # %%
-cube_SIF_original.execute_batch(outputfile="openeo_test.tif", title="SIF", description="Testing SIF extraction", job_options={"image-name": "python311-staging"})
+cube_SIF_original.execute_batch(outputfile="openeo_test.nc", title="SIF", description="Testing SIF extraction")
+#cube_SIF_original.download
 # %%
 
 # Preparing Sentinel-3 data
@@ -74,7 +74,8 @@ cube_IWV = connection.load_collection(
 # %%
 # Collapsing time dimension
 
-cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
+cube_SIF_original_median = cube_SIF_original.reduce_dimension(dimension='t',reducer = 'median')
+#%%
 
 cube_LST_median = cube_LST.reduce_temporal(reducer="median")
 
@@ -85,7 +86,7 @@ cube_IWV_median = cube_IWV.reduce_temporal(reducer="median")
 # %%
 
 
-cube_SIF_original_median = cube_SIF_original
+cube_SIF_original_median
 # %%
 # resample cubes at SIF original resolution
 

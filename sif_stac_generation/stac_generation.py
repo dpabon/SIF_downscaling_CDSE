@@ -108,8 +108,10 @@ def create_catalog():
                 # Geometry
                 geom = mapping(box(*bbox))
                 
-                # DateTime
+                # DateTime - create start and end datetime
                 dt = get_date_from_filename(filename)
+                start_dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+                end_dt = dt.replace(hour=23, minute=0, second=0, microsecond=0)
                 dates.append(dt)
                 bboxes.append(list(bbox))
 
@@ -118,8 +120,11 @@ def create_catalog():
                     id=os.path.splitext(filename)[0],
                     geometry=geom,
                     bbox=list(bbox),
-                    datetime=dt,
-                    properties={}
+                    datetime=None,
+                    properties={
+                        "start_datetime": start_dt.isoformat() + "Z",
+                        "end_datetime": end_dt.isoformat() + "Z"
+                    }
                 )
 
                 # --- Add Projection Extension ---
