@@ -6,173 +6,173 @@
   "links": [
     {
       "rel": "root",
-      "href": "../catalog.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/catalog.json",
       "type": "application/json",
       "title": "SIF Downscaling from Dong Li"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230727/SIF_20230727.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230727/SIF_20230727.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230715/SIF_20230715.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230715/SIF_20230715.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230717/SIF_20230717.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230717/SIF_20230717.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230725/SIF_20230725.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230725/SIF_20230725.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230712/SIF_20230712.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230712/SIF_20230712.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230704/SIF_20230704.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230704/SIF_20230704.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230722/SIF_20230722.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230722/SIF_20230722.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230729/SIF_20230729.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230729/SIF_20230729.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230723/SIF_20230723.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230723/SIF_20230723.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230709/SIF_20230709.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230709/SIF_20230709.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230730/SIF_20230730.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230730/SIF_20230730.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230718/SIF_20230718.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230718/SIF_20230718.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230710/SIF_20230710.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230710/SIF_20230710.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230708/SIF_20230708.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230708/SIF_20230708.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20180629/SIF_20180629.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20180629/SIF_20180629.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230701/SIF_20230701.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230701/SIF_20230701.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230714/SIF_20230714.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230714/SIF_20230714.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230721/SIF_20230721.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230721/SIF_20230721.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230711/SIF_20230711.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230711/SIF_20230711.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230705/SIF_20230705.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230705/SIF_20230705.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230716/SIF_20230716.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230716/SIF_20230716.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230706/SIF_20230706.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230706/SIF_20230706.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230724/SIF_20230724.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230724/SIF_20230724.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230719/SIF_20230719.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230719/SIF_20230719.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230728/SIF_20230728.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230728/SIF_20230728.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230702/SIF_20230702.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230702/SIF_20230702.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230726/SIF_20230726.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230726/SIF_20230726.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230703/SIF_20230703.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230703/SIF_20230703.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230713/SIF_20230713.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230713/SIF_20230713.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230731/SIF_20230731.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230731/SIF_20230731.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230720/SIF_20230720.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230720/SIF_20230720.json",
       "type": "application/geo+json"
     },
     {
       "rel": "item",
-      "href": "./SIF_20230707/SIF_20230707.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/SIF_sample_dong_li/SIF_20230707/SIF_20230707.json",
       "type": "application/geo+json"
     },
     {
       "rel": "parent",
-      "href": "../catalog.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/catalog.json",
       "type": "application/json",
       "title": "SIF Downscaling from Dong Li"
     }

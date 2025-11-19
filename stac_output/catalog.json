@@ -6,13 +6,13 @@
   "links": [
     {
       "rel": "root",
-      "href": "./catalog.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/catalog.json",
       "type": "application/json",
       "title": "SIF Downscaling from Dong Li"
     },
     {
       "rel": "child",
-      "href": "./SIF_sample_dong_li/collection.json",
+      "href": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/stac_output/catalog.json./SIF_sample_dong_li/collection.json",
       "type": "application/json",
       "title": "SIF Data from Dong Li"
     }
