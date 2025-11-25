@@ -164,4 +164,11 @@ optimize_params_window(local_nc, context={"param_ini": param_ini,
               "param_min": param_min,
              "param_max": param_max,
              "min_obs": 25})
+
+
 #%%
+# Checking parameters low resolution rename and values
+
+parameters_low = xr.open_dataset("openeo_sif_low.nc")
+parameters_low
+# %%
