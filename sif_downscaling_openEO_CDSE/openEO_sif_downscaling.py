@@ -1,6 +1,5 @@
 # %%
 import openeo
-
 # %%
 connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
 # %%
@@ -117,21 +116,16 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_OTCI_median_low)
 dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
 
 # %%
-# dataset_SIF_low.execute_batch()
-
-# adding three dummy variables to the datacube to match the number of oputput parameters
+# adding two dummy variables to the datacube to match the number of oputput parameters
 dataset_SIF_low = dataset_SIF_low.merge_cubes(
     other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_1"])
 )
 dataset_SIF_low = dataset_SIF_low.merge_cubes(
     other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_2"])
 )
-dataset_SIF_low = dataset_SIF_low.merge_cubes(
-    other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_3"])
-)
-
 
 # %%
+
 # checking the output of the merge
 """
 dataset_SIF_low.execute_batch(
@@ -141,6 +135,7 @@ dataset_SIF_low.execute_batch(
     job_options={"image-name": "python311-staging"}
 )
 """
+#dataset_SIF_low
 # %%
 # init parameters
 # param_ini = np.array([1.0, 2.0, -295.0, 10.0])
@@ -187,38 +182,16 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(
         {"dimension": "y", "value": 0, "unit": "px"},
     ],
 )
-
-# %%
-job = parameters_cube_low.execute_batch(
-    outputfile="openeo_sif_parameters.nc",
-    title="SIF",
-    description="Testing SIF extraction",
-)
-
 # %% changing the name of the ouput
 output_bands = ["b1", "b2", "b3", "b4", "b5", "b6"]
-# parameters_cube_low_rename = parameters_cube_low.rename_labels("bands", output_bands)
-# parameters_cube_low_rename
-udf = openeo.UDF(
-    """
-def apply_metadata(metadata: CollectionMetadata, context: dict) -> CollectionMetadata:
-
-    return metadata.rename_labels(
-
-        dimension="bands",
-
-        target= ["b1", "b2", "b3", "b4", "b5", "b6"]
-
-    )
-"""
-)
-parameters_cube_low_rename = parameters_cube_low.apply(process=udf)
+parameters_cube_low_rename = parameters_cube_low.rename_labels("bands", output_bands)
+parameters_cube_low_rename
 
 # %%
 # Checking the ouput parameters
-job = parameters_cube_low_rename.execute_batch(
+parameters_cube_low_rename.execute_batch(
     output_file="openeo_sif_parameters.nc",
-    title="SIF_parameters_renamed",
+    title="SIF_parameters_computation",
     description="Testing SIF extraction",
 )
 
@@ -231,7 +204,7 @@ parameters_cube_high = parameters_cube_low_rename.resample_cube_spatial(
 
 # %%
 parameters_cube_high = parameters_cube_low.resample_spatial(
-    resolution=0.008928571428571, projection="EPSG:4326", method="bilinear"
+    resolution=0.008928571428571, projection=None, method="bilinear"
 )
 # %%
 job = parameters_cube_high.execute_batch(

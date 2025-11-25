@@ -1,7 +1,6 @@
 #%%
 import numpy as np
 import xarray as xr
-import netCDF4
 from scipy.optimize import minimize
 import rioxarray as rio
 #%%
@@ -169,6 +168,34 @@ optimize_params_window(local_nc, context={"param_ini": param_ini,
 #%%
 # Checking parameters low resolution rename and values
 
-parameters_low = xr.open_dataset("openeo_sif_low.nc")
+input_low = xr.open_dataset("openeo_sif_low.nc")
+input_low
+# %%
+input_low["SIF"].plot()
+# %%
+input_low["LST"].plot()
+# %%
+input_low["OTCI"].plot()
+# %%
+input_low["IWV"].plot()
+# %%
+parameters_low = rio.open_rasterio("openEO_2018-06-29Z-2.tif")
 parameters_low
+# %%
+parameters_low.sel(band = 1).plot()
+#%%
+
+parameters_low.sel(band = 2).plot()
+#%%
+
+parameters_low.sel(band = 3).plot()
+
+#%%
+parameters_low.sel(band = 4).plot()
+
+#%%
+parameters_low.sel(band = 5).plot()
+
+#%%
+parameters_low.sel(band = 6).plot()
 # %%
