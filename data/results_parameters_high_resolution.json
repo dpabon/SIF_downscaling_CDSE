@@ -1,0 +1,84 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/eo/v1.1.0/schema.json"
+  ],
+  "id": "results_parameters_high_resolution",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          8.450383966307614,
+          44.73202767558461
+        ],
+        [
+          8.450383966307614,
+          49.062384818441544
+        ],
+        [
+          0.08431253773658387,
+          49.062384818441544
+        ],
+        [
+          0.08431253773658387,
+          44.73202767558461
+        ],
+        [
+          8.450383966307614,
+          44.73202767558461
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    0.08431253773658387,
+    44.73202767558461,
+    8.450383966307614,
+    49.062384818441544
+  ],
+  "properties": {
+    "proj:code": "EPSG:4326",
+    "proj:shape": [
+      485,
+      937
+    ],
+    "proj:bbox": [
+      0.08431253773658387,
+      44.73202767558461,
+      8.450383966307614,
+      49.062384818441544
+    ],
+    "datetime": "2018-06-20T00:00:00Z"
+  },
+  "links": [],
+  "assets": {
+    "parameters": {
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif",
+      "type": "image/tiff; application=geotiff",
+      "title": "Optimized Parameters High Resolution",
+      "eo:bands": [
+        {
+          "name": "b_1"
+        },
+        {
+          "name": "b_2"
+        },
+        {
+          "name": "b_3"
+        },
+        {
+          "name": "b_4"
+        },
+        {
+          "name": "b_5"
+        },
+        {
+          "name": "b_6"
+        }
+      ]
+    }
+  }
+}
