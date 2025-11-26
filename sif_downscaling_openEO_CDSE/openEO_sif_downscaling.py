@@ -199,8 +199,6 @@ job = parameters_cube_low_rename.execute_batch(
 # %%
 results = job.get_results()
 
-results
-
 # %%
 results.download_file("../data/results_parameters_optim_low_resolution.tif")
 # %%
@@ -232,7 +230,7 @@ from pystac.extensions.eo import EOExtension
 from datetime import datetime
 from shapely.geometry import box, mapping
 
-output_path = "../data/results_paramaters_high_resolution.tif"
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
 
 # Get metadata from the raster
 bbox = list(parameters_high.rio.bounds())  # [minx, miny, maxx, maxy]
@@ -247,8 +245,8 @@ item = pystac.Item(
     id="results_parameters_high_resolution",
     geometry=geom,
     bbox=bbox,
-    datetime=datetime.now(),  # or specify your desired datetime
-    properties={}
+    datetime=datetime.strptime(temporal_extent_prototype[0], "%Y-%m-%d"),
+    properties={},
 )
 
 # Add projection extension
@@ -268,11 +266,9 @@ item.add_asset(
         title="Optimized Parameters High Resolution",
         media_type="image/tiff; application=geotiff",
         extra_fields={
-            "eo:bands": [
-                {"name": f"band_{i+1}"} for i in range(parameters_high.shape[0])
-            ]
-        }
-    )
+            "eo:bands": [{"name": f"b{i + 1}"} for i in range(parameters_high.shape[0])]
+        },
+    ),
 )
 
 # Validate and save
@@ -280,12 +276,16 @@ item.validate()
 
 # Save as JSON
 import json
+
 with open("../data/results_parameters_high_resolution.json", "w") as f:
     json.dump(item.to_dict(), f, indent=2)
 
 print(item.to_dict())
 
 # %%
+
+# This still doesn't work
+"""
 parameters_cube_high = parameters_cube_low_rename.resample_cube_spatial(
     target=cube_LST_median
 )
@@ -302,7 +302,20 @@ job = parameters_cube_high.execute_batch(
     title="SIF",
     description="Testing SIF extraction",
 )
+"""
+# %%
+# Loading the parameters at high resolution in openEO
 
+parameters_cube_high = connection.load_stac(
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["b1", "b2", "b3", "b4", "b5", "b6"],
+)
+parameters_cube_high
+
+# %%
+parameters_cube_high_median= parameters_cube_high.reduce_temporal("median")
 # %%
 
 # resampling VI and ET at 1 km to match LST
@@ -313,20 +326,20 @@ cube_IWV_median_1 = cube_IWV_median.resample_cube_spatial(target=cube_LST_median
 
 
 # %%
-cube_to_upscale = parameters_cube_high.merge_cubes(cube_LST_median)
+cube_to_upscale = parameters_cube_high_median.merge_cubes(cube_LST_median)
 
 cube_to_upscale = cube_to_upscale.merge_cubes(cube_OTCI_median_1)
 
 cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 
 # %%
-cube_to_upscale
+#cube_to_upscale.execute_batch("../data/cube_to_upscale.nc")
+
 # %%
 # predicting SIF at 1 km resolution
 
 udf_sif_prediction = openeo.UDF.from_file(
     "udf/udf_sif_downscaling.py",
-    runtime="python311-staging",
     context={"window_size_lat": 3, "window_size_lon": 3},
 )
 # %%
@@ -343,14 +356,15 @@ sif_downscaled = cube_to_upscale.apply_neighborhood(
 )
 
 # %%
+sif_downscaled
+#%%
 
 # result = sif_downscaled.save_result(format = "GTiff")
 
 job = sif_downscaled.execute_batch(
-    outputfile="openeo_sif_downscaled.tif",
+    outputfile="../data/openeo_sif_downscaled.tif",
     title="SIF_downscaling",
     description="Testing SIF extraction",
-    job_options={"image-name": "python311-staging"},
 )
 
 

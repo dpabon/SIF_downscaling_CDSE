@@ -4,9 +4,8 @@ from scipy.optimize import minimize
 from openeo.udf.debug import inspect
 
 
-def sif_downscaling(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
-
-    input_cube_local = cube.to_dataset(dim = 'bands')
+def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
+    input_cube_local = cube.to_dataset(dim="bands")
 
     inspect(input_cube_local, message="local dataset: ")
 
@@ -16,58 +15,53 @@ def sif_downscaling(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     # get the coodinates of the datacube
     # processing data
 
-    SIF_w = input_cube_local["SIF"]
-    
     VI_w = input_cube_local["OTCI"]
-    
+
     ET_w = input_cube_local["IWV"]
-    
-    LST_w =  input_cube_local["LST"]
 
-    PARAMETERS_w = input_cube_local[['b1', 'b2', 'b3', 'b4', 'b5', 'b6']]
+    LST_w = input_cube_local["LST"]
 
-    PARAMETERS_w = PARAMETERS_w.to_dataarray(dim = 'parameters')
+    PARAMETERS_w = input_cube_local[["b1", "b2", "b3", "b4", "b5", "b6"]]
 
-   
+    PARAMETERS_w = PARAMETERS_w.to_dataarray(dim="parameters")
+
     def sif_downscaling_window(vi, et, lst, parameters):
-
-        #Calculates downscaled SIF for a central pixel based on window means.
-        #Inputs are 3D numpy arrays (window_x, window_y, [parameters]).
-        #Calculate mean parameters within the window (ignore NaNs)
+        # Calculates downscaled SIF for a central pixel based on window means.
+        # Inputs are 3D numpy arrays (window_x, window_y, [parameters]).
+        # Calculate mean parameters within the window (ignore NaNs)
         # Need to handle case where all params in window are NaN
         def vegetation(vi, b1, b2):
-        
             # Ensure inputs are numpy arrays for vectorized operations
             vi_np = np.asarray(vi)
-            veg = b2 * np.power(vi_np, b1) 
+            veg = b2 * np.power(vi_np, b1)
             return veg
 
         def water(et, b3, b4):
-
             et_np = np.asarray(et)
-        
-            wat = 1.0 / (1.0 + np.exp(b3 * (b4-et_np)))
+
+            wat = 1.0 / (1.0 + np.exp(b3 * (b4 - et_np)))
             return wat
 
         def temperature(lst, b5, b6):
-        
-        # Gaussian function, ensure b6 (std dev) is positive
+            # Gaussian function, ensure b6 (std dev) is positive
             lst_np = np.asarray(lst)
             temp = np.exp(-0.5 * np.power((lst_np + b5) / b6, 2))
             return temp
 
         def sif_model(vi, et, lst, params):
-        # Calculates SIF based on the model components.
+            # Calculates SIF based on the model components.
             b1, b2, b3, b4, b5, b6 = params
-            sif_pred = (vegetation(vi, b1, b2) *
-                        water(et, b3, b4) *
-                    temperature(lst, b5, b6))
+            sif_pred = (
+                vegetation(vi, b1, b2) * water(et, b3, b4) * temperature(lst, b5, b6)
+            )
             return sif_pred
 
-        mean_params = np.nanmean(parameters, axis=(0,1))
+        mean_params = np.nanmean(parameters, axis=(0, 1))
 
         if np.all(np.isnan(mean_params)):
-            return np.array([np.nan]) # Cannot calculate if no valid parameters in window)
+            return np.array(
+                [np.nan]
+            )  # Cannot calculate if no valid parameters in window)
 
         # Calculate mean predictors within the window (ignore NaNs)
         mean_vi = np.nanmean(vi)
@@ -80,31 +74,36 @@ def sif_downscaling(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         else:
             sif_ds = sif_model(mean_vi, mean_et, mean_lst, mean_params)
             return np.array([sif_ds])
-    
+
     sif_cube_high = xarray.apply_ufunc(
         sif_downscaling_window,
         # Input arrays with rolling windows constructed
-        VI_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),
-
-        ET_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),
-
-        LST_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),
-        
-        PARAMETERS_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),
+        VI_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
+            x="lat_roll", y="lon_roll"
+        ),
+        ET_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
+            x="lat_roll", y="lon_roll"
+        ),
+        LST_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
+            x="lat_roll", y="lon_roll"
+        ),
+        PARAMETERS_w.rolling(
+            x=window_size_lat, y=window_size_lon, center=True
+        ).construct(x="lat_roll", y="lon_roll"),
         # Input core dimensions now include the window dims and the parameter dim for the last input
-        input_core_dims=[['lat_roll', 'lon_roll'],
-                        ['lat_roll', 'lon_roll'],
-                        ['lat_roll', 'lon_roll', 'parameters']],
+        input_core_dims=[
+            ["lat_roll", "lon_roll"],
+            ["lat_roll", "lon_roll"],
+            ["lat_roll", "lon_roll"],
+            ["lat_roll", "lon_roll", "parameters"],
+        ],
         # Output is scalar for each pixel (no core dims)
-        output_core_dims=[['SIF_downscaled']],
-        dask_gufunc_kwargs={'output_sizes': {'SIF_downscaled': 1}},
-        dask='parallelized',
+        output_core_dims=[["SIF_downscaled"]],
+        dask_gufunc_kwargs={"output_sizes": {"SIF_downscaled": 1}},
+        dask="parallelized",
         output_dtypes=[np.float64],
-        vectorize = True,
-        exclude_dims=set(('lat_roll', 'lon_roll')), # Exclude window dims from output
-        ).rename('SIF_downscaled')
-    
-    return sif_cube_high
-            
+        vectorize=True,
+        exclude_dims=set(("lat_roll", "lon_roll")),  # Exclude window dims from output
+    ).rename("SIF_downscaled")
 
-        
+    return sif_cube_high
