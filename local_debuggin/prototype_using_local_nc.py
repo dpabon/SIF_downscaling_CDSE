@@ -3,6 +3,10 @@ import numpy as np
 import xarray as xr
 from scipy.optimize import minimize
 import rioxarray as rio
+import os
+#%%
+local_path = os.path.dirname(__file__)
+local_path
 #%%
 local_nc = xr.open_dataset("openeo_sif_low.nc")
 local_nc
@@ -178,24 +182,16 @@ input_low["LST"].plot()
 input_low["OTCI"].plot()
 # %%
 input_low["IWV"].plot()
+
 # %%
-parameters_low = rio.open_rasterio("openEO_2018-06-29Z-2.tif")
+parameters_low = rio.open_rasterio("../data/results_parameters_optim_low_resolution.tif")
 parameters_low
 # %%
-parameters_low.sel(band = 1).plot()
-#%%
-
-parameters_low.sel(band = 2).plot()
-#%%
-
-parameters_low.sel(band = 3).plot()
-
-#%%
-parameters_low.sel(band = 4).plot()
-
-#%%
-parameters_low.sel(band = 5).plot()
-
-#%%
-parameters_low.sel(band = 6).plot()
+# LST high resolution
+lst_high = rio.open_rasterio("../data/lst_high_resolution.tif")
+lst_high
 # %%
+parameters_high = parameters_low.rio.reproject_match(lst_high)
+parameters_high
+# %%
+parameters_high.to_raster("../data/results_paramaters_high_resolution.tif")

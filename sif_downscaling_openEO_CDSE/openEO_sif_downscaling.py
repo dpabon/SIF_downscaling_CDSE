@@ -1,5 +1,7 @@
 # %%
 import openeo
+import rioxarray as rio
+
 # %%
 connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
 # %%
@@ -135,7 +137,7 @@ dataset_SIF_low.execute_batch(
     job_options={"image-name": "python311-staging"}
 )
 """
-#dataset_SIF_low
+# dataset_SIF_low
 # %%
 # init parameters
 # param_ini = np.array([1.0, 2.0, -295.0, 10.0])
@@ -186,14 +188,102 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(
 output_bands = ["b1", "b2", "b3", "b4", "b5", "b6"]
 parameters_cube_low_rename = parameters_cube_low.rename_labels("bands", output_bands)
 parameters_cube_low_rename
-
+# %%
 # %%
 # Checking the ouput parameters
-parameters_cube_low_rename.execute_batch(
+job = parameters_cube_low_rename.execute_batch(
     output_file="openeo_sif_parameters.nc",
     title="SIF_parameters_computation",
     description="Testing SIF extraction",
 )
+# %%
+results = job.get_results()
+
+results
+
+# %%
+results.download_file("../data/results_parameters_optim_low_resolution.tif")
+# %%
+# Downloading LST at high resolution to upsample the paramaters cube locally
+
+cube_LST_median.download("../data/lst_high_resolution.tif")
+
+# %%
+# Doing the upsampling locally while openEO dev reply...
+
+parameters_low = rio.open_rasterio(
+    "../data/results_parameters_optim_low_resolution.tif"
+)
+parameters_low
+# %%
+# LST high resolution local
+lst_high = rio.open_rasterio("../data/lst_high_resolution.tif")
+lst_high
+# %%
+parameters_high = parameters_low.rio.reproject_match(lst_high)
+parameters_high
+# %%
+parameters_high.rio.to_raster("../data/results_paramaters_high_resolution.tif")
+# %%
+# Creating a STAC item for the upsampled parameters:
+import pystac
+from pystac.extensions.projection import ProjectionExtension
+from pystac.extensions.eo import EOExtension
+from datetime import datetime
+from shapely.geometry import box, mapping
+
+output_path = "../data/results_paramaters_high_resolution.tif"
+
+# Get metadata from the raster
+bbox = list(parameters_high.rio.bounds())  # [minx, miny, maxx, maxy]
+epsg = parameters_high.rio.crs.to_epsg()
+shape = [parameters_high.rio.height, parameters_high.rio.width]
+
+# Create geometry from bbox
+geom = mapping(box(*bbox))
+
+# Create the STAC item
+item = pystac.Item(
+    id="results_parameters_high_resolution",
+    geometry=geom,
+    bbox=bbox,
+    datetime=datetime.now(),  # or specify your desired datetime
+    properties={}
+)
+
+# Add projection extension
+proj_ext = ProjectionExtension.ext(item, add_if_missing=True)
+proj_ext.epsg = epsg
+proj_ext.shape = shape
+proj_ext.bbox = bbox
+
+# Add EO extension
+EOExtension.ext(item, add_if_missing=True)
+
+# Add the asset
+item.add_asset(
+    key="parameters",
+    asset=pystac.Asset(
+        href=output_path,  # or use an absolute path / URL
+        title="Optimized Parameters High Resolution",
+        media_type="image/tiff; application=geotiff",
+        extra_fields={
+            "eo:bands": [
+                {"name": f"band_{i+1}"} for i in range(parameters_high.shape[0])
+            ]
+        }
+    )
+)
+
+# Validate and save
+item.validate()
+
+# Save as JSON
+import json
+with open("../data/results_parameters_high_resolution.json", "w") as f:
+    json.dump(item.to_dict(), f, indent=2)
+
+print(item.to_dict())
 
 # %%
 parameters_cube_high = parameters_cube_low_rename.resample_cube_spatial(
