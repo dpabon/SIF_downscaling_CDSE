@@ -61,22 +61,22 @@
       "title": "Optimized Parameters High Resolution",
       "eo:bands": [
         {
-          "name": "b_1"
+          "name": "b1"
         },
         {
-          "name": "b_2"
+          "name": "b2"
         },
         {
-          "name": "b_3"
+          "name": "b3"
         },
         {
-          "name": "b_4"
+          "name": "b4"
         },
         {
-          "name": "b_5"
+          "name": "b5"
         },
         {
-          "name": "b_6"
+          "name": "b6"
         }
       ]
     }
