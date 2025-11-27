@@ -104,6 +104,22 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         output_dtypes=[np.float64],
         vectorize=True,
         exclude_dims=set(("lat_roll", "lon_roll")),  # Exclude window dims from output
-    ).rename("SIF_downscaled")
+    )
+    inspect(sif_cube_high, message="sif_cube_pre: ")
 
-    return sif_cube_high
+    sif_cube_high = sif_cube_high.isel(SIF_downscaled=0)
+
+    inspect(sif_cube_high, message="sif_cube_after:")
+
+    output_dataset = sif_cube_high.to_dataset(name="SIF")
+
+    inspect(output_dataset, message="output_dataset pre:")
+
+    # adding dummy_bands
+    new_vars = ["dummy_" + str(x) for x in range(8)]
+    for var in new_vars:
+        output_dataset[var] = xarray.full_like(sif_cube_high, np.nan)
+
+    inspect(output_dataset, message="output_dataset after:")
+
+    return output_dataset.to_dataarray()

@@ -356,6 +356,7 @@ sif_downscaled = cube_to_upscale.apply_neighborhood(
 )
 
 # %%
+# removing bands that are not needed it 
 sif_downscaled
 #%%
 
