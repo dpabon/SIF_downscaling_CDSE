@@ -346,8 +346,8 @@ udf_sif_prediction = openeo.UDF.from_file(
 sif_downscaled = cube_to_upscale.apply_neighborhood(
     udf_sif_prediction,
     size=[
-        {"dimension": "x", "value": 512, "unit": "px"},
-        {"dimension": "y", "value": 512, "unit": "px"},
+        {"dimension": "x", "value": 84, "unit": "px"},
+        {"dimension": "y", "value": 84, "unit": "px"},
     ],
     overlap=[
         {"dimension": "x", "value": 0, "unit": "px"},

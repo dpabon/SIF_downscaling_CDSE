@@ -195,3 +195,16 @@ parameters_high = parameters_low.rio.reproject_match(lst_high)
 parameters_high
 # %%
 parameters_high.to_raster("../data/results_paramaters_high_resolution.tif")
+
+
+#%%
+cube_to_upscale = xr.open_dataset("../data/cube_to_upscale.nc")
+cube_to_upscale
+# %%
+################################
+# Checking sif downscaled
+sif_downscaled = rio.open_rasterio("../data/openeo_sif_downscaled.tif")
+sif_downscaled
+# %%
+cube_to_upscale.to_dataarray()
+# %%
