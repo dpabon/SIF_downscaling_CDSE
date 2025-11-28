@@ -2,6 +2,7 @@ import openeo
 import rioxarray as rio
 
 # This is needed to create a STAC item for the upsampled parameters:
+
 import pystac
 from pystac.extensions.projection import ProjectionExtension
 from pystac.extensions.eo import EOExtension
@@ -97,8 +98,6 @@ cube_SIF_original = connection.load_stac(
     temporal_extent=temporal_extent_prototype,
 )
 
-
-# cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
 
 cube_SIF_original_median = cube_SIF_original
 

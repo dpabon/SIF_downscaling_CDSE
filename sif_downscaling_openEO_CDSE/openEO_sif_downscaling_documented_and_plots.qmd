@@ -1,0 +1,50 @@
+---
+title: "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)"
+format: html
+css: styles.css
+jupyter: python3
+author: Daniel E. Pabon-Moreno
+email: dpabon@bgc-jena.mpg.de
+
+---
+
+In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX
+
+We will need the following library to run open-EO
+```{python}
+import openeo
+```
+
+Currently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see [here](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.
+
+```{python}
+import pystac
+from pystac.extensions.projection import ProjectionExtension
+from pystac.extensions.eo import EOExtension
+from datetime import datetime
+from shapely.geometry import box, mapping
+import json
+import subprocess
+```
+
+To connect to the openEO insfrastructure we need to create a connection:
+
+```{python}
+connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
+```
+
+Then we can see the data collections that are available:
+
+:::{.scrolling}
+
+```{python}
+connection.list_collections()
+```
+
+:::
+
+----
+
+For this tutorial we will use the following datasets/variables:
+- Land Surface Temperature: ```SENTINEL3_SLSTR_L2_LST```
+- 
