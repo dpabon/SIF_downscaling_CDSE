@@ -8,7 +8,10 @@ from pystac.extensions.eo import EOExtension
 from datetime import datetime
 from shapely.geometry import box, mapping
 import json
+import subprocess
 
+
+#############################
 connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
 
 connection.list_collections()
@@ -270,11 +273,20 @@ item.validate()
 
 # Save as JSON
 
-with open("../data/results_parameters_high_resolution.json", "w") as f:
+with open("data/results_parameters_high_resolution.json", "w") as f:
     json.dump(item.to_dict(), f, indent=2)
 
 print(item.to_dict())
 
+# pushing changes to the remote repo to access from openEO again
+
+git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "-a"]
+
+subprocess.call(git_commit, shell=True)
+
+git_push = ["git", "push"]
+
+subprocess.call(git_push, shell=True)
 
 # This still doesn't work
 """
