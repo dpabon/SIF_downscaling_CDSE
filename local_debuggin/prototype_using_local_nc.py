@@ -218,7 +218,7 @@ sif_downscaled
 # %%
 sif_downscaled.sel(band=1).plot()
 # %%
-sif_original = rio.open_rasterio("../data/SIF_20180629.tif", mask_and_scale=True)
+sif_original = rio.open_rasterio("data/SIF_20180629.tif", mask_and_scale=True)
 sif_original
 # %%
 sif_original.sel(
@@ -231,4 +231,4 @@ sif_original.sel(
 
 test = {"test1": {"three": 2}, "another": {"just": 3}}
 # %%
-xr.open_dataset("")
+sif_original.plot()

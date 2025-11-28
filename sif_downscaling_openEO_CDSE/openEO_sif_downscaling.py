@@ -29,6 +29,15 @@ spatial_extent_prototype = {
     "north": 49.062384818441544,
 }
 
+
+spatial_extent_prototype = {
+    "west": 7.426758,
+    "east": 18.632813,
+    "south": 50.233152,
+    "north": 55.603178,
+}
+
+
 temporal_extent_prototype = ["2023-07-01", "2023-07-07"]
 
 temporal_extent_prototype = ["2018-06-20", "2018-06-30"]
@@ -201,12 +210,12 @@ job = parameters_cube_low_rename.execute_batch(
 results = job.get_results()
 
 
-results.download_file("../data/results_parameters_optim_low_resolution.tif")
+results.download_file("data/results_parameters_optim_low_resolution.tif")
 """
 
 # Downloading LST at high resolution to upsample the paramaters cube locally
 
-# cube_LST_median.download("../data/lst_high_resolution.tif")
+# cube_LST_median.execute_batch(outputfile="data/lst_high_resolution.tif")
 
 
 # Doing the upsampling locally while openEO dev reply...
@@ -268,8 +277,6 @@ item.add_asset(
     ),
 )
 
-# Validate and save
-item.validate()
 
 # Save as JSON
 
