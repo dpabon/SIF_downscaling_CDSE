@@ -1,6 +1,14 @@
 import openeo
 import rioxarray as rio
 
+# This is needed to create a STAC item for the upsampled parameters:
+import pystac
+from pystac.extensions.projection import ProjectionExtension
+from pystac.extensions.eo import EOExtension
+from datetime import datetime
+from shapely.geometry import box, mapping
+import json
+
 connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
 
 connection.list_collections()
@@ -138,11 +146,9 @@ dataset_SIF_low.execute_batch(
 # param_bounds = np.array([param_min, param_max])
 
 
-
 param_ini = [1, 2, 50.0, 0, -295, 10]
 param_min = [0.5, 0.1, 0.0, -1, -310, 1]
 param_max = [1.5, 5, 500.0, 1, -290, 50]
-
 
 
 my_udf = openeo.UDF.from_file(
@@ -156,7 +162,6 @@ my_udf = openeo.UDF.from_file(
         "window_size_lon": 5,
     },
 )
-
 
 
 my_udf
@@ -183,6 +188,7 @@ parameters_cube_low_rename
 
 
 # Checking the ouput parameters
+"""
 job = parameters_cube_low_rename.execute_batch(
     output_file="openeo_sif_parameters.nc",
     title="SIF_parameters_computation",
@@ -193,34 +199,30 @@ results = job.get_results()
 
 
 results.download_file("../data/results_parameters_optim_low_resolution.tif")
+"""
 
 # Downloading LST at high resolution to upsample the paramaters cube locally
 
-cube_LST_median.download("../data/lst_high_resolution.tif")
+# cube_LST_median.download("../data/lst_high_resolution.tif")
 
 
 # Doing the upsampling locally while openEO dev reply...
 
-parameters_low = rio.open_rasterio(
-    "../data/results_parameters_optim_low_resolution.tif"
-)
+parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution.tif")
 parameters_low
 
 # LST high resolution local
-lst_high = rio.open_rasterio("../data/lst_high_resolution.tif")
-lst_high
+lst_high = rio.open_rasterio("data/lst_high_resolution.tif")
 
 parameters_high = parameters_low.rio.reproject_match(lst_high)
-parameters_high
 
-parameters_high.rio.to_raster("../data/results_paramaters_high_resolution.tif")
+# Saving the resample raster
 
-# Creating a STAC item for the upsampled parameters:
-import pystac
-from pystac.extensions.projection import ProjectionExtension
-from pystac.extensions.eo import EOExtension
-from datetime import datetime
-from shapely.geometry import box, mapping
+parameters_high.rio.to_raster("data/results_paramaters_high_resolution.tif")
+
+# Creating a STAC item for the upsampled parameters
+
+### This section is temporal until openEO team solve the upsampling issue. For details see: https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6
 
 output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
 
@@ -267,13 +269,11 @@ item.add_asset(
 item.validate()
 
 # Save as JSON
-import json
 
 with open("../data/results_parameters_high_resolution.json", "w") as f:
     json.dump(item.to_dict(), f, indent=2)
 
 print(item.to_dict())
-
 
 
 # This still doesn't work
@@ -317,7 +317,6 @@ cube_OTCI_median_1 = cube_OTCI_median.resample_cube_spatial(target=cube_LST_medi
 cube_IWV_median_1 = cube_IWV_median.resample_cube_spatial(target=cube_LST_median)
 
 
-
 cube_to_upscale = parameters_cube_high_median.merge_cubes(cube_LST_median)
 
 cube_to_upscale = cube_to_upscale.merge_cubes(cube_OTCI_median_1)
@@ -331,7 +330,7 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 # predicting SIF at 1 km resolution
 
 udf_sif_prediction = openeo.UDF.from_file(
-    "udf/udf_sif_downscaling.py",
+    "sif_downscaling_openEO_CDSE/udf/udf_sif_downscaling.py",
     context={"window_size_lat": 3, "window_size_lon": 3},
 )
 
@@ -349,13 +348,20 @@ sif_downscaled = cube_to_upscale.apply_neighborhood(
 
 
 # removing bands that are not needed it
-sif_downscaled
 
+sif_downscaled = sif_downscaled.rename_labels(
+    dimension="bands", source=["b1"], target=["SIF"]
+)
+
+sif_downscaled = sif_downscaled.band("SIF")
+
+
+# Running and saving results
 
 # result = sif_downscaled.save_result(format = "GTiff")
 
 job = sif_downscaled.execute_batch(
-    outputfile="../data/openeo_sif_downscaled.tif",
+    outputfile="data/openeo_sif_downscaled.tif",
     title="SIF_downscaling",
     description="Testing SIF extraction",
 )
