@@ -282,11 +282,11 @@ print(item.to_dict())
 
 git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "-a"]
 
-subprocess.call(git_commit)
+subprocess.run(git_commit)
 
 git_push = ["git", "push"]
 
-subprocess.call(git_push)
+subprocess.run(git_push)
 
 # This still doesn't work
 """
