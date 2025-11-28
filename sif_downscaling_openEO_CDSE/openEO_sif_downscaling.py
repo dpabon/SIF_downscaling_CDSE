@@ -286,7 +286,7 @@ subprocess.call(git_commit)
 
 git_push = ["git", "push"]
 
-subprocess.call(git_push, shell=True)
+subprocess.call(git_push)
 
 # This still doesn't work
 """
