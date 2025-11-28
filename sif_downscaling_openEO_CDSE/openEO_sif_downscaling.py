@@ -282,7 +282,7 @@ print(item.to_dict())
 
 git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "-a"]
 
-subprocess.call(git_commit, shell=True)
+subprocess.call(git_commit)
 
 git_push = ["git", "push"]
 
