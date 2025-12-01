@@ -1,0 +1,9 @@
+[
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html",
+    "href": "openEO_sif_downscaling_documented_and_plots.html",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "",
+    "text": "In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX\nWe will need the following library to run open-EO\n\nimport openeo\n\nCurrently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see here). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.\n\nimport pystac\nfrom pystac.extensions.projection import ProjectionExtension\nfrom pystac.extensions.eo import EOExtension\nfrom datetime import datetime\nfrom shapely.geometry import box, mapping\nimport json\nimport subprocess\n\nTo connect to the openEO insfrastructure we need to create a connection:\n\nconnection = openeo.connect(\"https://openeofed.dataspace.copernicus.eu/\")\n\nThen we can see the data collections that are available:\n\n\nconnection.list_collections()\n\n\n    \n    \n        \n    \n    \n\n\n\n\nFor this tutorial we will use the following datasets/variables:\n\n\n\n\n\n\n\n\nVariable name\nCollection\nBand Name\n\n\n\n\nLand Surface Temperature\nSENTINEL3_SLSTR_L2_LST\nLST\n\n\nTerrestrial Chlorophyll Index\nSENTINEL3_OLCI_L2_LAND\nOTCI\n\n\nIntegrated Water Vapour\nSENTINEL3_OLCI_L2_LAND\nIWV"
+  }
+]
