@@ -46,5 +46,10 @@ connection.list_collections()
 ----
 
 For this tutorial we will use the following datasets/variables:
-- Land Surface Temperature: ```SENTINEL3_SLSTR_L2_LST```
-- 
+
+| Variable name | Collection | Band Name |
+|--|--|--|
+|Land Surface Temperature| ```SENTINEL3_SLSTR_L2_LST```| ```LST```|
+|Terrestrial Chlorophyll Index| ```SENTINEL3_OLCI_L2_LAND```| ```OTCI```|
+|Integrated Water Vapour| ```SENTINEL3_OLCI_L2_LAND``` | ```IWV```|
+

@@ -112,11 +112,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX</p>
 <p>We will need the following library to run open-EO</p>
-<div id="5e5280f5" class="cell" data-execution_count="1">
+<div id="854761ef" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Currently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see <a href="https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6">here</a>). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.</p>
-<div id="454b1734" class="cell" data-execution_count="2">
+<div id="6ea72748" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pystac</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.projection <span class="im">import</span> ProjectionExtension</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.eo <span class="im">import</span> EOExtension</span>
@@ -126,14 +126,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>To connect to the openEO insfrastructure we need to create a connection:</p>
-<div id="5f7dbf73" class="cell" data-execution_count="3">
+<div id="6c6baf9d" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeofed.dataspace.copernicus.eu/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Then we can see the data collections that are available:</p>
 <div class="scrolling">
-<div id="a7fc24fe" class="cell" data-execution_count="4">
+<div id="54de0d08" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>connection.list_collections()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="54">
+<div class="cell-output cell-output-display" data-execution_count="24">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-collections')) {
@@ -157,7 +157,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <hr>
-<p>For this tutorial we will use the following datasets/variables: - Land Surface Temperature: <code>SENTINEL3_SLSTR_L2_LST</code> -</p>
+<p>For this tutorial we will use the following datasets/variables:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable name</th>
+<th>Collection</th>
+<th>Band Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Land Surface Temperature</td>
+<td><code>SENTINEL3_SLSTR_L2_LST</code></td>
+<td><code>LST</code></td>
+</tr>
+<tr class="even">
+<td>Terrestrial Chlorophyll Index</td>
+<td><code>SENTINEL3_OLCI_L2_LAND</code></td>
+<td><code>OTCI</code></td>
+</tr>
+<tr class="odd">
+<td>Integrated Water Vapour</td>
+<td><code>SENTINEL3_OLCI_L2_LAND</code></td>
+<td><code>IWV</code></td>
+</tr>
+</tbody>
+</table>
 
 </main>
 <!-- /main column -->
