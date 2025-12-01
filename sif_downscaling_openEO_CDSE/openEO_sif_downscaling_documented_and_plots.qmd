@@ -1,42 +1,32 @@
 ---
 title: "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)"
-project:
-  type: website
-  output-dir: docs
-format: html
+format:
+  html:
+    toc: true
+    toc-location: left
 css: styles.css
 jupyter: python3
-author: Daniel E. Pabon-Moreno
+toc: true
+toc-depth: 2
+toc-title: Contents
+author: Daniel E. Pabon-Moreno et al.,
 email: dpabon@bgc-jena.mpg.de
 
 ---
+## Introduction
 
 In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX
 
-### Libraries
+## Libraries
 We will need the following libraries to run dowscaling processor
 ```{python}
 import openeo
 import rioxarray as rio
 
-# This is needed to create a STAC item for the upsampled parameters:
-
-import pystac
-from pystac.extensions.projection import ProjectionExtension
-from pystac.extensions.eo import EOExtension
-from datetime import datetime
-from shapely.geometry import box, mapping
-import json
-import subprocess
-
-```
-
-
-
-
+"""
 Currently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see [here](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.
-
-```{python}
+This is needed to create a STAC item for the upsampled parameters:
+"""
 import pystac
 from pystac.extensions.projection import ProjectionExtension
 from pystac.extensions.eo import EOExtension
@@ -44,13 +34,130 @@ from datetime import datetime
 from shapely.geometry import box, mapping
 import json
 import subprocess
+
+# For data visualization
+import xarray as xr
+import matplotlib.pyplot as plt
 ```
 
-To connect to the openEO insfrastructure we need to create a connection:
+## Area of Interest and Time Period
+
+Before going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in the north part of Germany in the period between 2018-06-20 and 2018-06-30.
 
 ```{python}
-connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
+spatial_extent_prototype = {
+    "west": 7.426758,
+    "east": 18.632813,
+    "south": 50.233152,
+    "north": 55.603178,
+}
+
+temporal_extent_prototype = ["2018-06-20", "2018-06-30"]
 ```
+
+```{python}
+# | echo: false
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from matplotlib.patches import Rectangle
+
+
+def plot_world_with_bbox(bbox, title="World Map with Bounding Box"):
+    """
+    Plot world map with a bounding box overlay.
+
+    Parameters:
+    -----------
+    bbox : tuple or list
+        Bounding box coordinates as (min_lon, min_lat, max_lon, max_lat)
+    title : str
+        Plot title
+    """
+    min_lon, min_lat, max_lon, max_lat = (
+        bbox["west"],
+        bbox["south"],
+        bbox["east"],
+        bbox["north"],
+    )
+
+    # Create figure and axis with PlateCarree projection
+    fig, ax = plt.subplots(
+        figsize=(15, 10), subplot_kw={"projection": ccrs.PlateCarree()}
+    )
+
+    # Add map features
+    ax.add_feature(cfeature.LAND, facecolor="lightgray", edgecolor="none")
+    ax.add_feature(cfeature.OCEAN, facecolor="lightblue")
+    ax.add_feature(cfeature.COASTLINE, linewidth=0.5)
+    ax.add_feature(cfeature.BORDERS, linewidth=0.3, linestyle=":")
+    ax.add_feature(
+        cfeature.LAKES, facecolor="lightblue", edgecolor="black", linewidth=0.3
+    )
+
+    # Add gridlines
+    gl = ax.gridlines(
+        draw_labels=True, linewidth=0.5, color="gray", alpha=0.5, linestyle="--"
+    )
+    gl.top_labels = False
+    gl.right_labels = False
+
+    # Set global extent
+    ax.set_global()
+
+    # Draw bounding box
+    width = max_lon - min_lon
+    height = max_lat - min_lat
+
+    bbox_patch = Rectangle(
+        (min_lon, min_lat),
+        width,
+        height,
+        linewidth=2,
+        edgecolor="red",
+        facecolor="none",
+        transform=ccrs.PlateCarree(),
+        zorder=5,
+    )
+    ax.add_patch(bbox_patch)
+
+    # Add a label for the bbox
+    center_lon = (min_lon + max_lon) / 2
+    center_lat = (min_lat + max_lat) / 2
+    ax.text(
+        center_lon,
+        max_lat + 5,
+        "Area of Interest",
+        transform=ccrs.PlateCarree(),
+        ha="center",
+        fontsize=10,
+        color="red",
+        weight="bold",
+    )
+
+    ax.set_title(title, fontsize=14, weight="bold", pad=20)
+
+    plt.tight_layout()
+    return fig, ax
+
+
+fig1, ax1 = plot_world_with_bbox(spatial_extent_prototype, " ")
+
+plt.show()
+
+```
+
+## Connecting to CDSE using openEO
+
+To connect to the openEO insfrastructure in the CDSE we need to create a connection:
+
+```{python}
+connection = openeo.connect(
+    "https://openeofed.dataspace.copernicus.eu/"
+).authenticate_oidc()
+```
+
+This will open a tab in the web-browser where the user needs to authenticate using the CDSE credentials. For more details on openEO in CDSE please see: [https://dataspace.copernicus.eu/analyse/openeo](https://dataspace.copernicus.eu/analyse/openeo)
 
 Then we can see the data collections that are available:
 
@@ -70,13 +177,115 @@ connection.list_collections()
 
 :::
 
-----
+
+## Variables
 
 For this tutorial we will use the following datasets/variables:
 
-| Variable name | Collection | Band Name |
-|--|--|--|
-|Land Surface Temperature| ```SENTINEL3_SLSTR_L2_LST```| ```LST```|
-|Terrestrial Chlorophyll Index| ```SENTINEL3_OLCI_L2_LAND```| ```OTCI```|
-|Integrated Water Vapour| ```SENTINEL3_OLCI_L2_LAND``` | ```IWV```|
+Target:
+
+| Variable name | Collection | Band Name | Spatial resolution|
+|--|--|--|--|
+|Sun-Induced Flourescence| [Dong Li SIF](https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json)| ```SIF```| 5 km |
+
+Currently there are two SIF gridded products derived from Sentinel-5p that are availables:
+
+1. [S5P-PAL SIF](https://data-portal.s5p-pal.com/products/troposif.html). This product is generated by the Sentinel-5P Product Algorithm Laboratory (S5P-PAL) and contains modified Copernicus Sentinel data processed by S[&]T. Unfortunately, the current (at least at: 2025-12-01) STAC dissemination only include plain netcdf files and not cloud optimized data format. Currently the [Atmosphere Virtual Lab project](https://atmospherevirtuallab.org/) is working in provided zarr datacubes for the L3 products, including SIF.
+
+2. [Dong LI SIF](https://www.sciencedirect.com/science/article/pii/S0034425725003918#da0005). This product uses an artificial neural network to retrieve SIF from Sentinel-5p observations. Thanks to Dong Li for provinding us with a [gridded example of the product](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/data/SIF_20180629.tif) and the [stac item](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/data/SIF_20180629.json) necessary to ingest the product in the openEO-CDSE infrastructure. This files can be found in the data directory of the [repository](https://github.com/dpabon/SIF_downscaling_CDSE).
+
+Predictors:
+
+| Variable name | Collection | Band Name | Spatial resolution |
+|--|--|--|--|
+|Land Surface Temperature| ```SENTINEL3_SLSTR_L2_LST```| ```LST```| 1 km|
+|Terrestrial Chlorophyll Index| ```SENTINEL3_OLCI_L2_LAND```| ```OTCI```| 300 m|
+|Integrated Water Vapour| ```SENTINEL3_OLCI_L2_LAND``` | ```IWV```| 300 m |
+
+### Creating openEO datacubes for the variables
+
+ 
+```{python}
+
+# Testing SIF - Dong Li
+
+cube_SIF_original_median = connection.load_stac(
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json",
+    bands=["SIF"],
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+)
+
+
+cube_LST = connection.load_collection(
+    "SENTINEL3_SLSTR_L2_LST",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["LST", "confidence_in"],
+)
+
+cube_OTCI_IWV = connection.load_collection(
+    "SENTINEL3_OLCI_L2_LAND",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["OTCI", "IWV", "LQSF"],
+)
+
+```
+
+### Masking clouds
+
+```{python}
+# cube_LST.execute_batch(outputfile="data/cube_LST.nc")
+```
+
+```{python}
+cube_lst = xr.open_dataset("data/cube_LST.nc")
+cube_lst
+```
+
+```{python}
+cube_lst["LST"].isel(t=20).plot()
+
+# plt.close()
+```
+
+```{python}
+cube_lst["confidence_in"].isel(t=20).plot()
+```
+
+ If we call one of the cubes we can see the process graph that is created by openEO:
+ 
+```{python}
+cube_LST
+```
+
+## Reducing the time dimension
+
+For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.
+
+```{python}
+# reducing time dimension
+
+cube_LST_median = cube_LST.reduce_temporal(reducer="median")
+
+cube_OTCI_median = cube_OTCI.reduce_temporal(reducer="median")
+
+cube_IWV_median = cube_IWV.reduce_temporal(reducer="median")
+
+```
+
+
+```{python}
+cube_LST_median
+```
+
+Then we will inspect the products, for that we need to execute the processors for each cube, save it locally, open and plot.
+
+
+```{python}
+#cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
+#cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")
+#cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")
+```
 

@@ -4,6 +4,62 @@
     "href": "openEO_sif_downscaling_documented_and_plots.html",
     "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
     "section": "",
-    "text": "In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX\n\nLibraries\nWe will need the following libraries to run dowscaling processor\n\nimport openeo\nimport rioxarray as rio\n\n# This is needed to create a STAC item for the upsampled parameters:\n\nimport pystac\nfrom pystac.extensions.projection import ProjectionExtension\nfrom pystac.extensions.eo import EOExtension\nfrom datetime import datetime\nfrom shapely.geometry import box, mapping\nimport json\nimport subprocess\n\nCurrently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see here). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.\n\nimport pystac\nfrom pystac.extensions.projection import ProjectionExtension\nfrom pystac.extensions.eo import EOExtension\nfrom datetime import datetime\nfrom shapely.geometry import box, mapping\nimport json\nimport subprocess\n\nTo connect to the openEO insfrastructure we need to create a connection:\n\nconnection = openeo.connect(\"https://openeofed.dataspace.copernicus.eu/\")\n\nThen we can see the data collections that are available:\n\nconnection.list_collections()\n\n\n\n\n\n    \n    \n        \n    \n    \n\n\n\n\nFor this tutorial we will use the following datasets/variables:\n\n\n\n\n\n\n\n\nVariable name\nCollection\nBand Name\n\n\n\n\nLand Surface Temperature\nSENTINEL3_SLSTR_L2_LST\nLST\n\n\nTerrestrial Chlorophyll Index\nSENTINEL3_OLCI_L2_LAND\nOTCI\n\n\nIntegrated Water Vapour\nSENTINEL3_OLCI_L2_LAND\nIWV"
+    "text": "In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#libraries",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#libraries",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Libraries",
+    "text": "Libraries\nWe will need the following libraries to run dowscaling processor\n\nimport openeo\nimport rioxarray as rio\n\n\"\"\"\nCurrently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see [here](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.\nThis is needed to create a STAC item for the upsampled parameters:\n\"\"\"\nimport pystac\nfrom pystac.extensions.projection import ProjectionExtension\nfrom pystac.extensions.eo import EOExtension\nfrom datetime import datetime\nfrom shapely.geometry import box, mapping\nimport json\nimport subprocess"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#area-of-interest-and-time-period",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#area-of-interest-and-time-period",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Area of Interest and Time Period",
+    "text": "Area of Interest and Time Period\nBefore going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in the north part of Germany in the period between 2018-06-20 and 2018-06-30.\n\nspatial_extent_prototype = {\n    \"west\": 7.426758,\n    \"east\": 18.632813,\n    \"south\": 50.233152,\n    \"north\": 55.603178,\n}\n\ntemporal_extent_prototype = [\"2018-06-20\", \"2018-06-30\"]"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#connecting-to-the-copernicus-data-space-ecosystem-using-openeo",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#connecting-to-the-copernicus-data-space-ecosystem-using-openeo",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Connecting to the Copernicus Data Space Ecosystem using openEO",
+    "text": "Connecting to the Copernicus Data Space Ecosystem using openEO\nTo connect to the openEO insfrastructure we need to create a connection:\n\nconnection = openeo.connect(\"https://openeofed.dataspace.copernicus.eu/\")\n\nThen we can see the data collections that are available:\n\nconnection.list_collections()\n\n\n\n\n\n    \n    \n        \n    \n    \n\n\n\n\nFor this tutorial we will use the following datasets/variables:\n\n\n\n\n\n\n\n\nVariable name\nCollection\nBand Name\n\n\n\n\nLand Surface Temperature\nSENTINEL3_SLSTR_L2_LST\nLST\n\n\nTerrestrial Chlorophyll Index\nSENTINEL3_OLCI_L2_LAND\nOTCI\n\n\nIntegrated Water Vapour\nSENTINEL3_OLCI_L2_LAND\nIWV\n\n\n\nCurrently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see here). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.\n\nimport pystac\nfrom pystac.extensions.projection import ProjectionExtension\nfrom pystac.extensions.eo import EOExtension\nfrom datetime import datetime\nfrom shapely.geometry import box, mapping\nimport json\nimport subprocess"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#connecting-to-the-copernicus-data-space-ecosystem-cdse-using-openeo",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#connecting-to-the-copernicus-data-space-ecosystem-cdse-using-openeo",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Connecting to the Copernicus Data Space Ecosystem (CDSE) using openEO",
+    "text": "Connecting to the Copernicus Data Space Ecosystem (CDSE) using openEO\nTo connect to the openEO insfrastructure in the CDSE we need to create a connection:\n\nconnection = openeo.connect(\"https://openeofed.dataspace.copernicus.eu/\")\n\nThis will open a tab in the web-browser where the user needs to authenticate using the CDSE credentials. For more details on openEO in CDSE please see: https://dataspace.copernicus.eu/analyse/openeo\nThen we can see the data collections that are available:\n\nconnection.list_collections()"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#variables",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#variables",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Variables",
+    "text": "Variables\nFor this tutorial we will use the following datasets/variables:\nTarget:\n\n\n\nVariable name\nCollection\nBand Name\nSpatial resolution\n\n\n\n\nSun-Induced Flourescence\nDong Li SIF\nSIF\n5 km\n\n\n\nCurrently there are two SIF gridded products derived from Sentinel-5p that are availables:\n\nS5P-PAL SIF. This product is generated by the Sentinel-5P Product Algorithm Laboratory (S5P-PAL) and contains modified Copernicus Sentinel data processed by S[&]T. Unfortunately, the current (at least at: 2025-12-01) STAC dissemination only include plain netcdf files and not cloud optimized data format. Currently the Atmosphere Virtual Lab project is working in provided zarr datacubes for the L3 products, including SIF.\nDong LI SIF. This product uses an artificial neural network to retrieve SIF from Sentinel-5p observations. Thanks to Dong Li for provinding us with a gridded example of the product and the stac item necessary to ingest the product in the openEO-CDSE infrastructure. This files can be found in the data directory of the repository.\n\nPredictors:\n\n\n\n\n\n\n\n\n\nVariable name\nCollection\nBand Name\nSpatial resolution\n\n\n\n\nLand Surface Temperature\nSENTINEL3_SLSTR_L2_LST\nLST\n1 km\n\n\nTerrestrial Chlorophyll Index\nSENTINEL3_OLCI_L2_LAND\nOTCI\n300 m\n\n\nIntegrated Water Vapour\nSENTINEL3_OLCI_L2_LAND\nIWV\n300 m\n\n\n\n\nCreating openEO datacubes for the variables\n\n# Testing SIF - Dong Li\n\ncube_SIF_original_median = connection.load_stac(\n    \"https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json\",\n    bands=[\"SIF\"],\n    spatial_extent=spatial_extent_prototype,\n    temporal_extent=temporal_extent_prototype,\n)\n\n\ncube_LST = connection.load_collection(\n    \"SENTINEL3_SLSTR_L2_LST\",\n    spatial_extent=spatial_extent_prototype,\n    temporal_extent=temporal_extent_prototype,\n    bands=[\"LST\"],\n)\n\ncube_OTCI = connection.load_collection(\n    \"SENTINEL3_OLCI_L2_LAND\",\n    spatial_extent=spatial_extent_prototype,\n    temporal_extent=temporal_extent_prototype,\n    bands=[\"OTCI\"],\n)\n\ncube_IWV = connection.load_collection(\n    \"SENTINEL3_OLCI_L2_LAND\",\n    spatial_extent=spatial_extent_prototype,\n    temporal_extent=temporal_extent_prototype,\n    bands=[\"IWV\"],\n)\n\nIf we call one of the cubes we can see the process graph that is created by openEO:\n\ncube_LST"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#introduction",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#introduction",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "",
+    "text": "In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#connecting-to-cdse-using-openeo",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#connecting-to-cdse-using-openeo",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Connecting to CDSE using openEO",
+    "text": "Connecting to CDSE using openEO\nTo connect to the openEO insfrastructure in the CDSE we need to create a connection:\n\nconnection = openeo.connect(\"https://openeofed.dataspace.copernicus.eu/\")\n\nThis will open a tab in the web-browser where the user needs to authenticate using the CDSE credentials. For more details on openEO in CDSE please see: https://dataspace.copernicus.eu/analyse/openeo\nThen we can see the data collections that are available:\n\nconnection.list_collections()"
+  },
+  {
+    "objectID": "openEO_sif_downscaling_documented_and_plots.html#reducing-time-dimension",
+    "href": "openEO_sif_downscaling_documented_and_plots.html#reducing-time-dimension",
+    "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
+    "section": "Reducing time dimension",
+    "text": "Reducing time dimension\nFor this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.\n\n# Collapsing time dimension\n\ncube_LST_median = cube_LST.reduce_temporal(reducer=\"median\")\n\ncube_OTCI_median = cube_OTCI.reduce_temporal(reducer=\"median\")\n\ncube_IWV_median = cube_IWV.reduce_temporal(reducer=\"median\")\n\n\ncube_LST_median"
   }
 ]

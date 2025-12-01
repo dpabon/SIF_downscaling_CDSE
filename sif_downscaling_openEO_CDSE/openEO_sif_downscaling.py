@@ -2,7 +2,6 @@ import openeo
 import rioxarray as rio
 
 # This is needed to create a STAC item for the upsampled parameters:
-
 import pystac
 from pystac.extensions.projection import ProjectionExtension
 from pystac.extensions.eo import EOExtension

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Daniel E. Pabon-Moreno">
+<meta name="author" content="Daniel E. Pabon-Moreno et al.,">
 
 <title>SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)</title>
 <style>
@@ -111,14 +111,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="floating quarto-light">
 
 <div id="quarto-search-results"></div>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
+  <li><a href="#area-of-interest-and-time-period" id="toc-area-of-interest-and-time-period" class="nav-link" data-scroll-target="#area-of-interest-and-time-period">Area of Interest and Time Period</a></li>
+  <li><a href="#connecting-to-cdse-using-openeo" id="toc-connecting-to-cdse-using-openeo" class="nav-link" data-scroll-target="#connecting-to-cdse-using-openeo">Connecting to CDSE using openEO</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">Variables</a></li>
+  <li><a href="#reducing-time-dimension" id="toc-reducing-time-dimension" class="nav-link" data-scroll-target="#reducing-time-dimension">Reducing time dimension</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -134,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Daniel E. Pabon-Moreno </p>
+             <p>Daniel E. Pabon-Moreno et al., </p>
           </div>
   </div>
     
@@ -147,45 +163,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX</p>
-<section id="libraries" class="level3">
-<h3 class="anchored" data-anchor-id="libraries">Libraries</h3>
+</section>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
 <p>We will need the following libraries to run dowscaling processor</p>
-<div id="a4117ef6" class="cell" data-execution_count="1">
+<div id="78820d53" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rio</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This is needed to create a STAC item for the upsampled parameters:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pystac</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.projection <span class="im">import</span> ProjectionExtension</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.eo <span class="im">import</span> EOExtension</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box, mapping</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">Currently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see [here](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">This is needed to create a STAC item for the upsampled parameters:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pystac</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.projection <span class="im">import</span> ProjectionExtension</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.eo <span class="im">import</span> EOExtension</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box, mapping</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Currently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see <a href="https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6">here</a>). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.</p>
-<div id="c2fd6278" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pystac</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.projection <span class="im">import</span> ProjectionExtension</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pystac.extensions.eo <span class="im">import</span> EOExtension</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box, mapping</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="area-of-interest-and-time-period" class="level2">
+<h2 class="anchored" data-anchor-id="area-of-interest-and-time-period">Area of Interest and Time Period</h2>
+<p>Before going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in the north part of Germany in the period between 2018-06-20 and 2018-06-30.</p>
+<div id="6e10e2ec" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spatial_extent_prototype <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"west"</span>: <span class="fl">7.426758</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"east"</span>: <span class="fl">18.632813</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"south"</span>: <span class="fl">50.233152</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"north"</span>: <span class="fl">55.603178</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>temporal_extent_prototype <span class="op">=</span> [<span class="st">"2018-06-20"</span>, <span class="st">"2018-06-30"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>To connect to the openEO insfrastructure we need to create a connection:</p>
-<div id="8f0d5a58" class="cell" data-execution_count="3">
+<div id="6deb8d0c" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-4-output-1.png" width="1430" height="757" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="connecting-to-cdse-using-openeo" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-to-cdse-using-openeo">Connecting to CDSE using openEO</h2>
+<p>To connect to the openEO insfrastructure in the CDSE we need to create a connection:</p>
+<div id="d1af72b4" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeofed.dataspace.copernicus.eu/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>This will open a tab in the web-browser where the user needs to authenticate using the CDSE credentials. For more details on openEO in CDSE please see: <a href="https://dataspace.copernicus.eu/analyse/openeo">https://dataspace.copernicus.eu/analyse/openeo</a></p>
 <p>Then we can see the data collections that are available:</p>
-<div id="332b82da" class="cell" data-execution_count="4">
+<div id="1a9216a7" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>connection.list_collections()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="scrolling">
-<div id="b46e0468" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div id="e4435d94" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="115">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-collections')) {
@@ -208,19 +246,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<hr>
+</section>
+<section id="variables" class="level2">
+<h2 class="anchored" data-anchor-id="variables">Variables</h2>
 <p>For this tutorial we will use the following datasets/variables:</p>
+<p>Target:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable name</th>
+<th>Collection</th>
+<th>Band Name</th>
+<th>Spatial resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sun-Induced Flourescence</td>
+<td><a href="https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json">Dong Li SIF</a></td>
+<td><code>SIF</code></td>
+<td>5 km</td>
+</tr>
+</tbody>
+</table>
+<p>Currently there are two SIF gridded products derived from Sentinel-5p that are availables:</p>
+<ol type="1">
+<li><p><a href="https://data-portal.s5p-pal.com/products/troposif.html">S5P-PAL SIF</a>. This product is generated by the Sentinel-5P Product Algorithm Laboratory (S5P-PAL) and contains modified Copernicus Sentinel data processed by S[&amp;]T. Unfortunately, the current (at least at: 2025-12-01) STAC dissemination only include plain netcdf files and not cloud optimized data format. Currently the <a href="https://atmospherevirtuallab.org/">Atmosphere Virtual Lab project</a> is working in provided zarr datacubes for the L3 products, including SIF.</p></li>
+<li><p><a href="https://www.sciencedirect.com/science/article/pii/S0034425725003918#da0005">Dong LI SIF</a>. This product uses an artificial neural network to retrieve SIF from Sentinel-5p observations. Thanks to Dong Li for provinding us with a <a href="https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/data/SIF_20180629.tif">gridded example of the product</a> and the <a href="https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/data/SIF_20180629.json">stac item</a> necessary to ingest the product in the openEO-CDSE infrastructure. This files can be found in the data directory of the <a href="https://github.com/dpabon/SIF_downscaling_CDSE">repository</a>.</p></li>
+</ol>
+<p>Predictors:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Variable name</th>
 <th>Collection</th>
 <th>Band Name</th>
+<th>Spatial resolution</th>
 </tr>
 </thead>
 <tbody>
@@ -228,19 +295,119 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Land Surface Temperature</td>
 <td><code>SENTINEL3_SLSTR_L2_LST</code></td>
 <td><code>LST</code></td>
+<td>1 km</td>
 </tr>
 <tr class="even">
 <td>Terrestrial Chlorophyll Index</td>
 <td><code>SENTINEL3_OLCI_L2_LAND</code></td>
 <td><code>OTCI</code></td>
+<td>300 m</td>
 </tr>
 <tr class="odd">
 <td>Integrated Water Vapour</td>
 <td><code>SENTINEL3_OLCI_L2_LAND</code></td>
 <td><code>IWV</code></td>
+<td>300 m</td>
 </tr>
 </tbody>
 </table>
+<section id="creating-openeo-datacubes-for-the-variables" class="level3">
+<h3 class="anchored" data-anchor-id="creating-openeo-datacubes-for-the-variables">Creating openEO datacubes for the variables</h3>
+<div id="78985e91" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing SIF - Dong Li</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>cube_SIF_original_median <span class="op">=</span> connection.load_stac(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"SIF"</span>],</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>spatial_extent_prototype,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>temporal_extent_prototype,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>cube_LST <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL3_SLSTR_L2_LST"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>spatial_extent_prototype,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>temporal_extent_prototype,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"LST"</span>],</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>cube_OTCI <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL3_OLCI_L2_LAND"</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>spatial_extent_prototype,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>temporal_extent_prototype,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"OTCI"</span>],</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>cube_IWV <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL3_OLCI_L2_LAND"</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>spatial_extent_prototype,</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>temporal_extent_prototype,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"IWV"</span>],</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If we call one of the cubes we can see the process graph that is created by openEO:</p>
+<div id="6484bf61" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cube_LST</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="117">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2"
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-model-builder>
+        <script type="application/json">{"id": "66b6e70df107467c868b8b97b922c25a", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": 7.426758, "east": 18.632813, "south": 50.233152, "north": 55.603178}, "temporal_extent": ["2018-06-20", "2018-06-30"]}, "result": true}}}}</script>
+    </openeo-model-builder>
+    
+</div>
+</div>
+</section>
+</section>
+<section id="reducing-time-dimension" class="level2">
+<h2 class="anchored" data-anchor-id="reducing-time-dimension">Reducing time dimension</h2>
+<p>For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.</p>
+<div id="389beeac" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Collapsing time dimension</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>cube_LST_median <span class="op">=</span> cube_LST.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>cube_OTCI_median <span class="op">=</span> cube_OTCI.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>cube_IWV_median <span class="op">=</span> cube_IWV.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="ea597ec8" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cube_LST_median</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="119">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2"
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-model-builder>
+        <script type="application/json">{"id": "6775a29925734198aa9146d64e05b272", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": 7.426758, "east": 18.632813, "south": 50.233152, "north": 55.603178}, "temporal_extent": ["2018-06-20", "2018-06-30"]}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}, "result": true}}}}</script>
+    </openeo-model-builder>
+    
+</div>
+</div>
 
 
 </section>
