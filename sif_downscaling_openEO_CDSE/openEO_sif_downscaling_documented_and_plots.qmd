@@ -13,10 +13,26 @@ email: dpabon@bgc-jena.mpg.de
 
 In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX
 
-We will need the following library to run open-EO
+### Libraries
+We will need the following libraries to run dowscaling processor
 ```{python}
 import openeo
+import rioxarray as rio
+
+# This is needed to create a STAC item for the upsampled parameters:
+
+import pystac
+from pystac.extensions.projection import ProjectionExtension
+from pystac.extensions.eo import EOExtension
+from datetime import datetime
+from shapely.geometry import box, mapping
+import json
+import subprocess
+
 ```
+
+
+
 
 Currently there is an issue with openEO back-end that doesnt allow us to upsample datacubes (For more details see [here](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)). For this reason we will need some other libraries to process the parameters cube locally, perform a spatial upsample, create a stac catalog and publish the file and catalog on github.
 
@@ -38,9 +54,17 @@ connection = openeo.connect("https://openeofed.dataspace.copernicus.eu/")
 
 Then we can see the data collections that are available:
 
+```{python}
+# | eval: false
+
+connection.list_collections()
+```
+
 :::{.scrolling}
 
 ```{python}
+# | echo: false
+
 connection.list_collections()
 ```
 
