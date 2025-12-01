@@ -236,23 +236,14 @@ cube_OTCI_IWV = connection.load_collection(
 ### Masking clouds
 
 ```{python}
-# cube_LST.execute_batch(outputfile="data/cube_LST.nc")
+quality_band = cube_LST.band("confidence_in")
+# Build mask to mask out everything but class 4 (vegetation)
+mask = quality_band > 5000
+
+cube_LST_masked = cube_LST.mask(mask)
+
 ```
 
-```{python}
-cube_lst = xr.open_dataset("data/cube_LST.nc")
-cube_lst
-```
-
-```{python}
-cube_lst["LST"].isel(t=20).plot()
-
-# plt.close()
-```
-
-```{python}
-cube_lst["confidence_in"].isel(t=20).plot()
-```
 
  If we call one of the cubes we can see the process graph that is created by openEO:
  
@@ -267,7 +258,7 @@ For this analysis we will compute a composite of the area of interest using all 
 ```{python}
 # reducing time dimension
 
-cube_LST_median = cube_LST.reduce_temporal(reducer="median")
+cube_LST_median = cube_LST_masked.reduce_temporal(reducer="median")
 
 cube_OTCI_median = cube_OTCI.reduce_temporal(reducer="median")
 

@@ -232,3 +232,26 @@ sif_original.sel(
 test = {"test1": {"three": 2}, "another": {"just": 3}}
 # %%
 sif_original.plot()
+
+
+
+```{python}
+# cube_LST.execute_batch(outputfile="data/cube_LST.nc")
+```
+
+```{python}
+cube_lst = xr.open_dataset("data/cube_LST.nc")
+cube_lst
+```
+
+```{python}
+cube_lst["LST"].where(cube_lst["LST"] > 280).where(
+    cube_lst["confidence_in"] <= 5000
+).isel(t=20).plot()
+
+# plt.close()
+```
+
+```{python}
+cube_lst["confidence_in"].where(cube_lst["confidence_in"] < 10000).isel(t=20).plot()
+```
