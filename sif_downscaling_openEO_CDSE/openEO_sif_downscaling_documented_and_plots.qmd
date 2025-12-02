@@ -346,7 +346,6 @@ OR maybe Sentinel-3 SYN SLSTR bands...
 ## Spatial resampling to match the SIF resolution product
 
 
-
 ```{python}
 cube_LST_median_low = cube_LST_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="bilinear"
@@ -375,12 +374,18 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
 Adding two dummy variables to the datacube to match the number of oputput parameters of the optimization function.
 
 ```{python}
-dataset_SIF_low = dataset_SIF_low.merge_cubes(
-    other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_1"])
-)
-dataset_SIF_low = dataset_SIF_low.merge_cubes(
-    other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_2"])
-)
+dummy_1 = cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_1"])
+
+dataset_SIF_low = dataset_SIF_low.merge_cubes(dummy_1)
+
+dummy_2 = cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_2"])
+
+dataset_SIF_low = dataset_SIF_low.merge_cubes(dummy_2)
+
+```
+
+```{python}
+dataset_SIF_low.execute_batch(outputfile="data/sif_dataset.nc")
 ```
 
 ## SIF parameter optimization at low spatial resolution

@@ -62,6 +62,12 @@
         {
           "name": "SIF"
         }
+      ],
+      "raster:bands": [
+        {
+          "nodata": -9999,
+          "data_type": "float32"
+        }
       ]
     }
   }
