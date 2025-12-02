@@ -234,7 +234,15 @@ cube_OTCI_IWV = connection.load_collection(
 ```
 
 
-### Masking clouds
+### Masking clouds and NaN values
+
+```{python}
+mask = cube_SIF_original_median == -9999
+
+cube_SIF_original_median = cube_SIF_original_median.mask(mask)
+
+```
+
 
 ```{python}
 quality_band = cube_LST.band("confidence_in")
@@ -290,12 +298,13 @@ cube_IWV_median = cube_OTCI_IWV_masked.band("IWV").reduce_dimension(
 cube_LST_median
 ```
 
-## Inspecting variables
+## Inspecting the variables
 
 Then we will inspect the products, for that we need to execute the processors for each cube, save it locally, open and plot.
 
 
 ```{python}
+# cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")
 # cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
 # cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")
 # cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")
@@ -303,23 +312,27 @@ Then we will inspect the products, for that we need to execute the processors fo
 
 
 ```{python}
+cube_sif_local = rio.open_rasterio(filename="data/cube_SIF_median.tif", mask_and_scale=True)
 cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
 cube_otci_local = rio.open_rasterio(filename="data/cube_OTCI_median.tif")
 cube_iwv_local = rio.open_rasterio(filename="data/cube_IWV_median.tif")
 
 ```
 
+```{python}
+print(cube_sif_local)
+```
 
 ```{python}
-# plt.clf()
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
-
-cube_lst_local.plot(ax=axs[0])
-axs[0].set_title("LST")
-cube_otci_local.plot(ax=axs[1])
-axs[1].set_title("OTCI")
-cube_iwv_local.plot(ax=axs[2])
-axs[2].set_title("IWV")
+fig, axs = plt.subplots(nrows=4, figsize=(6, 15))
+cube_sif_local.plot(ax=axs[0])
+axs[0].set_title("SIF")
+cube_lst_local.plot(ax=axs[1])
+axs[1].set_title("LST")
+cube_otci_local.plot(ax=axs[2])
+axs[2].set_title("OTCI")
+cube_iwv_local.plot(ax=axs[3])
+axs[3].set_title("IWV")
 
 ```
 
@@ -329,3 +342,134 @@ The LST composite looks heavily influenced by the orbits. For sure can be better
 OR maybe Sentinel-3 SYN SLSTR bands...
 :::
 
+
+## Spatial resampling to match the SIF resolution product
+
+
+
+```{python}
+cube_LST_median_low = cube_LST_median.resample_cube_spatial(
+    target=cube_SIF_original_median, method="bilinear"
+)
+
+cube_OTCI_median_low = cube_OTCI_median.resample_cube_spatial(
+    target=cube_SIF_original_median, method="bilinear"
+)
+
+cube_IWV_median_low = cube_IWV_median.resample_cube_spatial(
+    target=cube_SIF_original_median, method="bilinear"
+)
+```
+
+Merging all the cubes at low resolution (SIF original resolution)
+
+```{python}
+dataset_SIF_low = cube_SIF_original_median.merge_cubes(cube_LST_median_low)
+
+dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_OTCI_median_low)
+
+dataset_SIF_low = dataset_SIF_low.merge_cubes(cube_IWV_median_low)
+
+```
+
+Adding two dummy variables to the datacube to match the number of oputput parameters of the optimization function.
+
+```{python}
+dataset_SIF_low = dataset_SIF_low.merge_cubes(
+    other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_1"])
+)
+dataset_SIF_low = dataset_SIF_low.merge_cubes(
+    other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_2"])
+)
+```
+
+## SIF parameter optimization at low spatial resolution
+
+To predict SIF we use the following formulation:
+$$SIF = f(V) \cdot f(W) \cdot f(T)$$
+
+where $f(V)$ represents the vegetation module and $V$ is a vegation index: 
+$$f(V) = b_2 \cdot V^{b_1}$$
+
+$f(W)$ represents the water module where $W$ represent a water availabiliy variables (e.g. ET, NDWI):
+$$
+f(W) = \frac{1}{1 + e^{b_3 \cdot (b_4 - W)}}
+$$
+
+Finally $f(T)$ represents the temperature module where $T$ is a variable that represent temperature stress (e.g. air temperature at 2 meters, or land surface temperature)
+
+$$
+f(T) = e^{-\frac{(T + b_5)^2}{2b_6^2}}
+$$
+
+
+Given the previous formulation we optimize the function using L-BFGS-B and a spatial moving window with 40 observations. The optimization function is defined in [sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py](sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py).
+
+First we need to define the boundaries and start values for $b1$, $b2$, $b3$, $b4$, $b5$ parameters:
+
+```{python}
+# the order for each variable follows: b1,b2,b3,b4,b5,b6
+
+param_min = [3, 1, 0.0, -1, -310, 1]
+
+param_ini = [1, 2, 50.0, 0, -295, 10]
+
+param_max = [6, 10, 500.0, 1, -290, 50]
+```
+
+
+To apply the optimization function in the data cube we define an openEO User Define Function using:
+
+```{python}
+my_udf = openeo.UDF.from_file(
+    "sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py",
+    context={
+        "param_ini": param_ini,
+        "param_min": param_min,
+        "param_max": param_max,
+        "min_obs": 25,
+        "window_size_lat": 6,
+        "window_size_lon": 7,
+    },
+)
+
+```
+
+Notice that the size of the moving window is set using ```window_size_lat``` and ```window_size_lon```.
+
+Then we can apply our function to the data cube using:
+```{python}
+
+parameters_cube_low = dataset_SIF_low.apply_neighborhood(
+    process=my_udf,
+    size=[
+        {"dimension": "x", "value": 512, "unit": "px"},
+        {"dimension": "y", "value": 512, "unit": "px"},
+    ],
+    overlap=[
+        {"dimension": "x", "value": 0, "unit": "px"},
+        {"dimension": "y", "value": 0, "unit": "px"},
+    ],
+)
+
+# changing the name of the ouput
+output_bands = ["b1", "b2", "b3", "b4", "b5", "b6"]
+
+parameters_cube_low_rename = parameters_cube_low.rename_labels("bands", output_bands)
+
+```
+
+and see the process graph:
+```{python}
+parameters_cube_low_rename
+```
+
+Now we will download the cube the optimized parameters to have a look and spatially upsample to match the Sentinel-3 cube at high resolution.
+
+```{python}
+"""
+parameters_cube_low_rename.execute_batch(
+    outputfile="data/results_parameters_optim_low_resolution.tif"
+)
+"""
+```
