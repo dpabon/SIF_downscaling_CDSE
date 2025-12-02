@@ -233,6 +233,7 @@ cube_OTCI_IWV = connection.load_collection(
 
 ```
 
+
 ### Masking clouds
 
 ```{python}
@@ -242,6 +243,11 @@ mask = quality_band > 5000
 
 cube_LST_masked = cube_LST.band("LST").mask(mask)
 
+# We setup a phyisical filter in general we considered that values for June below 10 degrees are not realistic
+
+mask = cube_LST_masked <= (10 + 273)
+
+cube_LST_masked_2 = cube_LST_masked.mask(mask)
 ```
 
 ```{python}
@@ -265,11 +271,17 @@ For this analysis we will compute a composite of the area of interest using all 
 ```{python}
 # reducing time dimension
 
-cube_LST_median = cube_LST_masked.reduce_temporal(reducer="median")
+cube_LST_median = cube_LST_masked_2.reduce_dimension(
+    dimension="t", reducer="median", context={"ignore_nodata": True}
+)
 
-cube_OTCI_median = cube_OTCI_IWV_masked.band("OTCI").reduce_temporal(reducer="median")
+cube_OTCI_median = cube_OTCI_IWV_masked.band("OTCI").reduce_dimension(
+    dimension="t", reducer="median", context={"ignore_nodata": True}
+)
 
-cube_IWV_median = cube_OTCI_IWV_masked.band("IWV").reduce_temporal(reducer="median")
+cube_IWV_median = cube_OTCI_IWV_masked.band("IWV").reduce_dimension(
+    dimension="t", reducer="median", context={"ignore_nodata": True}
+)
 
 ```
 
@@ -310,4 +322,10 @@ cube_iwv_local.plot(ax=axs[2])
 axs[2].set_title("IWV")
 
 ```
+
+::: {.callout-important}
+The LST composite looks heavily influenced by the orbits. For sure can be better...for example [Terrascope Sentinel-3 Level 3 Land Surface Temperature daily synthesis product](https://docs.terrascope.be/DataProducts/Sentinel-3/ProductsOverview.html)
+
+OR maybe Sentinel-3 SYN SLSTR bands...
+:::
 
