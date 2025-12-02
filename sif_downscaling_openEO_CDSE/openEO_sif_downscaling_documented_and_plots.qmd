@@ -278,6 +278,8 @@ cube_IWV_median = cube_OTCI_IWV_masked.band("IWV").reduce_temporal(reducer="medi
 cube_LST_median
 ```
 
+## Inspecting variables
+
 Then we will inspect the products, for that we need to execute the processors for each cube, save it locally, open and plot.
 
 
@@ -298,11 +300,14 @@ cube_iwv_local = rio.open_rasterio(filename="data/cube_IWV_median.tif")
 
 ```{python}
 # plt.clf()
-fig, axs = plt.subplots(nrows=3)
+fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
 
-cube_lst_local.plot(ax=axs[0], label="LST")
-cube_otci_local.plot(ax=axs[1], label="OTCI")
-cube_iwv_local.plot(ax=axs[2], label="IWV")
+cube_lst_local.plot(ax=axs[0])
+axs[0].set_title("LST")
+cube_otci_local.plot(ax=axs[1])
+axs[1].set_title("OTCI")
+cube_iwv_local.plot(ax=axs[2])
+axs[2].set_title("IWV")
 
 ```
 

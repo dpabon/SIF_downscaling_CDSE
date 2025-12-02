@@ -128,6 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#connecting-to-cdse-using-openeo" id="toc-connecting-to-cdse-using-openeo" class="nav-link" data-scroll-target="#connecting-to-cdse-using-openeo">Connecting to CDSE using openEO</a></li>
   <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">Variables</a></li>
   <li><a href="#reducing-the-time-dimension" id="toc-reducing-the-time-dimension" class="nav-link" data-scroll-target="#reducing-the-time-dimension">Reducing the time dimension</a></li>
+  <li><a href="#inspecting-variables" id="toc-inspecting-variables" class="nav-link" data-scroll-target="#inspecting-variables">Inspecting variables</a></li>
   </ul>
 </nav>
 </nav>
@@ -170,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
 <p>We will need the following libraries to run dowscaling processor</p>
-<div id="f1356891" class="cell" data-execution_count="1">
+<div id="5cdd2d4c" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rio</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -194,7 +195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="area-of-interest-and-time-period" class="level2">
 <h2 class="anchored" data-anchor-id="area-of-interest-and-time-period">Area of Interest and Time Period</h2>
 <p>Before going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in the north part of Germany in the period between 2018-06-20 and 2018-06-30.</p>
-<div id="6b8b7123" class="cell" data-execution_count="2">
+<div id="6f8650b3" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spatial_extent_prototype <span class="op">=</span> {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"west"</span>: <span class="op">-</span><span class="fl">6.921387</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"east"</span>: <span class="op">-</span><span class="fl">1.889648</span>,</span>
@@ -204,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>temporal_extent_prototype <span class="op">=</span> [<span class="st">"2018-06-23"</span>, <span class="st">"2018-06-30"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="8623138f" class="cell" data-execution_count="3">
+<div id="146972d6" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -217,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="connecting-to-cdse-using-openeo" class="level2">
 <h2 class="anchored" data-anchor-id="connecting-to-cdse-using-openeo">Connecting to CDSE using openEO</h2>
 <p>To connect to the openEO insfrastructure in the CDSE we need to create a connection:</p>
-<div id="0b13ebf8" class="cell" data-execution_count="4">
+<div id="4d7d0142" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://openeofed.dataspace.copernicus.eu/"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -227,12 +228,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This will open a tab in the web-browser where the user needs to authenticate using the CDSE credentials. For more details on openEO in CDSE please see: <a href="https://dataspace.copernicus.eu/analyse/openeo">https://dataspace.copernicus.eu/analyse/openeo</a></p>
 <p>Then we can see the data collections that are available:</p>
-<div id="62b05886" class="cell" data-execution_count="5">
+<div id="f69bc1a3" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>connection.list_collections()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="scrolling">
-<div id="541c23e1" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="9486988f" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="75">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-collections')) {
@@ -322,7 +323,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="creating-openeo-datacubes-for-the-variables" class="level3">
 <h3 class="anchored" data-anchor-id="creating-openeo-datacubes-for-the-variables">Creating openEO datacubes for the variables</h3>
-<div id="65a0a8f3" class="cell" data-execution_count="7">
+<div id="e7d76e92" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing SIF - Dong Li</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>cube_SIF_original_median <span class="op">=</span> connection.load_stac(</span>
@@ -350,14 +351,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="masking-clouds" class="level3">
 <h3 class="anchored" data-anchor-id="masking-clouds">Masking clouds</h3>
-<div id="1ea1e216" class="cell" data-execution_count="8">
+<div id="1662456b" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>quality_band <span class="op">=</span> cube_LST.band(<span class="st">"confidence_in"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> quality_band <span class="op">&gt;</span> <span class="dv">5000</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>cube_LST_masked <span class="op">=</span> cube_LST.band(<span class="st">"LST"</span>).mask(mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="39b681f1" class="cell" data-execution_count="9">
+<div id="d2798138" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>quality_band <span class="op">=</span> cube_OTCI_IWV.band(<span class="st">"LQSF"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> quality_band <span class="op">&gt;</span> <span class="dv">10000</span></span>
@@ -365,9 +366,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>cube_OTCI_IWV_masked <span class="op">=</span> cube_OTCI_IWV.mask(mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>If we call one of the cubes we can see the process graph that is created by openEO:</p>
-<div id="852277be" class="cell" data-execution_count="10">
+<div id="cb8b5a12" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cube_LST</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="79">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
@@ -384,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
     </script>
     <openeo-model-builder>
-        <script type="application/json">{"id": "58543fec006141fc984c20153568b3b8", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST", "confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}, "result": true}}}}</script>
+        <script type="application/json">{"id": "cd18df85668b47aa8a8866f69a2055dd", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST", "confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}, "result": true}}}}</script>
     </openeo-model-builder>
     
 </div>
@@ -394,7 +395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reducing-the-time-dimension" class="level2">
 <h2 class="anchored" data-anchor-id="reducing-the-time-dimension">Reducing the time dimension</h2>
 <p>For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.</p>
-<div id="ae4d77a2" class="cell" data-execution_count="11">
+<div id="6e57ff33" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reducing time dimension</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cube_LST_median <span class="op">=</span> cube_LST_masked.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span>
@@ -403,9 +404,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>cube_IWV_median <span class="op">=</span> cube_OTCI_IWV_masked.band(<span class="st">"IWV"</span>).reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="017798bc" class="cell" data-execution_count="12">
+<div id="a8eb0ac9" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cube_LST_median</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="81">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
@@ -422,33 +423,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
     </script>
     <openeo-model-builder>
-        <script type="application/json">{"id": "e9f3833284aa454ebcd998e42a8c4b6d", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST", "confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "bands", "reducer": {"process_graph": {"arrayelement1": {"process_id": "array_element", "arguments": {"data": {"from_parameter": "data"}, "index": 0}, "result": true}}}}}, "reducedimension2": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "bands", "reducer": {"process_graph": {"arrayelement2": {"process_id": "array_element", "arguments": {"data": {"from_parameter": "data"}, "index": 1}}, "gt1": {"process_id": "gt", "arguments": {"x": {"from_node": "arrayelement2"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "reducedimension1"}, "mask": {"from_node": "reducedimension2"}}}, "reducedimension3": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}, "result": true}}}}</script>
+        <script type="application/json">{"id": "0030885684cd467784d88b6381dac93f", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST", "confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "bands", "reducer": {"process_graph": {"arrayelement1": {"process_id": "array_element", "arguments": {"data": {"from_parameter": "data"}, "index": 0}, "result": true}}}}}, "reducedimension2": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "bands", "reducer": {"process_graph": {"arrayelement2": {"process_id": "array_element", "arguments": {"data": {"from_parameter": "data"}, "index": 1}}, "gt1": {"process_id": "gt", "arguments": {"x": {"from_node": "arrayelement2"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "reducedimension1"}, "mask": {"from_node": "reducedimension2"}}}, "reducedimension3": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}, "result": true}}}}</script>
     </openeo-model-builder>
     
 </div>
 </div>
+</section>
+<section id="inspecting-variables" class="level2">
+<h2 class="anchored" data-anchor-id="inspecting-variables">Inspecting variables</h2>
 <p>Then we will inspect the products, for that we need to execute the processors for each cube, save it locally, open and plot.</p>
-<div id="e6776b8b" class="cell" data-execution_count="13">
+<div id="38d268de" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="bc8c5819" class="cell" data-execution_count="14">
+<div id="96725d6e" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cube_lst_local <span class="op">=</span> rio.open_rasterio(filename<span class="op">=</span><span class="st">"data/cube_LST_median.tif"</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cube_otci_local <span class="op">=</span> rio.open_rasterio(filename<span class="op">=</span><span class="st">"data/cube_OTCI_median.tif"</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>cube_iwv_local <span class="op">=</span> rio.open_rasterio(filename<span class="op">=</span><span class="st">"data/cube_IWV_median.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="b7050bf9" class="cell" data-execution_count="15">
+<div id="de110ec6" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.clf()</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">15</span>))</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>cube_lst_local.plot(ax<span class="op">=</span>axs[<span class="dv">0</span>], label<span class="op">=</span><span class="st">"LST"</span>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>cube_otci_local.plot(ax<span class="op">=</span>axs[<span class="dv">1</span>], label<span class="op">=</span><span class="st">"OTCI"</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>cube_iwv_local.plot(ax<span class="op">=</span>axs[<span class="dv">2</span>], label<span class="op">=</span><span class="st">"IWV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>cube_lst_local.plot(ax<span class="op">=</span>axs[<span class="dv">0</span>])</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">"LST"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>cube_otci_local.plot(ax<span class="op">=</span>axs[<span class="dv">1</span>])</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">"OTCI"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>cube_iwv_local.plot(ax<span class="op">=</span>axs[<span class="dv">2</span>])</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].set_title(<span class="st">"IWV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<pre><code>Text(0.5, 1.0, 'IWV')</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-16-output-1.png" width="547" height="449" class="figure-img"></p>
+<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-16-output-2.png" width="507" height="1189" class="figure-img"></p>
 </figure>
 </div>
 </div>
