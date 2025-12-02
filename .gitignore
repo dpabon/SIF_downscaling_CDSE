@@ -1,3 +1,5 @@
 .vscode/settings.json
 .ruff_cache
 .pytest_cache
+/.quarto/
+**/*.quarto_ipynb

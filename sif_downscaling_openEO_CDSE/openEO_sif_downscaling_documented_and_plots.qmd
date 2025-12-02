@@ -46,13 +46,13 @@ Before going into the details of the datasets we need to define an area of inter
 
 ```{python}
 spatial_extent_prototype = {
-    "west": 7.426758,
-    "east": 18.632813,
-    "south": 50.233152,
-    "north": 55.603178,
+    "west": -6.921387,
+    "east": -1.889648,
+    "south": 37.230328,
+    "north": 40.229218,
 }
 
-temporal_extent_prototype = ["2018-06-20", "2018-06-30"]
+temporal_extent_prototype = ["2018-06-23", "2018-06-30"]
 ```
 
 ```{python}
@@ -237,15 +237,22 @@ cube_OTCI_IWV = connection.load_collection(
 
 ```{python}
 quality_band = cube_LST.band("confidence_in")
-# Build mask to mask out everything but class 4 (vegetation)
+
 mask = quality_band > 5000
 
-cube_LST_masked = cube_LST.mask(mask)
+cube_LST_masked = cube_LST.band("LST").mask(mask)
 
 ```
 
+```{python}
+quality_band = cube_OTCI_IWV.band("LQSF")
 
- If we call one of the cubes we can see the process graph that is created by openEO:
+mask = quality_band > 10000
+
+cube_OTCI_IWV_masked = cube_OTCI_IWV.mask(mask)
+```
+
+If we call one of the cubes we can see the process graph that is created by openEO:
  
 ```{python}
 cube_LST
@@ -260,9 +267,9 @@ For this analysis we will compute a composite of the area of interest using all 
 
 cube_LST_median = cube_LST_masked.reduce_temporal(reducer="median")
 
-cube_OTCI_median = cube_OTCI.reduce_temporal(reducer="median")
+cube_OTCI_median = cube_OTCI_IWV_masked.band("OTCI").reduce_temporal(reducer="median")
 
-cube_IWV_median = cube_IWV.reduce_temporal(reducer="median")
+cube_IWV_median = cube_OTCI_IWV_masked.band("IWV").reduce_temporal(reducer="median")
 
 ```
 
@@ -275,8 +282,27 @@ Then we will inspect the products, for that we need to execute the processors fo
 
 
 ```{python}
-#cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
-#cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")
-#cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")
+# cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
+# cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")
+# cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")
+```
+
+
+```{python}
+cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
+cube_otci_local = rio.open_rasterio(filename="data/cube_OTCI_median.tif")
+cube_iwv_local = rio.open_rasterio(filename="data/cube_IWV_median.tif")
+
+```
+
+
+```{python}
+# plt.clf()
+fig, axs = plt.subplots(nrows=3)
+
+cube_lst_local.plot(ax=axs[0], label="LST")
+cube_otci_local.plot(ax=axs[1], label="OTCI")
+cube_iwv_local.plot(ax=axs[2], label="IWV")
+
 ```
 
