@@ -338,6 +338,8 @@ axs[2].set_title("OTCI")
 cube_iwv_local.plot(ax=axs[3])
 axs[3].set_title("IWV")
 
+plt.tight_layout()
+
 ```
 
 ::: {.callout-important}
@@ -494,7 +496,7 @@ print(parameters_cube_local)
 
 ```{python}
 # plt.clf()
-fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(10, 10))
+fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(8, 8))
 axs = axs.flatten()
 
 for i in range(6):

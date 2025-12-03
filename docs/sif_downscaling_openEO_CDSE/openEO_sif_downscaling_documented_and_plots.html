@@ -161,6 +161,7 @@ window.Quarto = {
   <li><a href="#spatial-resampling-to-match-the-sif-resolution-product" id="toc-spatial-resampling-to-match-the-sif-resolution-product" class="nav-link" data-scroll-target="#spatial-resampling-to-match-the-sif-resolution-product">Spatial resampling to match the SIF resolution product</a></li>
   <li><a href="#sif-parameter-optimization-at-low-spatial-resolution" id="toc-sif-parameter-optimization-at-low-spatial-resolution" class="nav-link" data-scroll-target="#sif-parameter-optimization-at-low-spatial-resolution">SIF parameter optimization at low spatial resolution</a></li>
   <li><a href="#checking-parameter-optimization-results" id="toc-checking-parameter-optimization-results" class="nav-link" data-scroll-target="#checking-parameter-optimization-results">Checking parameter optimization results</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   </ul>
 </nav>
 </nav>
@@ -203,7 +204,7 @@ window.Quarto = {
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
 <p>We will need the following libraries to run dowscaling processor</p>
-<div id="d6897fb2" class="cell" data-execution_count="1">
+<div id="7af39470" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rio</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -227,7 +228,7 @@ window.Quarto = {
 <section id="area-of-interest-and-time-period" class="level2">
 <h2 class="anchored" data-anchor-id="area-of-interest-and-time-period">Area of Interest and Time Period</h2>
 <p>Before going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in the north part of Germany in the period between 2018-06-20 and 2018-06-30.</p>
-<div id="12a2d2f5" class="cell" data-execution_count="2">
+<div id="5aa8dd52" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spatial_extent_prototype <span class="op">=</span> {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"west"</span>: <span class="op">-</span><span class="fl">6.921387</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"east"</span>: <span class="op">-</span><span class="fl">1.889648</span>,</span>
@@ -237,7 +238,7 @@ window.Quarto = {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>temporal_extent_prototype <span class="op">=</span> [<span class="st">"2018-06-23"</span>, <span class="st">"2018-06-30"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="b466f067" class="cell" data-execution_count="3">
+<div id="276d3318" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -250,7 +251,7 @@ window.Quarto = {
 <section id="connecting-to-cdse-using-openeo" class="level2">
 <h2 class="anchored" data-anchor-id="connecting-to-cdse-using-openeo">Connecting to CDSE using openEO</h2>
 <p>To connect to the openEO insfrastructure in the CDSE we need to create a connection:</p>
-<div id="d555c6f0" class="cell" data-execution_count="4">
+<div id="6874a9f4" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://openeofed.dataspace.copernicus.eu/"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -260,12 +261,12 @@ window.Quarto = {
 </div>
 <p>This will open a tab in the web-browser where the user needs to authenticate using the CDSE credentials. For more details on openEO in CDSE please see: <a href="https://dataspace.copernicus.eu/analyse/openeo">https://dataspace.copernicus.eu/analyse/openeo</a></p>
 <p>Then we can see the data collections that are available:</p>
-<div id="7e52a3f5" class="cell" data-execution_count="5">
+<div id="e331c7e2" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>connection.list_collections()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="scrolling">
-<div id="28b7832e" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display" data-execution_count="59">
+<div id="4d683283" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="57">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-collections')) {
@@ -355,7 +356,7 @@ window.Quarto = {
 </table>
 <section id="creating-openeo-datacubes-for-the-variables" class="level3">
 <h3 class="anchored" data-anchor-id="creating-openeo-datacubes-for-the-variables">Creating openEO datacubes for the variables</h3>
-<div id="0f461680" class="cell" data-execution_count="7">
+<div id="ef44f9ef" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing SIF - Dong Li</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>cube_SIF_original_median <span class="op">=</span> connection.load_stac(</span>
@@ -404,12 +405,12 @@ window.Quarto = {
 </section>
 <section id="masking-clouds" class="level3">
 <h3 class="anchored" data-anchor-id="masking-clouds">Masking clouds</h3>
-<div id="477b8c2d" class="cell" data-execution_count="8">
+<div id="d985e135" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> cube_LST_qc <span class="op">&gt;</span> <span class="dv">5000</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>cube_LST_masked <span class="op">=</span> cube_LST.mask(mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="2266d690" class="cell" data-execution_count="9">
+<div id="2b2a25fc" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mask_olci <span class="op">=</span> cube_OLCI_qc <span class="op">&gt;</span> <span class="dv">10000</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>cube_OTCI_masked <span class="op">=</span> cube_OTCI.mask(mask_olci)</span>
@@ -417,9 +418,9 @@ window.Quarto = {
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>cube_IWV_masked <span class="op">=</span> cube_IWV.mask(mask_olci)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>If we call one of the cubes we can see the process graph that is created by openEO:</p>
-<div id="b8b0abc4" class="cell" data-execution_count="10">
+<div id="3b56aa4b" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cube_LST_masked</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="63">
+<div class="cell-output cell-output-display" data-execution_count="61">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
@@ -436,7 +437,7 @@ window.Quarto = {
     }
     </script>
     <openeo-model-builder>
-        <script type="application/json">{"id": "6224c28b89c94f4d9387f229e18d00e9", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply1": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection2"}, "process": {"process_graph": {"gt1": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "apply1"}}, "result": true}}}}</script>
+        <script type="application/json">{"id": "79c7d295d6f04fada9f497077974b89c", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply1": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection2"}, "process": {"process_graph": {"gt1": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "apply1"}}, "result": true}}}}</script>
     </openeo-model-builder>
     
 </div>
@@ -446,19 +447,19 @@ window.Quarto = {
 <section id="reducing-the-time-dimension" class="level2">
 <h2 class="anchored" data-anchor-id="reducing-the-time-dimension">Reducing the time dimension</h2>
 <p>For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.</p>
-<div id="e5fae5db" class="cell" data-execution_count="11">
+<div id="87666470" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer="median")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="aa9d7acf" class="cell" data-execution_count="12">
+<div id="c624370f" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cube_LST_median <span class="op">=</span> cube_LST_masked.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>cube_OTCI_median <span class="op">=</span> cube_OTCI_masked.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>cube_IWV_median <span class="op">=</span> cube_IWV_masked.reduce_temporal(reducer<span class="op">=</span><span class="st">"median"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="40a7aed6" class="cell" data-execution_count="13">
+<div id="1e1e5a9a" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cube_LST_median</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="66">
+<div class="cell-output cell-output-display" data-execution_count="64">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
@@ -475,7 +476,7 @@ window.Quarto = {
     }
     </script>
     <openeo-model-builder>
-        <script type="application/json">{"id": "5d3f87d3606043a7a3c9ac334846555a", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply1": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection2"}, "process": {"process_graph": {"gt1": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "apply1"}}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}, "result": true}}}}</script>
+        <script type="application/json">{"id": "13dfde66eedd4990a0892d82e0225977", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply1": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection2"}, "process": {"process_graph": {"gt1": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "apply1"}}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}, "result": true}}}}</script>
     </openeo-model-builder>
     
 </div>
@@ -484,13 +485,13 @@ window.Quarto = {
 <section id="inspecting-the-variables" class="level2">
 <h2 class="anchored" data-anchor-id="inspecting-the-variables">Inspecting the variables</h2>
 <p>Then we will inspect the products, for that we need to execute the processors for each cube, save it locally, open and plot.</p>
-<div id="4b3a6a36" class="cell" data-execution_count="14">
+<div id="b98ac7e7" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="05979133" class="cell" data-execution_count="15">
+<div id="04c01a88" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cube_sif_local <span class="op">=</span> rio.open_rasterio(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    filename<span class="op">=</span><span class="st">"data/cube_SIF_median.tif"</span>, mask_and_scale<span class="op">=</span><span class="va">True</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -498,7 +499,7 @@ window.Quarto = {
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>cube_otci_local <span class="op">=</span> rio.open_rasterio(filename<span class="op">=</span><span class="st">"data/cube_OTCI_median.tif"</span>)</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>cube_iwv_local <span class="op">=</span> rio.open_rasterio(filename<span class="op">=</span><span class="st">"data/cube_IWV_median.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="a8104974" class="cell" data-execution_count="16">
+<div id="e20e7181" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">15</span>))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cube_sif_local.plot(ax<span class="op">=</span>axs[<span class="dv">0</span>])</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">"SIF"</span>)</span>
@@ -507,14 +508,13 @@ window.Quarto = {
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>cube_otci_local.plot(ax<span class="op">=</span>axs[<span class="dv">2</span>])</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].set_title(<span class="st">"OTCI"</span>)</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>cube_iwv_local.plot(ax<span class="op">=</span>axs[<span class="dv">3</span>])</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">3</span>].set_title(<span class="st">"IWV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="69">
-<pre><code>Text(0.5, 1.0, 'IWV')</code></pre>
-</div>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">3</span>].set_title(<span class="st">"IWV"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-17-output-2.png" width="521" height="1189" class="figure-img"></p>
+<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-17-output-1.png" width="559" height="1428" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -536,35 +536,35 @@ Important
 </section>
 <section id="spatial-resampling-to-match-the-sif-resolution-product" class="level2">
 <h2 class="anchored" data-anchor-id="spatial-resampling-to-match-the-sif-resolution-product">Spatial resampling to match the SIF resolution product</h2>
-<div id="2a1025c1" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cube_LST_median_low <span class="op">=</span> cube_LST_median.resample_cube_spatial(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>cube_SIF_original_median, method<span class="op">=</span><span class="st">"bilinear"</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>cube_OTCI_median_low <span class="op">=</span> cube_OTCI_median.resample_cube_spatial(</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>cube_SIF_original_median, method<span class="op">=</span><span class="st">"bilinear"</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>cube_IWV_median_low <span class="op">=</span> cube_IWV_median.resample_cube_spatial(</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>cube_SIF_original_median, method<span class="op">=</span><span class="st">"bilinear"</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="e358d90f" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cube_LST_median_low <span class="op">=</span> cube_LST_median.resample_cube_spatial(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>cube_SIF_original_median, method<span class="op">=</span><span class="st">"bilinear"</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>cube_OTCI_median_low <span class="op">=</span> cube_OTCI_median.resample_cube_spatial(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>cube_SIF_original_median, method<span class="op">=</span><span class="st">"bilinear"</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>cube_IWV_median_low <span class="op">=</span> cube_IWV_median.resample_cube_spatial(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>cube_SIF_original_median, method<span class="op">=</span><span class="st">"bilinear"</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Merging all the cubes at low resolution (SIF original resolution)</p>
-<div id="4574a454" class="cell" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> cube_SIF_original_median.merge_cubes(cube_LST_median_low)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(cube_OTCI_median_low)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(cube_IWV_median_low)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0b1a3c51" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> cube_SIF_original_median.merge_cubes(cube_LST_median_low)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(cube_OTCI_median_low)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(cube_IWV_median_low)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Adding two dummy variables to the datacube to match the number of oputput parameters of the optimization function.</p>
-<div id="931fb608" class="cell" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    other<span class="op">=</span>cube_SIF_original_median.rename_labels(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span>[<span class="st">"dummy_1"</span>])</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    other<span class="op">=</span>cube_SIF_original_median.rename_labels(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span>[<span class="st">"dummy_2"</span>])</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ddaeb3cc" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    other<span class="op">=</span>cube_SIF_original_median.rename_labels(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span>[<span class="st">"dummy_1"</span>])</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>dataset_SIF_low <span class="op">=</span> dataset_SIF_low.merge_cubes(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    other<span class="op">=</span>cube_SIF_original_median.rename_labels(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span>[<span class="st">"dummy_2"</span>])</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="sif-parameter-optimization-at-low-spatial-resolution" class="level2">
@@ -580,53 +580,53 @@ f(T) = e^{-\frac{(T + b_5)^2}{2b_6^2}}
 \]</span></p>
 <p>Given the previous formulation we optimize the function using L-BFGS-B and a spatial moving window with 40 observations. The optimization function is defined in <a href="sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py">sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py</a>.</p>
 <p>First we need to define the boundaries and start values for <span class="math inline">\(b1\)</span>, <span class="math inline">\(b2\)</span>, <span class="math inline">\(b3\)</span>, <span class="math inline">\(b4\)</span>, <span class="math inline">\(b5\)</span> parameters:</p>
-<div id="16eead55" class="cell" data-execution_count="21">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the order for each variable follows: b1,b2,b3,b4,b5,b6</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>param_min <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">1</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">310</span>, <span class="dv">1</span>]</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>param_ini <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="fl">50.0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">295</span>, <span class="dv">10</span>]</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>param_max <span class="op">=</span> [<span class="dv">6</span>, <span class="dv">10</span>, <span class="fl">500.0</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">290</span>, <span class="dv">50</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="11faf7d9" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the order for each variable follows: b1,b2,b3,b4,b5,b6</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>param_min <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">1</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">310</span>, <span class="dv">1</span>]</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>param_ini <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="fl">50.0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">295</span>, <span class="dv">10</span>]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>param_max <span class="op">=</span> [<span class="dv">6</span>, <span class="dv">10</span>, <span class="fl">500.0</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">290</span>, <span class="dv">50</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>To apply the optimization function in the data cube we define an openEO User Define Function using:</p>
-<div id="37bae43c" class="cell" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>my_udf <span class="op">=</span> openeo.UDF.from_file(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    context<span class="op">=</span>{</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"param_ini"</span>: param_ini,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"param_min"</span>: param_min,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"param_max"</span>: param_max,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"min_obs"</span>: <span class="dv">25</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"window_size_lat"</span>: <span class="dv">6</span>,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"window_size_lon"</span>: <span class="dv">7</span>,</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="88a0435d" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>my_udf <span class="op">=</span> openeo.UDF.from_file(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py"</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    context<span class="op">=</span>{</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"param_ini"</span>: param_ini,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"param_min"</span>: param_min,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"param_max"</span>: param_max,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"min_obs"</span>: <span class="dv">25</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"window_size_lat"</span>: <span class="dv">6</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"window_size_lon"</span>: <span class="dv">7</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Notice that the size of the moving window is set using <code>window_size_lat</code> and <code>window_size_lon</code>.</p>
 <p>Then we can apply our function to the data cube using:</p>
-<div id="eb5e3e5d" class="cell" data-execution_count="23">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>parameters_cube_low <span class="op">=</span> dataset_SIF_low.apply_neighborhood(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    process<span class="op">=</span>my_udf,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">512</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">512</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    overlap<span class="op">=</span>[</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">0</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">0</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># changing the name of the ouput</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>output_bands <span class="op">=</span> [<span class="st">"b1"</span>, <span class="st">"b2"</span>, <span class="st">"b3"</span>, <span class="st">"b4"</span>, <span class="st">"b5"</span>, <span class="st">"b6"</span>]</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>parameters_cube_low_rename <span class="op">=</span> parameters_cube_low.rename_labels(<span class="st">"bands"</span>, output_bands)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="f1bb4ecb" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>parameters_cube_low <span class="op">=</span> dataset_SIF_low.apply_neighborhood(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    process<span class="op">=</span>my_udf,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">512</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">512</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    overlap<span class="op">=</span>[</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">0</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">0</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># changing the name of the ouput</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>output_bands <span class="op">=</span> [<span class="st">"b1"</span>, <span class="st">"b2"</span>, <span class="st">"b3"</span>, <span class="st">"b4"</span>, <span class="st">"b5"</span>, <span class="st">"b6"</span>]</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>parameters_cube_low_rename <span class="op">=</span> parameters_cube_low.rename_labels(<span class="st">"bands"</span>, output_bands)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>and see the process graph:</p>
-<div id="d811ed71" class="cell" data-execution_count="24">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>parameters_cube_low_rename</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="77">
+<div id="b177446c" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>parameters_cube_low_rename</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="75">
 
     <script>
     if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
@@ -643,28 +643,28 @@ f(T) = e^{-\frac{(T + b_5)^2}{2b_6^2}}
     }
     </script>
     <openeo-model-builder>
-        <script type="application/json">{"id": "c261375543804ef492783459a2de96b1", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadstac1": {"process_id": "load_stac", "arguments": {"bands": ["SIF"], "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"], "url": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json"}}, "loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply1": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection2"}, "process": {"process_graph": {"gt1": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "apply1"}}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "resamplecubespatial1": {"process_id": "resample_cube_spatial", "arguments": {"data": {"from_node": "reducedimension1"}, "method": "bilinear", "target": {"from_node": "loadstac1"}}}, "mergecubes1": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "loadstac1"}, "cube2": {"from_node": "resamplecubespatial1"}}}, "loadcollection3": {"process_id": "load_collection", "arguments": {"bands": ["OTCI"], "id": "SENTINEL3_OLCI_L2_LAND", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection4": {"process_id": "load_collection", "arguments": {"bands": ["LQSF"], "id": "SENTINEL3_OLCI_L2_LAND", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply2": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection4"}, "process": {"process_graph": {"gt2": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 10000}, "result": true}}}}}, "mask2": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection3"}, "mask": {"from_node": "apply2"}}}, "reducedimension2": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask2"}, "dimension": "t", "reducer": {"process_graph": {"median2": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "resamplecubespatial2": {"process_id": "resample_cube_spatial", "arguments": {"data": {"from_node": "reducedimension2"}, "method": "bilinear", "target": {"from_node": "loadstac1"}}}, "mergecubes2": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes1"}, "cube2": {"from_node": "resamplecubespatial2"}}}, "loadcollection5": {"process_id": "load_collection", "arguments": {"bands": ["IWV"], "id": "SENTINEL3_OLCI_L2_LAND", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "mask3": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection5"}, "mask": {"from_node": "apply2"}}}, "reducedimension3": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask3"}, "dimension": "t", "reducer": {"process_graph": {"median3": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "resamplecubespatial3": {"process_id": "resample_cube_spatial", "arguments": {"data": {"from_node": "reducedimension3"}, "method": "bilinear", "target": {"from_node": "loadstac1"}}}, "mergecubes3": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes2"}, "cube2": {"from_node": "resamplecubespatial3"}}}, "renamelabels1": {"process_id": "rename_labels", "arguments": {"data": {"from_node": "loadstac1"}, "dimension": "bands", "target": ["dummy_1"]}}, "mergecubes4": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes3"}, "cube2": {"from_node": "renamelabels1"}}}, "renamelabels2": {"process_id": "rename_labels", "arguments": {"data": {"from_node": "loadstac1"}, "dimension": "bands", "target": ["dummy_2"]}}, "mergecubes5": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes4"}, "cube2": {"from_node": "renamelabels2"}}}, "applyneighborhood1": {"process_id": "apply_neighborhood", "arguments": {"data": {"from_node": "mergecubes5"}, "overlap": [{"dimension": "x", "value": 0, "unit": "px"}, {"dimension": "y", "value": 0, "unit": "px"}], "process": {"process_graph": {"runudf1": {"process_id": "run_udf", "arguments": {"context": {"param_ini": [1, 2, 50.0, 0, -295, 10], "param_min": [3, 1, 0.0, -1, -310, 1], "param_max": [6, 10, 500.0, 1, -290, 50], "min_obs": 25, "window_size_lat": 6, "window_size_lon": 7}, "data": {"from_parameter": "data"}, "runtime": "Python", "udf": "import xarray\nimport numpy as np\nfrom scipy.optimize import minimize\nfrom openeo.udf.debug import inspect\n\ndef apply_datacube(cube: xarray.DataArray, context: dict)  -> xarray.DataArray:\n\n  input_cube_local = cube.to_dataset(dim=\"bands\") # \n  inspect(input_cube_local, message=\"local dataset: \")\n  inspect(context[\"param_ini\"], message= \"context param_ini\")\n\n  param_ini = np.array(context[\"param_ini\"])\n  param_min = np.array(context[\"param_min\"])\n  param_max = np.array(context[\"param_max\"])\n  param_bounds = np.array([param_min, param_max])\n  min_obs = context[\"min_obs\"]\n  window_size_lat = context[\"window_size_lat\"]\n  window_size_lon = context[\"window_size_lon\"]\n\n  # Nested functions, not elegant but looks like the correct way when defining openEO.UDF\n\n  def vegetation(vi, b1, b2):\n  # Ensure inputs are numpy arrays for vectorized operations\n    vi_np = np.asarray(vi)\n    veg = b2 * np.power(vi_np, b1) \n    return veg\n\n  def water(et, b3, b4):\n\n    et_np = np.asarray(et)\n\n    wat = 1.0 / (1.0 + np.exp(b3 * (b4-et_np)))\n    return wat\n\n  def temperature(lst, b5, b6):\n  \n    # Gaussian function, ensure b6 (std dev) is positive\n    lst_np = np.asarray(lst)\n    temp = np.exp(-0.5 * np.power((lst_np + b5) / b6, 2))\n    return temp\n\n  def sif_model(vi, et, lst, params):\n    # Calculates SIF based on the model components.\n    b1, b2, b3, b4, b5, b6 = params\n    sif_pred = (vegetation(vi, b1, b2) *\n              water(et, b3, b4) *\n              temperature(lst, b5, b6))\n    return sif_pred\n\n\n  def cost_function(params, vi, et, lst, sif_observed):\n  \n    #Least squares cost function for optimization.\n    sif_pred = sif_model(vi, et, lst, params)\n  \n    # Calculate sum of squares, ignoring NaNs\n    cost = np.nansum((sif_pred - sif_observed)**2)\n  \n    return cost\n  \n  # From xarray apply_ufunc\n  def optimize_params_window(sif_w, ogvi_w, ndwi_w, lst_w,\n                           param_ini, param_bounds, min_obs):\n    \"\"\"\n    Wrapper function to optimize SIF parameters for a single window.\n    Designed to be used with apply_ufunc or iteration.\n    Assumes input arrays (sif_w, etc.) are 2D numpy arrays (window data).\n    \"\"\"\n    # Flatten the window arrays and filter out NaNs\n    # Important: Filter consistently across all variables\n    mask = ~np.isnan(sif_w) & ~np.isnan(ogvi_w) & ~np.isnan(ndwi_w) & ~np.isnan(lst_w)\n    n_valid = np.sum(mask)\n\n    if n_valid < min_obs:\n        # Not enough valid observations in the window\n        return np.full(len(param_ini), np.nan, dtype=np.float32)\n    \n\n    sif_obs_f = sif_w[mask]\n    vi_f = ogvi_w[mask]\n    et_f = ndwi_w[mask] # Using NDWI as proxy for water stress/ET effect\n    lst_f = lst_w[mask]\n\n    # Define bounds for L-BFGS-B\n    bounds_scipy = list(zip(*param_bounds)) # [(min1, max1), (min2, max2), ...]\n\n   \n    result = minimize(cost_function,\n                              x0=param_ini,\n                              args=(vi_f, et_f, lst_f, sif_obs_f),\n                              method='L-BFGS-B',\n                              bounds=bounds_scipy,\n                              options={'maxiter': 1000, 'ftol': 1e-7, 'gtol': 1e-5}) # Adjust options as needed\n\n    optimized_params = np.array(np.clip(result.x, param_bounds[0], param_bounds[1]))\n    #print(optimized_params.dtype)\n    #print(optimized_params.size)\n    #print(optimized_params.shape)\n    return optimized_params\n\n\n  # Preparing output xarray.Datarray\n\n  # get the coodinates of the datacube\n  # processing data\n\n  SIF_w = input_cube_local[\"SIF\"]\n  \n\n  VI_w = input_cube_local[\"OTCI\"]\n  \n\n  ET_w = input_cube_local[\"IWV\"]\n  \n\n  LST_w =  input_cube_local[\"LST\"]\n\n  output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']\n\n  parameters_cube = xarray.apply_ufunc(\n    optimize_params_window, # Function to apply\n    # Input arrays:\n    SIF_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    VI_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    ET_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    LST_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    # Keyword arguments for the function:\n    kwargs={'param_ini': param_ini, 'param_bounds': param_bounds, 'min_obs': min_obs},\n    # Define input core dimensions (the window dimensions):\n    input_core_dims=[['lat_roll', 'lon_roll'], ['lat_roll', 'lon_roll'], ['lat_roll', 'lon_roll'], ['lat_roll', 'lon_roll']],\n    # Define output core dimensions (the parameters dimension):\n    output_core_dims=[['bands']],\n    dask_gufunc_kwargs={'output_sizes': {'bands': 6}},\n    # Specify the parameters dimension coordinates:\n    dask='parallelized', # Enable Dask parallelization\n    output_dtypes=[np.float64], # Specify output data type\n    vectorize = True,\n    # Add a new dimension 'parameters' to the output\n    exclude_dims=set(('lat_roll', 'lon_roll')), # Exclude window dims from output\n    ).rename('optimized_parameters')\n  \n  parameters_cube = parameters_cube.assign_coords({'bands': output_bands})\n\n  return parameters_cube\n\n"}, "result": true}}}, "size": [{"dimension": "x", "value": 512, "unit": "px"}, {"dimension": "y", "value": 512, "unit": "px"}]}}, "renamelabels3": {"process_id": "rename_labels", "arguments": {"data": {"from_node": "applyneighborhood1"}, "dimension": "bands", "target": ["b1", "b2", "b3", "b4", "b5", "b6"]}, "result": true}}}}</script>
+        <script type="application/json">{"id": "20baed6b52634eb68c7c5df4c9f4c1c6", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadstac1": {"process_id": "load_stac", "arguments": {"bands": ["SIF"], "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"], "url": "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json"}}, "loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["LST"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["confidence_in"], "id": "SENTINEL3_SLSTR_L2_LST", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply1": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection2"}, "process": {"process_graph": {"gt1": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 5000}, "result": true}}}}}, "mask1": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "apply1"}}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask1"}, "dimension": "t", "reducer": {"process_graph": {"median1": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "resamplecubespatial1": {"process_id": "resample_cube_spatial", "arguments": {"data": {"from_node": "reducedimension1"}, "method": "bilinear", "target": {"from_node": "loadstac1"}}}, "mergecubes1": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "loadstac1"}, "cube2": {"from_node": "resamplecubespatial1"}}}, "loadcollection3": {"process_id": "load_collection", "arguments": {"bands": ["OTCI"], "id": "SENTINEL3_OLCI_L2_LAND", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "loadcollection4": {"process_id": "load_collection", "arguments": {"bands": ["LQSF"], "id": "SENTINEL3_OLCI_L2_LAND", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "apply2": {"process_id": "apply", "arguments": {"data": {"from_node": "loadcollection4"}, "process": {"process_graph": {"gt2": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 10000}, "result": true}}}}}, "mask2": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection3"}, "mask": {"from_node": "apply2"}}}, "reducedimension2": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask2"}, "dimension": "t", "reducer": {"process_graph": {"median2": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "resamplecubespatial2": {"process_id": "resample_cube_spatial", "arguments": {"data": {"from_node": "reducedimension2"}, "method": "bilinear", "target": {"from_node": "loadstac1"}}}, "mergecubes2": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes1"}, "cube2": {"from_node": "resamplecubespatial2"}}}, "loadcollection5": {"process_id": "load_collection", "arguments": {"bands": ["IWV"], "id": "SENTINEL3_OLCI_L2_LAND", "spatial_extent": {"west": -6.921387, "east": -1.889648, "south": 37.230328, "north": 40.229218}, "temporal_extent": ["2018-06-23", "2018-06-30"]}}, "mask3": {"process_id": "mask", "arguments": {"data": {"from_node": "loadcollection5"}, "mask": {"from_node": "apply2"}}}, "reducedimension3": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "mask3"}, "dimension": "t", "reducer": {"process_graph": {"median3": {"process_id": "median", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "resamplecubespatial3": {"process_id": "resample_cube_spatial", "arguments": {"data": {"from_node": "reducedimension3"}, "method": "bilinear", "target": {"from_node": "loadstac1"}}}, "mergecubes3": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes2"}, "cube2": {"from_node": "resamplecubespatial3"}}}, "renamelabels1": {"process_id": "rename_labels", "arguments": {"data": {"from_node": "loadstac1"}, "dimension": "bands", "target": ["dummy_1"]}}, "mergecubes4": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes3"}, "cube2": {"from_node": "renamelabels1"}}}, "renamelabels2": {"process_id": "rename_labels", "arguments": {"data": {"from_node": "loadstac1"}, "dimension": "bands", "target": ["dummy_2"]}}, "mergecubes5": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "mergecubes4"}, "cube2": {"from_node": "renamelabels2"}}}, "applyneighborhood1": {"process_id": "apply_neighborhood", "arguments": {"data": {"from_node": "mergecubes5"}, "overlap": [{"dimension": "x", "value": 0, "unit": "px"}, {"dimension": "y", "value": 0, "unit": "px"}], "process": {"process_graph": {"runudf1": {"process_id": "run_udf", "arguments": {"context": {"param_ini": [1, 2, 50.0, 0, -295, 10], "param_min": [3, 1, 0.0, -1, -310, 1], "param_max": [6, 10, 500.0, 1, -290, 50], "min_obs": 25, "window_size_lat": 6, "window_size_lon": 7}, "data": {"from_parameter": "data"}, "runtime": "Python", "udf": "import xarray\nimport numpy as np\nfrom scipy.optimize import minimize\nfrom openeo.udf.debug import inspect\n\ndef apply_datacube(cube: xarray.DataArray, context: dict)  -> xarray.DataArray:\n\n  input_cube_local = cube.to_dataset(dim=\"bands\") # \n  inspect(input_cube_local, message=\"local dataset: \")\n  inspect(context[\"param_ini\"], message= \"context param_ini\")\n\n  param_ini = np.array(context[\"param_ini\"])\n  param_min = np.array(context[\"param_min\"])\n  param_max = np.array(context[\"param_max\"])\n  param_bounds = np.array([param_min, param_max])\n  min_obs = context[\"min_obs\"]\n  window_size_lat = context[\"window_size_lat\"]\n  window_size_lon = context[\"window_size_lon\"]\n\n  # Nested functions, not elegant but looks like the correct way when defining openEO.UDF\n\n  def vegetation(vi, b1, b2):\n  # Ensure inputs are numpy arrays for vectorized operations\n    vi_np = np.asarray(vi)\n    veg = b2 * np.power(vi_np, b1) \n    return veg\n\n  def water(et, b3, b4):\n\n    et_np = np.asarray(et)\n\n    wat = 1.0 / (1.0 + np.exp(b3 * (b4-et_np)))\n    return wat\n\n  def temperature(lst, b5, b6):\n  \n    # Gaussian function, ensure b6 (std dev) is positive\n    lst_np = np.asarray(lst)\n    temp = np.exp(-0.5 * np.power((lst_np + b5) / b6, 2))\n    return temp\n\n  def sif_model(vi, et, lst, params):\n    # Calculates SIF based on the model components.\n    b1, b2, b3, b4, b5, b6 = params\n    sif_pred = (vegetation(vi, b1, b2) *\n              water(et, b3, b4) *\n              temperature(lst, b5, b6))\n    return sif_pred\n\n\n  def cost_function(params, vi, et, lst, sif_observed):\n  \n    #Least squares cost function for optimization.\n    sif_pred = sif_model(vi, et, lst, params)\n  \n    # Calculate sum of squares, ignoring NaNs\n    cost = np.nansum((sif_pred - sif_observed)**2)\n  \n    return cost\n  \n  # From xarray apply_ufunc\n  def optimize_params_window(sif_w, ogvi_w, ndwi_w, lst_w,\n                           param_ini, param_bounds, min_obs):\n    \"\"\"\n    Wrapper function to optimize SIF parameters for a single window.\n    Designed to be used with apply_ufunc or iteration.\n    Assumes input arrays (sif_w, etc.) are 2D numpy arrays (window data).\n    \"\"\"\n    # Flatten the window arrays and filter out NaNs\n    # Important: Filter consistently across all variables\n    mask = ~np.isnan(sif_w) & ~np.isnan(ogvi_w) & ~np.isnan(ndwi_w) & ~np.isnan(lst_w)\n    n_valid = np.sum(mask)\n\n    if n_valid < min_obs:\n        # Not enough valid observations in the window\n        return np.full(len(param_ini), np.nan, dtype=np.float32)\n    \n\n    sif_obs_f = sif_w[mask]\n    vi_f = ogvi_w[mask]\n    et_f = ndwi_w[mask] # Using NDWI as proxy for water stress/ET effect\n    lst_f = lst_w[mask]\n\n    # Define bounds for L-BFGS-B\n    bounds_scipy = list(zip(*param_bounds)) # [(min1, max1), (min2, max2), ...]\n\n   \n    result = minimize(cost_function,\n                              x0=param_ini,\n                              args=(vi_f, et_f, lst_f, sif_obs_f),\n                              method='L-BFGS-B',\n                              bounds=bounds_scipy,\n                              options={'maxiter': 1000, 'ftol': 1e-7, 'gtol': 1e-5}) # Adjust options as needed\n\n    optimized_params = np.array(np.clip(result.x, param_bounds[0], param_bounds[1]))\n    #print(optimized_params.dtype)\n    #print(optimized_params.size)\n    #print(optimized_params.shape)\n    return optimized_params\n\n\n  # Preparing output xarray.Datarray\n\n  # get the coodinates of the datacube\n  # processing data\n\n  SIF_w = input_cube_local[\"SIF\"]\n  \n\n  VI_w = input_cube_local[\"OTCI\"]\n  \n\n  ET_w = input_cube_local[\"IWV\"]\n  \n\n  LST_w =  input_cube_local[\"LST\"]\n\n  output_bands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']\n\n  parameters_cube = xarray.apply_ufunc(\n    optimize_params_window, # Function to apply\n    # Input arrays:\n    SIF_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    VI_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    ET_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    LST_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(x = 'lat_roll', y = 'lon_roll'),\n\n    # Keyword arguments for the function:\n    kwargs={'param_ini': param_ini, 'param_bounds': param_bounds, 'min_obs': min_obs},\n    # Define input core dimensions (the window dimensions):\n    input_core_dims=[['lat_roll', 'lon_roll'], ['lat_roll', 'lon_roll'], ['lat_roll', 'lon_roll'], ['lat_roll', 'lon_roll']],\n    # Define output core dimensions (the parameters dimension):\n    output_core_dims=[['bands']],\n    dask_gufunc_kwargs={'output_sizes': {'bands': 6}},\n    # Specify the parameters dimension coordinates:\n    dask='parallelized', # Enable Dask parallelization\n    output_dtypes=[np.float64], # Specify output data type\n    vectorize = True,\n    # Add a new dimension 'parameters' to the output\n    exclude_dims=set(('lat_roll', 'lon_roll')), # Exclude window dims from output\n    ).rename('optimized_parameters')\n  \n  parameters_cube = parameters_cube.assign_coords({'bands': output_bands})\n\n  return parameters_cube\n\n"}, "result": true}}}, "size": [{"dimension": "x", "value": 512, "unit": "px"}, {"dimension": "y", "value": 512, "unit": "px"}]}}, "renamelabels3": {"process_id": "rename_labels", "arguments": {"data": {"from_node": "applyneighborhood1"}, "dimension": "bands", "target": ["b1", "b2", "b3", "b4", "b5", "b6"]}, "result": true}}}}</script>
     </openeo-model-builder>
     
 </div>
 </div>
 <p>Now we will download the cube the optimized parameters to have a look and spatially upsample to match the Sentinel-3 cube at high resolution.</p>
-<div id="897c5a7a" class="cell" data-execution_count="25">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="78">
+<div id="b2249a90" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="76">
 <pre><code>'\nparameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")\n'</code></pre>
 </div>
 </div>
 </section>
 <section id="checking-parameter-optimization-results" class="level2">
 <h2 class="anchored" data-anchor-id="checking-parameter-optimization-results">Checking parameter optimization results</h2>
-<div id="58e0a0df" class="cell" data-execution_count="26">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>parameters_cube_local <span class="op">=</span> rio.open_rasterio(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/results_parameters_optim_low_resolution.tif"</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(parameters_cube_local)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="29328244" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>parameters_cube_local <span class="op">=</span> rio.open_rasterio(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/results_parameters_optim_low_resolution.tif"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(parameters_cube_local)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;xarray.DataArray (band: 6, y: 30, x: 51)&gt; Size: 73kB
 [9180 values with dtype=float64]
@@ -686,35 +686,28 @@ Attributes:
 <pre><code>Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.</code></pre>
 </div>
 </div>
-<div id="8da35814" class="cell" data-execution_count="27">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>parameters_cube_local.sel(band<span class="op">=</span><span class="dv">1</span>).plot()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b27fc7ca" class="cell" data-execution_count="27">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.clf()</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">3</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>axs <span class="op">=</span> axs.flatten()</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>):</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    parameters_cube_local.sel(band<span class="op">=</span>i <span class="op">+</span> <span class="dv">1</span>).plot(ax<span class="op">=</span>axs[i])</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f"b</span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-28-output-1.png" width="602" height="449" class="figure-img"></p>
+<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-28-output-1.png" width="758" height="756" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="aceb8b59" class="cell" data-execution_count="28">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.clf()</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">3</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>axs <span class="op">=</span> axs.flatten()</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>):</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    parameters_cube_local.sel(band<span class="op">=</span>i <span class="op">+</span> <span class="dv">1</span>).plot(ax<span class="op">=</span>axs[i])</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f"b</span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="openEO_sif_downscaling_documented_and_plots_files/figure-html/cell-29-output-1.png" width="947" height="948" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
+<p>….</p>
+</section>
+<section id="section" class="level1">
+<h1></h1>
 
 
 </section>
