@@ -201,6 +201,7 @@ Predictors:
 |Land Surface Temperature| ```SENTINEL3_SLSTR_L2_LST```| ```LST```| 1 km|
 |Terrestrial Chlorophyll Index| ```SENTINEL3_OLCI_L2_LAND```| ```OTCI```| 300 m|
 |Integrated Water Vapour| ```SENTINEL3_OLCI_L2_LAND``` | ```IWV```| 300 m |
+: SIF predictors {#tbl-predictors}
 
 ### Creating openEO datacubes for the variables
 
@@ -593,7 +594,7 @@ git_push = ["git", "push"]
 subprocess.run(git_push)
 ```
 
-once the upsampling functionality is part of openEO one should be able to do:
+Once the upsampling functionality is part of openEO one should be able to do:
 
 ```{python}
 # | eval: false
@@ -601,3 +602,45 @@ parameters_cube_high = parameters_cube_low_rename.resample_cube_spatial(
     target=cube_LST_median
 )
 ```
+
+Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO.
+
+
+```{python}
+parameters_cube_high = connection.load_stac(
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["b1", "b2", "b3", "b4", "b5", "b6"],
+)
+parameters_cube_high
+
+
+parameters_cube_high_median = parameters_cube_high.reduce_temporal("median")
+```
+
+## Resampling OLCI products at 1 km
+
+Originally OTCI and IWV products are 300 meters resolution, as Sentinel-3 LST product is at 1 km (@tbl-predictors) we need to resample these products:
+
+
+```{python}
+
+cube_OTCI_median_1 = cube_OTCI_median.resample_cube_spatial(target=cube_LST_median)
+
+cube_IWV_median_1 = cube_IWV_median.resample_cube_spatial(target=cube_LST_median)
+```
+
+Then, we can concatenate all the variables in a single cube for prediction:
+
+```{python}
+cube_to_upscale = parameters_cube_high_median.merge_cubes(cube_LST_median)
+
+cube_to_upscale = cube_to_upscale.merge_cubes(cube_OTCI_median_1)
+
+cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
+```
+
+## Downscaling SIF
+
+To downscale SIF we will use the 
