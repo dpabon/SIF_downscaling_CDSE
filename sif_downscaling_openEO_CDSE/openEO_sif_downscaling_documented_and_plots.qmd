@@ -211,7 +211,7 @@ Predictors:
 # Testing SIF - Dong Li
 
 cube_SIF_original_median = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json",
+    "https://raw.githubusercontent.com/dpabon/sif_dong_li_2023_sample/refs/heads/main/stac/catalog.json",
     bands=["SIF"],
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
@@ -478,3 +478,10 @@ parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_opt
 
 ## Checking parameter optimization results
 
+
+```{python}
+parameters_cube_local = rio.open_rasterio(
+    "data/results_parameters_optim_low_resolution.tif"
+)
+print(parameters_cube_local)
+```
