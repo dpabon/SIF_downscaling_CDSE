@@ -517,9 +517,9 @@ This section is temporal (I hope...) until openEO team solve the upsampling issu
 
 :::
 
-
+This is a temporary solution
 ```{python}
-
+# | code-fold: true
 parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution.tif")
 parameters_low
 
@@ -593,8 +593,7 @@ git_push = ["git", "push"]
 subprocess.run(git_push)
 ```
 
-once the upsampling functionality is part of openEO one should be able to do
-
+once the upsampling functionality is part of openEO one should be able to do:
 
 ```{python}
 # | eval: false
