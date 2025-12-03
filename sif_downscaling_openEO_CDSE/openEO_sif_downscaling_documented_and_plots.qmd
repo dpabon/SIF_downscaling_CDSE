@@ -705,7 +705,7 @@ print(sif_downscaled_local)
 ```{python}
 fig, axs = plt.subplots(nrows=2, figsize=(6, 15))
 cube_sif_local.plot(ax=axs[0])
-axs[0].set_title("SIF (Origina)")
+axs[0].set_title("SIF (Original)")
 sif_downscaled_local.plot(ax=axs[1])
 axs[1].set_title("SIF (Downscaled)")
 
