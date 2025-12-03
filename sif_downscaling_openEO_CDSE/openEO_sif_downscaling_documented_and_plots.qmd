@@ -327,10 +327,6 @@ cube_iwv_local = rio.open_rasterio(filename="data/cube_IWV_median.tif")
 ```
 
 ```{python}
-print(cube_sif_local)
-```
-
-```{python}
 fig, axs = plt.subplots(nrows=4, figsize=(6, 15))
 cube_sif_local.plot(ax=axs[0])
 axs[0].set_title("SIF")
@@ -356,15 +352,15 @@ OR maybe Sentinel-3 SYN SLSTR bands...
 ```{python}
 cube_LST_median_low = cube_LST_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="bilinear"
-).add_dimension(name="bands", label="LST")
+)
 
 cube_OTCI_median_low = cube_OTCI_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="bilinear"
-).add_dimension(name="bands", label="OTCI")
+)
 
 cube_IWV_median_low = cube_IWV_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="bilinear"
-).add_dimension(name="bands", label="IWV")
+)
 ```
 
 Merging all the cubes at low resolution (SIF original resolution)
@@ -389,42 +385,6 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 dataset_SIF_low = dataset_SIF_low.merge_cubes(
     other=cube_SIF_original_median.rename_labels(dimension="bands", target=["dummy_2"])
 )
-```
-
-```{python}
-print("=== Cube structures before resampling ===")
-print("SIF cube metadata:")
-print(cube_SIF_original_median.metadata)
-print("\nLST cube metadata:")
-print(cube_LST_median.metadata)
-print("\nOTCI cube metadata:")
-print(cube_OTCI_median.metadata)
-print("\nIWV cube metadata:")
-print(cube_IWV_median.metadata)
-
-# After resampling and add_dimension
-print("\n=== Cube structures after resampling and add_dimension ===")
-print("LST_low bands:")
-print(cube_LST_median_low.metadata)
-print("\nOTCI_low bands:")
-print(cube_OTCI_median_low.metadata)
-print("\nIWV_low bands:")
-print(cube_IWV_median_low.metadata)
-```
-
-```{python}
-# After loading and reducing SIF
-cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer="median")
-
-# Check if SIF cube has bands dimension
-print("SIF dimensions:", cube_SIF_original_median.metadata)
-print("SIF process graph (last few steps):")
-print(cube_SIF_original_median)
-```
-```{python}
-"""
-dataset_SIF_low.execute_batch(outputfile="openeo_sif_low.nc")
-"""
 ```
 
 ## SIF parameter optimization at low spatial resolution
