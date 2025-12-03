@@ -509,5 +509,86 @@ plt.tight_layout()
 
 ....
 
+# Upsampling the parameters cube
 
-#
+::: {.callout-note}
+
+This section is temporal (I hope...) until openEO team solve the upsampling issue. For details see [CDSE discusion forum](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)
+
+:::
+
+
+```{python}
+
+parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution.tif")
+parameters_low
+
+# LST high resolution local
+lst_high = rio.open_rasterio("data/cube_LST_median.tif")
+
+parameters_high = parameters_low.rio.reproject_match(lst_high)
+
+# Saving the resample raster
+
+parameters_high.rio.to_raster("data/results_paramaters_high_resolution.tif")
+
+
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
+
+# Get metadata from the raster
+bbox = list(parameters_high.rio.bounds())  # [minx, miny, maxx, maxy]
+epsg = parameters_high.rio.crs.to_epsg()
+shape = [parameters_high.rio.height, parameters_high.rio.width]
+
+# Create geometry from bbox
+geom = mapping(box(*bbox))
+
+# Create the STAC item
+item = pystac.Item(
+    id="results_parameters_high_resolution",
+    geometry=geom,
+    bbox=bbox,
+    datetime=datetime.strptime(temporal_extent_prototype[0], "%Y-%m-%d"),
+    properties={},
+)
+
+# Add projection extension
+proj_ext = ProjectionExtension.ext(item, add_if_missing=True)
+proj_ext.epsg = epsg
+proj_ext.shape = shape
+proj_ext.bbox = bbox
+
+# Add EO extension
+EOExtension.ext(item, add_if_missing=True)
+
+# Add the asset
+item.add_asset(
+    key="parameters",
+    asset=pystac.Asset(
+        href=output_path,  # or use an absolute path / URL
+        title="Optimized Parameters High Resolution",
+        media_type="image/tiff; application=geotiff",
+        extra_fields={
+            "eo:bands": [{"name": f"b{i + 1}"} for i in range(parameters_high.shape[0])]
+        },
+    ),
+)
+
+
+# Save as JSON
+
+with open("data/results_parameters_high_resolution.json", "w") as f:
+    json.dump(item.to_dict(), f, indent=2)
+
+print(item.to_dict())
+
+# pushing changes to the remote repo to access from openEO again
+
+git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "-a"]
+
+subprocess.run(git_commit)
+
+git_push = ["git", "push"]
+
+subprocess.run(git_push)
+```
