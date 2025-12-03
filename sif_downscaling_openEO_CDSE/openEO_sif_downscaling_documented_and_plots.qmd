@@ -52,7 +52,7 @@ spatial_extent_prototype = {
     "north": 40.229218,
 }
 
-temporal_extent_prototype = ["2023-07-01", "2023-07-07"]
+temporal_extent_prototype = ["2018-06-23", "2018-06-30"]
 ```
 
 ```{python}
@@ -211,7 +211,7 @@ Predictors:
 # Testing SIF - Dong Li
 
 cube_SIF_original_median = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/sif_dong_li_2023_sample/refs/heads/main/stac/catalog.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json",
     bands=["SIF"],
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
