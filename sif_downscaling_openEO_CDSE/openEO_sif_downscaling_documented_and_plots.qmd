@@ -52,7 +52,7 @@ spatial_extent_prototype = {
     "north": 40.229218,
 }
 
-temporal_extent_prototype = ["2018-06-23", "2018-06-30"]
+temporal_extent_prototype = ["2023-07-01", "2023-07-07"]
 ```
 
 ```{python}
