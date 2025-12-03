@@ -204,31 +204,6 @@ Predictors:
 
 ### Creating openEO datacubes for the variables
 
-```{python}
-# Right after loading STAC
-cube_SIF_test = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/SIF_20180629.json",
-    bands=["SIF"],
-    spatial_extent=spatial_extent_prototype,
-    temporal_extent=temporal_extent_prototype,
-)
-
-# Check the process graph
-print("SIF cube after loading:")
-print(cube_SIF_test.to_json())
-```
- 
-
- ```{python}
- def check_bands(cube, name):
-    try:
-        pg = cube.to_json()
-        print(f"\n{name}:")
-        print(f"Process graph nodes: {list(pg['process_graph'].keys())}")
-    except:
-        print(f"\n{name}: Unable to inspect")
- ```
-
 
 
 ```{python}
@@ -247,69 +222,64 @@ cube_LST = connection.load_collection(
     "SENTINEL3_SLSTR_L2_LST",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
-    bands=["LST", "confidence_in"],
+    bands=["LST"],
 )
 
-cube_OTCI_IWV = connection.load_collection(
+cube_LST_qc = connection.load_collection(
+    "SENTINEL3_SLSTR_L2_LST",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["confidence_in"],
+)
+
+cube_OTCI = connection.load_collection(
     "SENTINEL3_OLCI_L2_LAND",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
-    bands=["OTCI", "IWV", "LQSF"],
+    bands=["OTCI"],
 )
 
-```
-
-```{python}
-check_bands(cube_SIF_original_median, "SIF after load")
-
-# After reduce
-cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer="median")
-check_bands(cube_SIF_original_median, "SIF after reduce_temporal")
-
-# For LST
-cube_LST_median_low = cube_LST_median.resample_cube_spatial(
-    target=cube_SIF_original_median, method="bilinear"
+cube_IWV = connection.load_collection(
+    "SENTINEL3_OLCI_L2_LAND",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["IWV"],
 )
-check_bands(cube_LST_median_low, "LST after resample (before add_dimension)")
 
-cube_LST_median_low = cube_LST_median_low.add_dimension(name="bands", label="LST")
-check_bands(cube_LST_median_low, "LST after add_dimension")
+cube_OLCI_qc = connection.load_collection(
+    "SENTINEL3_OLCI_L2_LAND",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["LQSF"],
+)
 
-# First merge
-dataset_SIF_low = cube_SIF_original_median.merge_cubes(cube_LST_median_low)
-check_bands(dataset_SIF_low, "After first merge (SIF + LST)")
+
 ```
 
 ### Masking clouds
 
 
 ```{python}
-quality_band = cube_LST.band("confidence_in")
 
-mask = quality_band > 5000
+mask = cube_LST_qc > 5000
 
 cube_LST_masked = cube_LST.mask(mask)
-
-# We setup a phyisical filter in general we considered that values for June below 10 degrees are not realistic
-
-lst_band = cube_LST_masked.band("LST")
-mask = lst_band <= (10 + 273)
-cube_LST_masked_2 = lst_band.mask(mask)
 
 ```
 
 ```{python}
-quality_band = cube_OTCI_IWV.band("LQSF")
 
-mask = quality_band > 10000
+mask_olci = cube_OLCI_qc > 10000
 
-cube_OTCI_IWV_masked = cube_OTCI_IWV.mask(mask)
+cube_OTCI_masked = cube_OTCI.mask(mask_olci)
+
+cube_IWV_masked = cube_IWV.mask(mask_olci)
 ```
 
 If we call one of the cubes we can see the process graph that is created by openEO:
  
 ```{python}
-cube_LST
+cube_LST_masked
 ```
 
 ## Reducing the time dimension
@@ -319,13 +289,12 @@ For this analysis we will compute a composite of the area of interest using all 
 cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer="median")
 ```
 ```{python}
-# reducing time dimension
 
-cube_LST_median = cube_LST_masked_2.reduce_temporal(reducer="median")
+cube_LST_median = cube_LST_masked.reduce_temporal(reducer="median")
 
-cube_OTCI_median = cube_OTCI_IWV_masked.band("OTCI").reduce_temporal(reducer="median")
+cube_OTCI_median = cube_OTCI_masked.reduce_temporal(reducer="median")
 
-cube_IWV_median = cube_OTCI_IWV_masked.band("IWV").reduce_temporal(reducer="median")
+cube_IWV_median = cube_IWV_masked.reduce_temporal(reducer="median")
 
 ```
 
