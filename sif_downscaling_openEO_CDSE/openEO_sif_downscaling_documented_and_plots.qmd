@@ -472,8 +472,9 @@ Now we will download the cube the optimized parameters to have a look and spatia
 
 ```{python}
 """
-parameters_cube_low_rename.execute_batch(
-    outputfile="data/results_parameters_optim_low_resolution.tif"
-)
+parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")
 """
 ```
+
+## Checking parameter optimization results
+
