@@ -646,7 +646,7 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 
 ## Downscaling SIF
 
-To downscale SIF we will use @def-sif. The source code is in [udf_sif_downscaling.py](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/sif_downscaling_openEO_CDSE/udf/udf_sif_downscaling.py). Then we can call the ```udf``` using:
+To downscale SIF we will use @def-sif. The code implementation of @def-sif is available at [udf_sif_downscaling.py](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/sif_downscaling_openEO_CDSE/udf/udf_sif_downscaling.py). Then we can call the ```udf``` using:
 
 
 ```{python}
@@ -697,3 +697,17 @@ sif_downscaled.execute_batch(
 
 Comparing the original SIF product at 5 km with the Downscaled SIF at 1 km.
 
+```{python}
+sif_downscaled_local = rio.open_rasterio("data/openeo_sif_downscaled.tif")
+print(sif_downscaled_local)
+```
+
+```{python}
+fig, axs = plt.subplots(nrows=2, figsize=(6, 15))
+cube_sif_local.plot(ax=axs[0])
+axs[0].set_title("SIF (Origina)")
+sif_downscaled_local.plot(ax=axs[1])
+axs[1].set_title("SIF (Downscaled)")
+
+plt.tight_layout()
+```
