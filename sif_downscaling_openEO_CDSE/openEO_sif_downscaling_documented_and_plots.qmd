@@ -592,3 +592,13 @@ git_push = ["git", "push"]
 
 subprocess.run(git_push)
 ```
+
+once the upsampling functionality is part of openEO one should be able to do
+
+
+```{python}
+# | eval: false
+parameters_cube_high = parameters_cube_low_rename.resample_cube_spatial(
+    target=cube_LST_median
+)
+```
