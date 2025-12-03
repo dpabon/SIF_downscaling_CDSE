@@ -419,7 +419,7 @@ f(T) = e^{-\frac{(T + b_5)^2}{2b_6^2}}
 $$
 
 
-Given the previous formulation we optimize the function using L-BFGS-B and a spatial moving window with 40 observations. The optimization function is defined in [sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py](sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py).
+Given the previous formulation we optimize the function using L-BFGS-B and a spatial moving window with 40 observations. The optimization function is defined in [udf/udf_parameters_optim_low_res.py](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py).
 
 First we need to define the boundaries and start values for $b1$, $b2$, $b3$, $b4$, $b5$ parameters:
 
@@ -646,4 +646,4 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 
 ## Downscaling SIF
 
-To downscale SIF we will use @def-sif.
+To downscale SIF we will use @def-sif. The source code is in ```
