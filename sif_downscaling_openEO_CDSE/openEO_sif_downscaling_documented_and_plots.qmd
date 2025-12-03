@@ -399,7 +399,10 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 ## SIF parameter optimization at low spatial resolution
 
 To predict SIF we use the following formulation:
+
+::: {#def-sif}
 $$SIF = f(V) \cdot f(W) \cdot f(T)$$
+:::
 
 where $f(V)$ represents the vegetation module and $V$ is a vegation index: 
 $$f(V) = b_2 \cdot V^{b_1}$$
@@ -643,4 +646,4 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 
 ## Downscaling SIF
 
-To downscale SIF we will use the 
+To downscale SIF we will use @def-sif.
