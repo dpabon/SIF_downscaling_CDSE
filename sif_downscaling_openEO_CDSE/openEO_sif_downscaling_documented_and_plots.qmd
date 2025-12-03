@@ -52,7 +52,7 @@ spatial_extent_prototype = {
     "north": 40.229218,
 }
 
-temporal_extent_prototype = ["2018-06-23", "2018-06-30"]
+temporal_extent_prototype = ["2023-06-23", "2023-06-30"]
 ```
 
 ```{python}
@@ -233,11 +233,11 @@ cube_LST_qc = connection.load_collection(
     bands=["confidence_in"],
 )
 
-cube_OTCI = connection.load_collection(
-    "SENTINEL3_OLCI_L2_LAND",
+cube_NDVI = connection.load_collection(
+    "SENTINEL3_SYNERGY_VG1",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
-    bands=["OTCI"],
+    bands=["NDVI"],
 )
 
 cube_IWV = connection.load_collection(
@@ -272,7 +272,6 @@ cube_LST_masked = cube_LST.mask(mask)
 
 mask_olci = cube_OLCI_qc > 10000
 
-cube_OTCI_masked = cube_OTCI.mask(mask_olci)
 
 cube_IWV_masked = cube_IWV.mask(mask_olci)
 ```
@@ -294,7 +293,7 @@ For this analysis we will compute a composite of the area of interest using all 
 
 cube_LST_median = cube_LST_masked.reduce_temporal(reducer="median")
 
-cube_OTCI_median = cube_OTCI_masked.reduce_temporal(reducer="median")
+cube_NDVI_median = cube_NDVI.reduce_temporal(reducer="median")
 
 cube_IWV_median = cube_IWV_masked.reduce_temporal(reducer="median")
 
@@ -313,7 +312,7 @@ Then we will inspect the products, for that we need to execute the processors fo
 ```{python}
 # cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")
 # cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
-# cube_OTCI_median.execute_batch(outputfile="data/cube_OTCI_median.tif")
+# cube_NDVI_median.execute_batch(outputfile="data/cube_NDVI_median.tif")
 # cube_IWV_median.execute_batch(outputfile="data/cube_IWV_median.tif")
 ```
 
