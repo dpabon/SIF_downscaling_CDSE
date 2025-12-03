@@ -1,4 +1,3 @@
-# %%
 import numpy as np
 import xarray as xr
 import netCDF4
@@ -6,30 +5,30 @@ from scipy.optimize import minimize
 import rioxarray as rio
 import os
 
-# %%
+
 local_path = os.path.dirname(__file__)
 local_path
-# %%
+
 local_nc = xr.open_dataset("openeo_sif_low.nc")
 local_nc
-# %%
+
 local_nc["LST"].plot()
 
-# %%
+
 local_nc["SIF"].plot()
 
-# %%
+
 local_nc["OTCI"].plot()
 
-# %%
+
 local_nc["IWV"].plot()
-# %%
+
 SIF_w = local_nc["SIF"]
 SIF_w_valid = SIF_w.count().values
 SIF_w_valid
-# %%
+
 local_nc
-# %%
+
 import xarray
 
 
@@ -152,12 +151,10 @@ def apply_datacube(input_cube: xarray.Dataset, context: dict) -> xarray.DataArra
     )
 
 
-# %%
 param_ini = [1, 2, 50.0, 0, -295, 10]
 param_min = [0.5, 0.1, 0.0, -1, -310, 1]
 param_max = [1.5, 5, 500.0, 1, -290, 50]
 
-# %%
 
 optimize_params_window(
     local_nc,
@@ -170,88 +167,86 @@ optimize_params_window(
 )
 
 
-# %%
 # Checking parameters low resolution rename and values
 
 input_low = xr.open_dataset("openeo_sif_low.nc")
 input_low
-# %%
+
 input_low["SIF"].plot()
-# %%
+
 input_low["LST"].plot()
-# %%
+
 input_low["OTCI"].plot()
-# %%
+
 input_low["IWV"].plot()
 
-# %%
+
 parameters_low = rio.open_rasterio(
     "../data/results_parameters_optim_low_resolution.tif"
 )
 parameters_low
-# %%
+
 # LST high resolution
 lst_high = rio.open_rasterio("../data/lst_high_resolution.tif")
 lst_high
-# %%
+
 parameters_high = parameters_low.rio.reproject_match(lst_high)
 parameters_high
-# %%
+
 parameters_high.to_raster("../data/results_paramaters_high_resolution.tif")
 
 
-# %%
 cube_to_upscale = xr.open_dataset("data/cube_to_upscale.nc")
 cube_to_upscale
 
 
-# %%
 cube_to_upscale["crs"]
 
-# %%
+
 cube_to_upscale.to_dataarray()
-# %%html
+html
 ################################
 # Checking sif downscaled
 sif_downscaled = rio.open_rasterio("data/openeo_sif_downscaled.tif")
 sif_downscaled
-# %%
+
 sif_downscaled.sel(band=1).plot()
-# %%
+
 sif_original = rio.open_rasterio("data/SIF_20180629.tif", mask_and_scale=True)
 sif_original
-# %%
+
 sif_original.sel(
     band=1,
     y=slice(sif_downscaled.y.max().values, sif_downscaled.y.min().values),
     x=slice(sif_downscaled.x.min().values, sif_downscaled.x.max().values),
 ).plot(vmin=0, vmax=1.4)
-# %%
+
 # sif_original.plot()
 
 test = {"test1": {"three": 2}, "another": {"just": 3}}
-# %%
+
 sif_original.plot()
 
 
-
-```{python}
 # cube_LST.execute_batch(outputfile="data/cube_LST.nc")
-```
 
-```{python}
 cube_lst = xr.open_dataset("data/cube_LST.nc")
 cube_lst
-```
 
-```{python}
 cube_lst["LST"].where(cube_lst["LST"] > 280).where(
     cube_lst["confidence_in"] <= 5000
 ).isel(t=20).plot()
 
 # plt.close()
-```
 
-```{python}
 cube_lst["confidence_in"].where(cube_lst["confidence_in"] < 10000).isel(t=20).plot()
-```
+
+# checking local predictors cube
+predictors = xr.open_dataset("data/sif_predictors_cube_low.nc")
+
+print(predictors)
+
+# Creating a composite using daily SIF products
+
+
+sif_2023 = rio.open_rasterio("data/2023-07-SIF/*.tif")

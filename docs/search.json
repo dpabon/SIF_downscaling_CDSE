@@ -46,7 +46,7 @@
     "href": "sif_downscaling_openEO_CDSE/openEO_sif_downscaling_documented_and_plots.html#reducing-the-time-dimension",
     "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
     "section": "Reducing the time dimension",
-    "text": "Reducing the time dimension\nFor this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.\n\ncube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer=\"median\")\n\n\ncube_LST_median = cube_LST_masked.reduce_temporal(reducer=\"median\")\n\ncube_OTCI_median = cube_OTCI_masked.reduce_temporal(reducer=\"median\")\n\ncube_IWV_median = cube_IWV_masked.reduce_temporal(reducer=\"median\")\n\n\ncube_LST_median"
+    "text": "Reducing the time dimension\nFor this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.\n\n# cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer=\"median\")\n\n\ncube_LST_median = cube_LST_masked.reduce_temporal(reducer=\"median\")\n\ncube_OTCI_median = cube_OTCI_masked.reduce_temporal(reducer=\"median\")\n\ncube_IWV_median = cube_IWV_masked.reduce_temporal(reducer=\"median\")\n\n\ncube_LST_median"
   },
   {
     "objectID": "sif_downscaling_openEO_CDSE/openEO_sif_downscaling_documented_and_plots.html#inspecting-the-variables",
@@ -74,6 +74,6 @@
     "href": "sif_downscaling_openEO_CDSE/openEO_sif_downscaling_documented_and_plots.html#checking-parameter-optimization-results",
     "title": "SIF Downscaling using OpenEO and the Copernicus Data Space Ecosystem (CDSE)",
     "section": "Checking parameter optimization results",
-    "text": "Checking parameter optimization results"
+    "text": "Checking parameter optimization results\n\nparameters_cube_local = rio.open_rasterio(\n    \"data/results_parameters_optim_low_resolution.tif\"\n)\nprint(parameters_cube_local)\n\n&lt;xarray.DataArray (band: 6, y: 30, x: 51)&gt; Size: 73kB\n[9180 values with dtype=float64]\nCoordinates:\n  * band         (band) int64 48B 1 2 3 4 5 6\n  * x            (x) float64 408B -6.871 -6.771 -6.671 ... -2.071 -1.971 -1.871\n  * y            (y) float64 240B 40.18 40.08 39.98 39.88 ... 37.48 37.38 37.28\n    spatial_ref  int64 8B 0\nAttributes:\n    institution:          Copernicus Data Space Ecosystem openEO API - 0.70.0...\n    PROCESSING_SOFTWARE:  0.70.0a5\n    AREA_OR_POINT:        Area\n    _FillValue:           nan\n    scale_factor:         1.0\n    add_offset:           0.0\n    long_name:            ('b1', 'b2', 'b3', 'b4', 'b5', 'b6')\n\n\nWarning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.\n\n\n\nplt.clf()\nparameters_cube_local.sel(band=1).plot()\n\n\n\n\n\n\n\n\n\n# plt.clf()\nfig, axs = plt.subplots(nrows=3, ncols=2, figsize=(10, 10))\naxs = axs.flatten()\n\nfor i in range(6):\n    parameters_cube_local.sel(band=i + 1).plot(ax=axs[i])\n    axs[i].set_title(f\"b{i + 1}\")\n\nplt.tight_layout()"
   }
 ]

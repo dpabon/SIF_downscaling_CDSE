@@ -285,8 +285,9 @@ cube_LST_masked
 ## Reducing the time dimension
 
 For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.
+
 ```{python}
-cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer="median")
+# cube_SIF_original_median = cube_SIF_original_median.reduce_temporal(reducer="median")
 ```
 ```{python}
 
@@ -387,6 +388,11 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 )
 ```
 
+```{python}
+# | echo: false
+# dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low.nc")
+```
+
 ## SIF parameter optimization at low spatial resolution
 
 To predict SIF we use the following formulation:
@@ -485,3 +491,21 @@ parameters_cube_local = rio.open_rasterio(
 )
 print(parameters_cube_local)
 ```
+
+```{python}
+# plt.clf()
+fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(10, 10))
+axs = axs.flatten()
+
+for i in range(6):
+    parameters_cube_local.sel(band=i + 1).plot(ax=axs[i])
+    axs[i].set_title(f"b{i + 1}")
+
+plt.tight_layout()
+
+```
+
+....
+
+
+#
