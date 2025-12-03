@@ -419,7 +419,7 @@ f(T) = e^{-\frac{(T + b_5)^2}{2b_6^2}}
 $$
 
 
-Given the previous formulation we optimize the function using L-BFGS-B and a spatial moving window with 40 observations. The optimization function is defined in [udf/udf_parameters_optim_low_res.py](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py).
+Given the previous formulation we optimize the function using L-BFGS-B and a spatial moving window with 40 observations. The optimization function is defined in [udf_parameters_optim_low_res.py](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/sif_downscaling_openEO_CDSE/udf/udf_parameters_optim_low_res.py).
 
 First we need to define the boundaries and start values for $b1$, $b2$, $b3$, $b4$, $b5$ parameters:
 
@@ -646,4 +646,54 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 
 ## Downscaling SIF
 
-To downscale SIF we will use @def-sif. The source code is in ```
+To downscale SIF we will use @def-sif. The source code is in [udf_sif_downscaling.py](https://github.com/dpabon/SIF_downscaling_CDSE/blob/main/sif_downscaling_openEO_CDSE/udf/udf_sif_downscaling.py). Then we can call the ```udf``` using:
+
+
+```{python}
+udf_sif_prediction = openeo.UDF.from_file(
+    "sif_downscaling_openEO_CDSE/udf/udf_sif_downscaling.py",
+    context={"window_size_lat": 3, "window_size_lon": 3},
+)
+
+sif_downscaled = cube_to_upscale.apply_neighborhood(
+    udf_sif_prediction,
+    size=[
+        {"dimension": "x", "value": 512, "unit": "px"},
+        {"dimension": "y", "value": 512, "unit": "px"},
+    ],
+    overlap=[
+        {"dimension": "x", "value": 0, "unit": "px"},
+        {"dimension": "y", "value": 0, "unit": "px"},
+    ],
+)
+```
+
+It is not possible to reduce the number of bands using ```apply_neighborhood``` then we need to just select the first band:
+
+```{python}
+# removing bands that are not needed it
+
+sif_downscaled = sif_downscaled.rename_labels(
+    dimension="bands", source=["b1"], target=["SIF"]
+)
+
+sif_downscaled = sif_downscaled.band("SIF")
+```
+
+Now we can run everthing and save the results
+
+
+```{python}
+"""
+sif_downscaled.execute_batch(
+    outputfile="data/openeo_sif_downscaled.tif",
+    title="SIF_downscaling",
+    description="Testing SIF extraction",
+)
+"""
+```
+
+## Comparing SIF products
+
+Comparing the original SIF product at 5 km with the Downscaled SIF at 1 km.
+
