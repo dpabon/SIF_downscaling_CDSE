@@ -514,7 +514,7 @@ plt.tight_layout()
 
 ::: {.callout-note}
 
-This section is temporal (I hope...) until openEO team solve the upsampling issue. For details see [CDSE discusion forum](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6)
+Until openEO team solve the upsampling issue. For details see [CDSE discusion forum](https://forum.dataspace.copernicus.eu/t/how-to-spatial-upsampling-when-using-resample-cube-spatial/4358/6) We need to make a workaround to upsample the parameters cube.
 
 :::
 
