@@ -634,6 +634,18 @@ subprocess.run(git_commit)
 git_push = ["git", "push"]
 
 subprocess.run(git_push)
+
+# plotting the resampled parameters
+
+fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(8, 8))
+axs = axs.flatten()
+
+for i in range(6):
+    parameters_high.sel(band=i + 1).plot(ax=axs[i])
+    axs[i].set_title(f"b{i + 1}")
+
+plt.tight_layout()
+
 ```
 
 Once the upsampling functionality is part of openEO one should be able to do:
