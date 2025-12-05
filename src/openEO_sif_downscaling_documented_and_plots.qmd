@@ -58,7 +58,6 @@ temporal_extent_prototype = ["2023-06-23", "2023-06-30"]
 
 ```{python}
 # | echo: false
-import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from matplotlib.patches import Rectangle
@@ -561,16 +560,33 @@ Until openEO team solve the upsampling issue. For details see [CDSE discusion fo
 
 :::
 
+```{python}
+
+
+```
+
+
 This is a temporary solution
 ```{python}
 # | code-fold: true
 parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution.tif")
 parameters_low
+parameters_low = parameters_low.rename(
+    new_name_or_name_dict={"x": "longitude", "y": "latitude"}
+)
 
 # LST high resolution local
 lst_high = rio.open_rasterio("data/cube_LST_median.tif")
 
-parameters_high = parameters_low.rio.reproject_match(lst_high)
+lst_high = lst_high.rename(new_name_or_name_dict={"x": "longitude", "y": "latitude"})
+
+
+regridder = xe.Regridder(parameters_low, lst_high, "bilinear")
+
+parameters_high = regridder(parameters_low)
+
+
+# parameters_high = parameters_low.rio.reproject_match(lst_high)
 
 # Saving the resample raster
 
@@ -581,7 +597,7 @@ output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/mai
 
 # Get metadata from the raster
 bbox = list(parameters_high.rio.bounds())  # [minx, miny, maxx, maxy]
-epsg = parameters_high.rio.crs.to_epsg()
+epsg = "epsg:4326"
 shape = [parameters_high.rio.height, parameters_high.rio.width]
 
 # Create geometry from bbox
