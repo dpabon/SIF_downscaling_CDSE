@@ -691,7 +691,8 @@ parameters_cube_high = connection.load_stac(
 parameters_cube_high
 
 
-parameters_cube_high_median = parameters_cube_high.reduce_temporal("median")
+# parameters_cube_high_median = parameters_cube_high.reduce_temporal("median")
+parameters_cube_high_median = parameters_cube_high
 ```
 
 ## Resampling OLCI products at 1 km
