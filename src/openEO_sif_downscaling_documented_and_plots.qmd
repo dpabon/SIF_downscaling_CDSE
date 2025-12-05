@@ -249,6 +249,8 @@ nir = connection.load_collection(
 
 cube_NDVI = (nir - red) / (nir + red)
 
+cube_NDVI = cube_NDVI.rename_labels(dimension="bands", target=["NDVI"])
+
 cube_IWV = connection.load_collection(
     "SENTINEL3_OLCI_L2_LAND",
     spatial_extent=spatial_extent_prototype,
@@ -287,7 +289,7 @@ mask_olci = cube_OLCI_qc > 10000
 
 cube_IWV_masked = cube_IWV.mask(mask_olci)
 
-cube_NDVI_masked = cube_NDVI.mas(mask_olci)
+cube_NDVI_masked = cube_NDVI.mask(mask_olci)
 ```
 
 If we call one of the cubes we can see the process graph that is created by openEO:
@@ -307,7 +309,7 @@ For this analysis we will compute a composite of the area of interest using all 
 
 cube_LST_median = cube_LST_masked.reduce_temporal(reducer="median")
 
-cube_NDVI_median = cube_NDVI.reduce_temporal(reducer="median")
+cube_NDVI_median = cube_NDVI_masked.reduce_temporal(reducer="median")
 
 cube_IWV_median = cube_IWV_masked.reduce_temporal(reducer="median")
 
@@ -336,9 +338,7 @@ cube_sif_local = rio.open_rasterio(
     filename="data/cube_SIF_median.tif", mask_and_scale=True
 )
 cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
-cube_ndvi_local = rio.open_rasterio(
-    filename="data/cube_NDVI_median.tif", mask_and_scale=True
-)
+cube_ndvi_local = rio.open_rasterio(filename="data/cube_NDVI_median.tif")
 cube_iwv_local = rio.open_rasterio(filename="data/cube_IWV_median.tif")
 
 ```
@@ -377,8 +377,6 @@ cube_NDVI_median_low = cube_NDVI_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
-cube_NDVI_median_low = cube_NDVI_median_low * 0.004 - 0.08
-
 cube_IWV_median_low = cube_IWV_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
@@ -411,14 +409,6 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 ```{python}
 # | eval: false
 # dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low.nc")
-"""
-dataset_SIF_low.execute_batch(
-    outputfile="data/sif_predictors_cube_low.tif",
-    job_options={
-        "split_strategy": {"crossbackend": {"method": "simple"}},
-    },
-)
-"""
 ```
 
 Let's check the cube after resampling
@@ -427,12 +417,6 @@ Let's check the cube after resampling
 dataset_sif_low_local = xr.open_dataset("data/sif_predictors_cube_low.nc")
 print(dataset_sif_low_local)
 ```
-
-```{python}
-print(dataset_sif_low_local["NDVI"])
-dataset_sif_low_local["NDVI"] = dataset_sif_low_local["NDVI"] * 0.004 - 0.08
-```
-
 
 ```{python}
 fig, axs = plt.subplots(nrows=4, figsize=(6, 15))
@@ -539,12 +523,7 @@ Now we will download the cube the optimized parameters to have a look and spatia
 ```{python}
 # | eval: false
 """
-parameters_cube_low_rename.execute_batch(
-    outputfile="data/results_parameters_optim_low_resolution.tif",
-    job_options={
-        "split_strategy": {"crossbackend": {"method": "simple"}},
-    },
-)
+parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")
 """
 ```
 
