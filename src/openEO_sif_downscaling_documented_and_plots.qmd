@@ -560,10 +560,6 @@ Until openEO team solve the upsampling issue. For details see [CDSE discusion fo
 
 :::
 
-```{python}
-
-
-```
 
 
 This is a temporary solution
