@@ -565,6 +565,7 @@ Until openEO team solve the upsampling issue. For details see [CDSE discusion fo
 This is a temporary solution
 ```{python}
 # | code-fold: true
+# | eval: false
 parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution.tif")
 parameters_low
 parameters_low = parameters_low.rename(
