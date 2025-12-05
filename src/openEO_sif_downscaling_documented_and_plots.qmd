@@ -523,6 +523,7 @@ parameters_cube_low_rename = parameters_cube_low.rename_labels("bands", output_b
 and see the process graph:
 ```{python}
 parameters_cube_low_rename
+
 ```
 
 Now we will download the cube the optimized parameters to have a look and spatially upsample to match the Sentinel-3 cube at high resolution.
