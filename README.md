@@ -32,7 +32,14 @@ Now you have everything setup to run the tutorial.
 
 ## FAQ
 
-- I have problems with the code ()
+- Q: I have problems to run the tutorial?
+    A: Please open an [issue](https://github.com/dpabon/SIF_downscaling_CDSE/issues/new) 
+
+- Q: Can I select a new area to apply the procesor?
+ A: Sure, just change the values in the area of interest cell
+
+- Q: How can I contribute?
+ A: clone this repository and create pull requests.
 
 
 ## Acknowledgement
