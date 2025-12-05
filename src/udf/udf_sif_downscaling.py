@@ -122,4 +122,4 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
 
     inspect(output_dataset, message="output_dataset after:")
 
-    return output_dataset.to_dataarray()
+    return output_dataset.to_dataarray(dim="bands")
