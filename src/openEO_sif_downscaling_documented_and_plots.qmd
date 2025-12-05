@@ -38,6 +38,7 @@ import subprocess
 # For data visualization
 import xarray as xr
 import matplotlib.pyplot as plt
+import xesmf as xe
 ```
 
 ## Area of Interest and Time Period
