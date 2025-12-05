@@ -585,6 +585,10 @@ regridder = xe.Regridder(parameters_low, lst_high, "bilinear")
 
 parameters_high = regridder(parameters_low)
 
+parameters_high = parameters_high.rename(
+    new_name_or_name_dict={"longitude": "x", "latitude": "y"}
+)
+
 
 # parameters_high = parameters_low.rio.reproject_match(lst_high)
 
