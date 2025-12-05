@@ -717,11 +717,11 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
 
 ```{python}
 # | eval: false
-# cube_to_upscale.execute_batch(outputfile="data/sif_predictos_cube_high.nc")
+# cube_to_upscale.execute_batch(outputfile="data/sif_predictors_cube_high.nc")
 ```
 Checking that everything is in order with the code to upscale
 ```{python}
-cube_to_upscale_local = xr.open_dataset("data/sif_predictos_cube_high.nc")
+cube_to_upscale_local = xr.open_dataset("data/sif_predictors_cube_high.nc")
 print(cube_to_upscale_local)
 ```
 ## Downscaling SIF
