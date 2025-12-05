@@ -233,14 +233,21 @@ cube_LST_qc = connection.load_collection(
     bands=["confidence_in"],
 )
 
-cube_NDVI = connection.load_collection(
-    "SENTINEL3_SYNERGY_VG1",
+red = connection.load_collection(
+    "SENTINEL3_OLCI_L2_LAND",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
-    bands=["NDVI"],
+    bands=["RC681"],
 )
 
-cube_NDVI = cube_NDVI * 0.004 - 0.08
+nir = connection.load_collection(
+    "SENTINEL3_OLCI_L2_LAND",
+    spatial_extent=spatial_extent_prototype,
+    temporal_extent=temporal_extent_prototype,
+    bands=["RC865"],
+)
+
+cube_NDVI = (nir - red) / (nir + red)
 
 cube_IWV = connection.load_collection(
     "SENTINEL3_OLCI_L2_LAND",
@@ -279,6 +286,8 @@ mask_olci = cube_OLCI_qc > 10000
 
 
 cube_IWV_masked = cube_IWV.mask(mask_olci)
+
+cube_NDVI_masked = cube_NDVI.mas(mask_olci)
 ```
 
 If we call one of the cubes we can see the process graph that is created by openEO:
