@@ -691,8 +691,8 @@ parameters_cube_high = connection.load_stac(
 parameters_cube_high
 
 
-parameters_cube_high_median = parameters_cube_high.reduce_temporal("median")
-# parameters_cube_high_median = parameters_cube_high
+# parameters_cube_high_median = parameters_cube_high.reduce_temporal("median")
+parameters_cube_high_median = parameters_cube_high
 ```
 
 ## Resampling OLCI products at 1 km
@@ -713,6 +713,11 @@ cube_to_upscale = parameters_cube_high_median.merge_cubes(cube_LST_median)
 cube_to_upscale = cube_to_upscale.merge_cubes(cube_NDVI_median)
 
 cube_to_upscale = cube_to_upscale.merge_cubes(cube_IWV_median_1)
+```
+
+```{python}
+# | eval: false
+# cube_to_upscale.execute_batch(outputfile="data/sif_predictos_cube_high.nc")
 ```
 
 ## Downscaling SIF
