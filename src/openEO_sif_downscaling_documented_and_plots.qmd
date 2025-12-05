@@ -599,7 +599,7 @@ output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/mai
 
 # Get metadata from the raster
 bbox = list(parameters_high.rio.bounds())  # [minx, miny, maxx, maxy]
-epsg = "epsg:4326"
+epsg = "4326"
 shape = [parameters_high.rio.height, parameters_high.rio.width]
 
 # Create geometry from bbox

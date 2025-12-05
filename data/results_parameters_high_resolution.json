@@ -40,7 +40,7 @@
     40.229218
   ],
   "properties": {
-    "proj:code": "EPSG:epsg:4326",
+    "proj:code": "EPSG:4326",
     "proj:shape": [
       336,
       564
