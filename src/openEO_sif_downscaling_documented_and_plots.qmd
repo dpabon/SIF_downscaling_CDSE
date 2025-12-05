@@ -727,10 +727,7 @@ Now we can run everthing and save the results
 sif_downscaled.execute_batch(
     outputfile="data/openeo_sif_downscaled.tif",
     title="SIF_downscaling",
-    description="Testing SIF extraction",
-    job_options={
-        "split_strategy": {"crossbackend": {"method": "simple"}},
-    },
+    description="Predicting SIF at high spatial resolution"
 )
 """
 ```
