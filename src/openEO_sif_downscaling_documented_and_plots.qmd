@@ -259,21 +259,6 @@ cube_OLCI_qc = connection.load_collection(
 
 ```
 
-::: {.callout-note}
-
-There is a NDVI product composite that looks quite well unfortunately it can not be combined with CDSE products here the ref to the [issue](https://forum.dataspace.copernicus.eu/t/combining-cdse-and-terrascope-products/4472)
-
-```{python}
-# | eval: false
-
-cube_NDVI = connection.load_collection(
-    "SENTINEL3_SYNERGY_VG1",
-    spatial_extent=spatial_extent_prototype,
-    temporal_extent=temporal_extent_prototype,
-    bands=["NDVI"],
-)
-```
-:::
 
 
 
@@ -342,7 +327,9 @@ cube_sif_local = rio.open_rasterio(
     filename="data/cube_SIF_median.tif", mask_and_scale=True
 )
 cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
-cube_ndvi_local = rio.open_rasterio(filename="data/cube_NDVI_median.tif")
+cube_ndvi_local = rio.open_rasterio(
+    filename="data/cube_NDVI_median.tif", mask_and_scale=True
+)
 cube_iwv_local = rio.open_rasterio(filename="data/cube_IWV_median.tif")
 
 ```
@@ -353,7 +340,7 @@ cube_sif_local.plot(ax=axs[0])
 axs[0].set_title("SIF")
 cube_lst_local.plot(ax=axs[1])
 axs[1].set_title("LST")
-cube_ndvi_local.plot(ax=axs[2])
+cube_ndvi_local.plot(ax=axs[2], vmin=0, vmax=1)
 axs[2].set_title("NDVI")
 cube_iwv_local.plot(ax=axs[3])
 axs[3].set_title("IWV")
@@ -374,15 +361,17 @@ OR maybe Sentinel-3 SYN SLSTR bands...
 
 ```{python}
 cube_LST_median_low = cube_LST_median.resample_cube_spatial(
-    target=cube_SIF_original_median, method="near"
+    target=cube_SIF_original_median, method="med"
 )
 
 cube_NDVI_median_low = cube_NDVI_median.resample_cube_spatial(
-    target=cube_SIF_original_median, method="near"
+    target=cube_SIF_original_median, method="med"
 )
 
+cube_NDVI_median_low = cube_NDVI_median_low * 0.004 - 0.08
+
 cube_IWV_median_low = cube_IWV_median.resample_cube_spatial(
-    target=cube_SIF_original_median, method="near"
+    target=cube_SIF_original_median, method="med"
 )
 ```
 
@@ -415,7 +404,7 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 # dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low.nc")
 """
 dataset_SIF_low.execute_batch(
-    outputfile="data/sif_predictors_cube_low.nc",
+    outputfile="data/sif_predictors_cube_low.tif",
     job_options={
         "split_strategy": {"crossbackend": {"method": "simple"}},
     },
@@ -428,6 +417,11 @@ Let's check the cube after resampling
 ```{python}
 dataset_sif_low_local = xr.open_dataset("data/sif_predictors_cube_low.nc")
 print(dataset_sif_low_local)
+```
+
+```{python}
+print(dataset_sif_low_local["NDVI"])
+dataset_sif_low_local["NDVI"] = dataset_sif_low_local["NDVI"] * 0.004 - 0.08
 ```
 
 
