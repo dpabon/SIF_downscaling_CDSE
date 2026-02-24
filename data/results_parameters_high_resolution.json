@@ -11,52 +11,52 @@
     "coordinates": [
       [
         [
-          -1.0000000000002878,
-          37.00000000000015
+          -4.805921285933046e-13,
+          35.000000000000476
         ],
         [
-          -1.0000000000002878,
-          40.0
+          -4.805921285933046e-13,
+          45.0
         ],
         [
-          -7.0,
-          40.0
+          -10.0,
+          45.0
         ],
         [
-          -7.0,
-          37.00000000000015
+          -10.0,
+          35.000000000000476
         ],
         [
-          -1.0000000000002878,
-          37.00000000000015
+          -4.805921285933046e-13,
+          35.000000000000476
         ]
       ]
     ]
   },
   "bbox": [
-    -7.0,
-    37.00000000000015,
-    -1.0000000000002878,
-    40.0
+    -10.0,
+    35.000000000000476,
+    -4.805921285933046e-13,
+    45.0
   ],
   "properties": {
     "proj:code": "EPSG:4326",
     "proj:shape": [
-      336,
-      672
+      1120,
+      1120
     ],
     "proj:bbox": [
-      -7.0,
-      37.00000000000015,
-      -1.0000000000002878,
-      40.0
+      -10.0,
+      35.000000000000476,
+      -4.805921285933046e-13,
+      45.0
     ],
     "datetime": "2023-07-17T00:00:00Z"
   },
   "links": [],
   "assets": {
     "parameters": {
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/testing_large_areas/data/results_paramaters_high_resolution.tif",
       "type": "image/tiff; application=geotiff",
       "title": "Optimized Parameters High Resolution",
       "eo:bands": [
