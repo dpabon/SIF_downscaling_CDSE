@@ -806,7 +806,7 @@ print(sif_downscaled_local)
 
 ```{python}
 fig, axs = plt.subplots(nrows=2, figsize=(6, 10))
-cube_sif_local.plot(ax=axs[0])
+cube_sif_local.plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF (Original)")
 sif_downscaled_local.plot(ax=axs[1])
 axs[1].set_title("SIF (Downscaled)")
@@ -839,7 +839,7 @@ sif_downscaled_resampled_local
 
 ```{python}
 fig, axs = plt.subplots(nrows=2, figsize=(6, 10))
-cube_sif_local.plot(ax=axs[0])
+cube_sif_local.plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF (Original)")
 sif_downscaled_resampled_local.plot(ax=axs[1])
 axs[1].set_title("SIF (Downscaled) resampled")
