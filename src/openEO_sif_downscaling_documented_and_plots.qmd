@@ -65,14 +65,14 @@ import numpy as np
 
 ## Area of Interest and Time Period
 
-Before going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in south part of Spain in the period between 2023-07-17 and 2023-07-23.
+Before going into the details of the datasets, we need to define an area of interest and time period for our analysis. For this example, we will focus on the Iberian Peninsula during the time period between 2023-07-17 and 2023-07-23.
 
 ```{python}
 spatial_extent_prototype = {
-    "west": -7.0,
-    "east": -1.0,
-    "south": 37.0,
-    "north": 44.0,
+    "west": -10.0,
+    "east": 0.0,
+    "south": 35.0,
+    "north": 45.0,
 }
 
 temporal_extent_prototype = ["2023-07-17", "2023-07-23"]
@@ -327,6 +327,15 @@ cube_NIRv_median = cube_NIRv_masked.reduce_temporal(reducer="median")
 
 ```
 
+### Resampling OLCI products at 1 km
+
+Originally the OLCI products are 300 meters resolution, as Sentinel-3 LST product is at 1 km (@tbl-predictors) we need to resample the NIRv cube:
+
+```{python}
+cube_NIRv_median_1 = cube_NIRv_median.resample_cube_spatial(
+    target=cube_LST_median, method="med"
+)
+```
 
 ```{python}
 cube_LST_median
@@ -340,8 +349,9 @@ Then we will inspect the products, for that we need to execute the processors fo
 ```{python}
 # cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")
 # cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
-# cube_NIRv_median.execute_batch(outputfile="data/cube_NIRv_median.tif")
+# cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
 ```
+
 
 
 ```{python}
@@ -349,7 +359,7 @@ cube_sif_local = rio.open_rasterio(
     filename="data/cube_SIF_median.tif", mask_and_scale=True
 )
 cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
-cube_nirv_local = rio.open_rasterio(filename="data/cube_NIRv_median.tif")
+cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask.tif")
 
 ```
 
@@ -376,7 +386,7 @@ cube_LST_median_low = cube_LST_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
-cube_NIRv_median_low = cube_NIRv_median.resample_cube_spatial(
+cube_NIRv_median_low = cube_NIRv_median_1.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
@@ -550,22 +560,6 @@ plt.tight_layout()
 
 ....
 
-## Resampling OLCI products at 1 km
-
-Originally the OLCI products are 300 meters resolution, as Sentinel-3 LST product is at 1 km (@tbl-predictors) we need to resample the NIRv cube:
-
-```{python}
-cube_NIRv_median_1 = cube_NIRv_median.resample_cube_spatial(
-    target=cube_LST_median, method="med"
-)
-```
-
-```{python}
-# | eval: false
-"""
-cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
-"""
-```
 
 # Upsampling the parameters cube
 
