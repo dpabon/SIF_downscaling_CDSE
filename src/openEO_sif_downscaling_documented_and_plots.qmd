@@ -72,7 +72,7 @@ spatial_extent_prototype = {
     "west": -7.0,
     "east": -1.0,
     "south": 37.0,
-    "north": 40.0,
+    "north": 44.0,
 }
 
 temporal_extent_prototype = ["2023-07-17", "2023-07-23"]
@@ -363,7 +363,7 @@ cube_nirv_local.plot(ax=axs[2])
 axs[2].set_title("NIRv")
 
 plt.tight_layout()
-plt.close()
+
 ```
 
 
@@ -409,6 +409,8 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 )
 ```
 
+
+
 ```{python}
 # | eval: false
 # dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low.nc")
@@ -430,7 +432,6 @@ axs[1].set_title("LST")
 dataset_sif_low_local["NIRv"].plot(ax=axs[2])
 axs[2].set_title("NIRv")
 plt.tight_layout()
-plt.close()
 ```
 
 
@@ -462,9 +463,9 @@ First we need to define the boundaries and start values for $b1$, $b2$, $b5$ $b6
 
 param_min = [0, 0.1, -310, 1]
 
-param_ini = [1, 2, -295, 10]
+param_ini = [1, 2, -295, 20]
 
-param_max = [1.5, 5, -290, 50]
+param_max = [1.5, 5, -290, 80]
 ```
 
 
@@ -477,9 +478,9 @@ my_udf = openeo.UDF.from_file(
         "param_ini": param_ini,
         "param_min": param_min,
         "param_max": param_max,
-        "min_obs": 21,
-        "window_size_lat": 5,
-        "window_size_lon": 5,
+        "min_obs": 40,
+        "window_size_lat": 9,
+        "window_size_lon": 9,
     },
 )
 
@@ -497,8 +498,8 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(
         {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 0, "unit": "px"},
-        {"dimension": "y", "value": 0, "unit": "px"},
+        {"dimension": "x", "value": 81, "unit": "px"},
+        {"dimension": "y", "value": 81, "unit": "px"},
     ],
 )
 
@@ -621,7 +622,7 @@ Change the following path accordindly to your github repository.
 # | code-fold: true
 # | eval: false
 
-output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/testing_large_areas/data/results_paramaters_high_resolution.tif"
 ```
 
 ```{python}
