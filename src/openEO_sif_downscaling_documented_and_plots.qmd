@@ -31,6 +31,10 @@ affiliations:
 
 
 ---
+## Acknowledgement
+
+This project has received funding from the [Open-Earth-Monitor Cyberinfrastructure](https://earthmonitor.org/) project that is part of European Union's Horizon Europe research and innovation programme under grant [101059548](https://cordis.europa.eu/project/id/101059548).
+
 ## Introduction
 
 Sun-induced chlorophyll fluorescence (SIF) is a re-emitted signal directly originating from the photosynthetic system, representing plant fluorescence observed from space. It is therefore considered a direct measure of plant physiological status and responses to environmental changes, while also serving as a potential indicator for estimating global gross primary productivity (GPP). However, the revisit cycles and operational altitudes of existing SIF observation platforms limit their spatio-temporal resolution. This results in decoupling between the linear relationship between global-scale SIF and GPP at finer temporal and spatial scales.
@@ -855,7 +859,10 @@ sif_downscaled_resampled = sif_downscaled_renamed.resample_cube_spatial(
 
 ```{python}
 sif_downscaled_resampled_local = rio.open_rasterio("data/sif_downscaled_resampled.tif")
-sif_downscaled_resampled_local
+
+sif_downscaled_resampled_local = sif_downscaled_resampled_local.isel(x = range(100), y = range(0,100))
+
+sif_downscaled_resampled_local = sif_downscaled_resampled_local.assign_coords({'x': cube_sif_local.x.values, 'y': cube_sif_local.y.values})
 ```
 
 
@@ -869,10 +876,10 @@ axs[1].set_title("SIF (Downscaled) resampled")
 plt.tight_layout()
 ```
 
-Now let's do $originalSIF - upscaledSIF$
+Now we can compare the original SIF with the downscaled SIF + spatial resampling using $originalSIF - upscaledSIF$
 
 ```{python}
-plt.clf()
+fig, axs = plt.subplots(nrows=1, figsize=(6, 6))
 differences = cube_sif_local - sif_downscaled_resampled_local
 differences.plot()
 ```
