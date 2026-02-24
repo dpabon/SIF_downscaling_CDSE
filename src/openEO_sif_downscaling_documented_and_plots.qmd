@@ -66,14 +66,14 @@ import numpy as np
 
 ## Area of Interest and Time Period
 
-Before going into the details of the datasets we need to define an area of interest and time period of our analysis. For this example we will focus in south part of Spain in the period between 2023-07-17 and 2023-07-23.
+Before going into the details of the datasets, we need to define an area of interest and time period for our analysis. For this example, we will focus on the Iberian Peninsula during the time period between 2023-07-17 and 2023-07-23.
 
 ```{python}
 spatial_extent_prototype = {
-    "west": -7.0,
-    "east": -1.0,
-    "south": 37.0,
-    "north": 40.0,
+    "west": -10.0,
+    "east": 0.0,
+    "south": 35.0,
+    "north": 45.0,
 }
 
 temporal_extent_prototype = ["2023-07-17", "2023-07-23"]
@@ -328,6 +328,15 @@ cube_NIRv_median = cube_NIRv_masked.reduce_temporal(reducer="median")
 
 ```
 
+### Resampling OLCI products at 1 km
+
+Originally the OLCI products are 300 meters resolution, as Sentinel-3 LST product is at 1 km (@tbl-predictors) we need to resample the NIRv cube:
+
+```{python}
+cube_NIRv_median_1 = cube_NIRv_median.resample_cube_spatial(
+    target=cube_LST_median, method="med"
+)
+```
 
 ```{python}
 cube_LST_median
@@ -341,8 +350,9 @@ Then we will inspect the products, for that we need to execute the processors fo
 ```{python}
 # cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")
 # cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
-# cube_NIRv_median.execute_batch(outputfile="data/cube_NIRv_median.tif")
+# cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
 ```
+
 
 
 ```{python}
@@ -350,7 +360,7 @@ cube_sif_local = rio.open_rasterio(
     filename="data/cube_SIF_median.tif", mask_and_scale=True
 )
 cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
-cube_nirv_local = rio.open_rasterio(filename="data/cube_NIRv_median.tif")
+cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask.tif")
 
 ```
 
@@ -364,7 +374,7 @@ cube_nirv_local.plot(ax=axs[2])
 axs[2].set_title("NIRv")
 
 plt.tight_layout()
-plt.close()
+
 ```
 
 
@@ -377,7 +387,7 @@ cube_LST_median_low = cube_LST_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
-cube_NIRv_median_low = cube_NIRv_median.resample_cube_spatial(
+cube_NIRv_median_low = cube_NIRv_median_1.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
@@ -410,6 +420,8 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 )
 ```
 
+
+
 ```{python}
 # | eval: false
 # dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low.nc")
@@ -431,7 +443,6 @@ axs[1].set_title("LST")
 dataset_sif_low_local["NIRv"].plot(ax=axs[2])
 axs[2].set_title("NIRv")
 plt.tight_layout()
-plt.close()
 ```
 
 
@@ -463,7 +474,7 @@ First we need to define the boundaries and start values for $b1$, $b2$, $b5$ $b6
 
 param_min = [0, 0.1, -310, 1]
 
-param_ini = [1, 2, -295, 10]
+param_ini = [1, 2, -295, 20]
 
 param_max = [1.5, 5, -290, 50]
 ```
@@ -478,9 +489,9 @@ my_udf = openeo.UDF.from_file(
         "param_ini": param_ini,
         "param_min": param_min,
         "param_max": param_max,
-        "min_obs": 21,
-        "window_size_lat": 5,
-        "window_size_lon": 5,
+        "min_obs": 40,
+        "window_size_lat": 9,
+        "window_size_lon": 9,
     },
 )
 
@@ -498,8 +509,8 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(
         {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 0, "unit": "px"},
-        {"dimension": "y", "value": 0, "unit": "px"},
+        {"dimension": "x", "value": 81, "unit": "px"},
+        {"dimension": "y", "value": 81, "unit": "px"},
     ],
 )
 
@@ -550,22 +561,6 @@ plt.tight_layout()
 
 ....
 
-## Resampling OLCI products at 1 km
-
-Originally the OLCI products are 300 meters resolution, as Sentinel-3 LST product is at 1 km (@tbl-predictors) we need to resample the NIRv cube:
-
-```{python}
-cube_NIRv_median_1 = cube_NIRv_median.resample_cube_spatial(
-    target=cube_LST_median, method="med"
-)
-```
-
-```{python}
-# | eval: false
-"""
-cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
-"""
-```
 
 # Upsampling the parameters cube
 
@@ -622,7 +617,7 @@ Change the following path accordindly to your github repository.
 # | code-fold: true
 # | eval: false
 
-output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/testing_large_areas/data/results_paramaters_high_resolution.tif"
 ```
 
 ```{python}
@@ -714,7 +709,7 @@ Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO
 
 ```{python}
 parameters_cube_high = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/testing_large_areas/data/results_parameters_high_resolution.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["b1", "b2", "b5", "b6"],
@@ -812,18 +807,10 @@ print(sif_downscaled_local)
 
 ```{python}
 fig, axs = plt.subplots(nrows=2, figsize=(6, 10))
-cube_sif_local.plot(ax=axs[0])
+cube_sif_local.plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF (Original)")
 sif_downscaled_local.plot(ax=axs[1])
 axs[1].set_title("SIF (Downscaled)")
-
-```
-
-
-```{python}
-plt.clf()
-
-sif_downscaled_local.plot()
 
 ```
 
@@ -853,7 +840,7 @@ sif_downscaled_resampled_local
 
 ```{python}
 fig, axs = plt.subplots(nrows=2, figsize=(6, 10))
-cube_sif_local.plot(ax=axs[0])
+cube_sif_local.plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF (Original)")
 sif_downscaled_resampled_local.plot(ax=axs[1])
 axs[1].set_title("SIF (Downscaled) resampled")
