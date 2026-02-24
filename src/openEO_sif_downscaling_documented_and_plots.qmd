@@ -714,7 +714,7 @@ Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO
 
 ```{python}
 parameters_cube_high = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/testing_large_areas/data/results_parameters_high_resolution.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["b1", "b2", "b5", "b6"],
@@ -816,14 +816,6 @@ cube_sif_local.plot(ax=axs[0])
 axs[0].set_title("SIF (Original)")
 sif_downscaled_local.plot(ax=axs[1])
 axs[1].set_title("SIF (Downscaled)")
-
-```
-
-
-```{python}
-plt.clf()
-
-sif_downscaled_local.plot()
 
 ```
 
