@@ -638,7 +638,7 @@ Change the following path accordindly to your github repository.
 # | code-fold: true
 # | eval: false
 
-output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/testing_large_areas/data/results_paramaters_high_resolution.tif"
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
 ```
 
 ```{python}
@@ -730,7 +730,7 @@ Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO
 
 ```{python}
 parameters_cube_high = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/testing_large_areas/data/results_parameters_high_resolution.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["b1", "b2", "b5", "b6"],
