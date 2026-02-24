@@ -33,10 +33,11 @@ affiliations:
 ---
 ## Introduction
 
-In the following example we will Downscaled (Increase the spatial resolution) of Sun Induced Fluorescence product derived from Sentinel-5p TROPOMI sensor. A full workflow diagram is presented here: XXXXX
+Sun-induced chlorophyll fluorescence (SIF) is a re-emitted signal directly originating from the photosynthetic system, representing plant fluorescence observed from space. It is therefore considered a direct reflection of plant physiological status and responses to environmental changes, while also serving as a potential indicator for estimating global gross primary productivity (GPP). However, the revisit cycles and operational altitudes of existing SIF observation platforms limit their spatio-temporal resolution. This results in decoupling between the linear relationship between global-scale SIF and GPP at finer temporal and spatial scales.
+The Sentinel-5P TROPOMI sensor, with its daily nadir spatial resolution of 3.5 × 5.5-7 km, enables more detailed observation of SIF/GPP in terrestrial ecosystems. The following example illustrates the downscaling process (i.e., increasing the spatial resolution) for SIF based on the TROPOMI SIF. A full workflow diagram is presented here:
 
 ## Libraries
-We will need the following libraries to run dowscaling processor
+We will need the following libraries to run downscaling processor
 ```{python}
 import openeo
 import rioxarray as rio
