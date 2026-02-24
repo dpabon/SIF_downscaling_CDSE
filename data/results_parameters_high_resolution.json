@@ -56,7 +56,7 @@
   "links": [],
   "assets": {
     "parameters": {
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/testing_large_areas/data/results_paramaters_high_resolution.tif",
       "type": "image/tiff; application=geotiff",
       "title": "Optimized Parameters High Resolution",
       "eo:bands": [
