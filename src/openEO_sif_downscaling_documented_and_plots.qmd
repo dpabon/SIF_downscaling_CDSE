@@ -37,7 +37,7 @@ Sun-induced chlorophyll fluorescence (SIF) is a re-emitted signal directly origi
 The Sentinel-5P TROPOMI sensor, with its daily nadir spatial resolution of 3.5 × 5.5-7 km, enables more detailed observation of SIF/GPP in terrestrial ecosystems. The following example illustrates the downscaling process (i.e., increasing the spatial resolution) for SIF based on the TROPOMI SIF.
 
 ## Libraries
-We will need the following libraries to run downscaling processor
+We will need the following libraries to run the downscaling processor
 ```{python}
 import openeo
 import rioxarray as rio
@@ -70,10 +70,10 @@ Before going into the details of the datasets we need to define an area of inter
 
 ```{python}
 spatial_extent_prototype = {
-    "west": -7.0,
-    "east": -1.0,
-    "south": 37.0,
-    "north": 40.0,
+    "west": -10.0,
+    "east": 0.0,
+    "south": 35.0,
+    "north": 45.0,
 }
 
 temporal_extent_prototype = ["2023-07-17", "2023-07-23"]
@@ -333,6 +333,16 @@ cube_NIRv_median = cube_NIRv_masked.reduce_temporal(reducer="median")
 cube_LST_median
 ```
 
+### Resampling OLCI products at 1 km
+
+Originally the OLCI products are 300 meters resolution, as Sentinel-3 LST product is at 1 km (@tbl-predictors) we need to resample the NIRv cube:
+
+```{python}
+cube_NIRv_median_1 = cube_NIRv_median.resample_cube_spatial(
+    target=cube_LST_median, method="med"
+)
+```
+
 ## Inspecting the variables
 
 Then we will inspect the products, for that we need to execute the processors for each cube, save it locally, open and plot.
@@ -341,7 +351,7 @@ Then we will inspect the products, for that we need to execute the processors fo
 ```{python}
 # cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")
 # cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
-# cube_NIRv_median.execute_batch(outputfile="data/cube_NIRv_median.tif")
+# cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
 ```
 
 
@@ -350,13 +360,13 @@ cube_sif_local = rio.open_rasterio(
     filename="data/cube_SIF_median.tif", mask_and_scale=True
 )
 cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
-cube_nirv_local = rio.open_rasterio(filename="data/cube_NIRv_median.tif")
+cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask.tif")
 
 ```
 
 ```{python}
 fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
-cube_sif_local.plot(ax=axs[0])
+cube_sif_local.plot(ax=axs[0], vmin=0)
 axs[0].set_title("SIF")
 cube_lst_local.plot(ax=axs[1])
 axs[1].set_title("LST")
@@ -364,7 +374,7 @@ cube_nirv_local.plot(ax=axs[2])
 axs[2].set_title("NIRv")
 
 plt.tight_layout()
-plt.close()
+
 ```
 
 
@@ -377,7 +387,7 @@ cube_LST_median_low = cube_LST_median.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
-cube_NIRv_median_low = cube_NIRv_median.resample_cube_spatial(
+cube_NIRv_median_low = cube_NIRv_median_1.resample_cube_spatial(
     target=cube_SIF_original_median, method="med"
 )
 
@@ -424,14 +434,14 @@ print(dataset_sif_low_local)
 
 ```{python}
 fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
-dataset_sif_low_local["SIF"].plot(ax=axs[0])
+dataset_sif_low_local["SIF"].plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF")
 dataset_sif_low_local["LST"].plot(ax=axs[1])
 axs[1].set_title("LST")
 dataset_sif_low_local["NIRv"].plot(ax=axs[2])
 axs[2].set_title("NIRv")
 plt.tight_layout()
-plt.close()
+
 ```
 
 
@@ -478,9 +488,9 @@ my_udf = openeo.UDF.from_file(
         "param_ini": param_ini,
         "param_min": param_min,
         "param_max": param_max,
-        "min_obs": 21,
-        "window_size_lat": 5,
-        "window_size_lon": 5,
+        "min_obs": 40,
+        "window_size_lat": 9,
+        "window_size_lon": 9,
     },
 )
 
@@ -498,8 +508,8 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(
         {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 0, "unit": "px"},
-        {"dimension": "y", "value": 0, "unit": "px"},
+        {"dimension": "x", "value": 81, "unit": "px"},
+        {"dimension": "y", "value": 81, "unit": "px"},
     ],
 )
 
@@ -558,13 +568,6 @@ Originally the OLCI products are 300 meters resolution, as Sentinel-3 LST produc
 cube_NIRv_median_1 = cube_NIRv_median.resample_cube_spatial(
     target=cube_LST_median, method="med"
 )
-```
-
-```{python}
-# | eval: false
-"""
-cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
-"""
 ```
 
 # Upsampling the parameters cube
@@ -868,4 +871,3 @@ plt.clf()
 differences = cube_sif_local - sif_downscaled_resampled_local
 differences.plot()
 ```
-
