@@ -4,7 +4,7 @@
 
 
 Sun-induced chlorophyll fluorescence (SIF) is a re-emitted signal directly originating from the photosynthetic system, representing plant fluorescence observed from space. It is therefore considered a direct measure of plant physiological status and responses to environmental changes, while also serving as a potential indicator for estimating global gross primary productivity (GPP). However, the revisit cycles and operational altitudes of existing SIF observation platforms limit their spatio-temporal resolution. This results in decoupling between the linear relationship between global-scale SIF and GPP at finer temporal and spatial scales.
-The Sentinel-5P TROPOMI sensor, with its daily nadir spatial resolution of 3.5 × 5.5-7 km, enables more detailed observation of SIF/GPP in terrestrial ecosystems. The following example illustrates the downscaling process (i.e., increasing the spatial resolution) for SIF based on the TROPOMI SIF.
+The Sentinel-5P TROPOMI sensor, with its daily nadir spatial resolution of 3.5 × 5.5-7 km, enables more detailed observation of SIF/GPP in terrestrial ecosystems. The following example illustrates the downscaling process (i.e., increasing the spatial resolution) for SIF based on an mechanistic model that relates SIF with land-surface temperature, and NIRv (a vegetation index).
 
 
 ## Tutorial
