@@ -149,6 +149,10 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
             vi_f = vi_f[range(optimal_n)]
             lst_f = lst_f[range(optimal_n)]
 
+        #inspect(len(sif_obs_f), message="sif_n: ")
+        #inspect(len(vi_f), message="vi_n: ")
+        #inspect(len(lst_f), message="lst_n: ")
+
         # Define bounds for L-BFGS-B
         bounds_scipy = list(zip(*param_bounds))  # [(min1, max1), (min2, max2), ...]
 
