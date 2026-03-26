@@ -12,6 +12,41 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     window_size_lat = context["window_size_lat"]
     window_size_lon = context["window_size_lon"]
 
+    window_size_lat_big = (window_size_lat * 2) + 1
+
+    optimal_n = window_size_lat**2
+
+    def get_spiral_indices(n):
+        # Create a grid of flat indices (0 to n^2 - 1)
+        grid = np.arange(n * n).reshape(n, n)
+
+        # Starting at the center
+        r, c = (n - 1) // 2, (n - 1) // 2
+        spiral_idx = [grid[r, c]]
+
+        # Movement: Right, Up, Left, Down
+        dr = [0, -1, 0, 1]
+        dc = [1, 0, -1, 0]
+
+        step_size = 1
+        direction = 0  # Start moving Right
+
+        while len(spiral_idx) < n * n:
+            # Perform two sides of the spiral for each step_size increment
+            for _ in range(2):
+                for _ in range(step_size):
+                    r += dr[direction]
+                    c += dc[direction]
+                    # Check boundaries to ensure valid index
+                    if 0 <= r < n and 0 <= c < n:
+                        spiral_idx.append(grid[r, c])
+                direction = (direction + 1) % 4
+            step_size += 1
+
+        return np.array(spiral_idx)
+
+    spiral_index = get_spiral_indices(window_size_lat_big)
+
     # get the coodinates of the datacube
     # processing data
 
@@ -24,6 +59,7 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     PARAMETERS_w = PARAMETERS_w.to_dataarray(dim="parameters")
 
     def sif_downscaling_window(vi, lst, parameters):
+
         # Calculates downscaled SIF for a central pixel based on window means.
         # Inputs are 3D numpy arrays (window_x, window_y, [parameters]).
         # Calculate mean parameters within the window (ignore NaNs)
@@ -48,12 +84,36 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
 
         mean_params = np.nanmean(parameters, axis=(0, 1))
 
-        if np.all(np.isnan(mean_params)):
+        if np.all(np.isnan(mean_params)) or np.all(np.isnan(vi)) or np.all(np.isnan(lst)):
             return np.array(
                 [np.nan]
             )  # Cannot calculate if no valid parameters in window)
 
+        
+
         # Calculate mean predictors within the window (ignore NaNs)
+        mask = ~np.isnan(vi) & ~np.isnan(lst)
+        mask = mask.astype(float) 
+        mask[mask == 0] = np.nan
+
+        vi = vi * mask
+
+        lst = lst * mask
+
+        vi = vi.flatten()[spiral_index]
+        vi = vi[~np.isnan(vi)]
+
+        lst = lst.flatten()[spiral_index]
+        lst = lst[~np.isnan(lst)]
+
+        if (len(vi) > optimal_n):
+            vi = vi[range(optimal_n)]
+            lst = lst[range(optimal_n)]
+
+        # if central pixel is also NaN skip computation
+        if np.isnan(vi[0]):
+            return np.array([np.nan])
+
         mean_vi = np.nanmean(vi)
         mean_lst = np.nanmean(lst)
 
@@ -67,14 +127,14 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     sif_cube_high = xarray.apply_ufunc(
         sif_downscaling_window,
         # Input arrays with rolling windows constructed
-        VI_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
+        VI_w.rolling(x=window_size_lat_big, y=window_size_lat_big, center=True).construct(
             x="lat_roll", y="lon_roll"
         ),
-        LST_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
+        LST_w.rolling(x=window_size_lat_big, y=window_size_lat_big, center=True).construct(
             x="lat_roll", y="lon_roll"
         ),
         PARAMETERS_w.rolling(
-            x=window_size_lat, y=window_size_lon, center=True
+            x=window_size_lat_big, y=window_size_lat_big, center=True
         ).construct(x="lat_roll", y="lon_roll"),
         # Input core dimensions now include the window dims and the parameter dim for the last input
         input_core_dims=[
