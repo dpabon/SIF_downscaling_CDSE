@@ -15,7 +15,43 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     param_bounds = np.array([param_min, param_max])
     min_obs = context["min_obs"]
     window_size_lat = context["window_size_lat"]
-    window_size_lon = context["window_size_lon"]
+
+    window_size_lat_big = (window_size_lat * 2) + 1
+
+    optimal_n = window_size_lat**2
+
+    import numpy as np
+
+    def get_spiral_indices(n):
+        # Create a grid of flat indices (0 to n^2 - 1)
+        grid = np.arange(n * n).reshape(n, n)
+
+        # Starting at the center
+        r, c = (n - 1) // 2, (n - 1) // 2
+        spiral_idx = [grid[r, c]]
+
+        # Movement: Right, Up, Left, Down
+        dr = [0, -1, 0, 1]
+        dc = [1, 0, -1, 0]
+
+        step_size = 1
+        direction = 0  # Start moving Right
+
+        while len(spiral_idx) < n * n:
+            # Perform two sides of the spiral for each step_size increment
+            for _ in range(2):
+                for _ in range(step_size):
+                    r += dr[direction]
+                    c += dc[direction]
+                    # Check boundaries to ensure valid index
+                    if 0 <= r < n and 0 <= c < n:
+                        spiral_idx.append(grid[r, c])
+                direction = (direction + 1) % 4
+            step_size += 1
+
+        return np.array(spiral_idx)
+
+    spiral_index = get_spiral_indices(window_size_lat_big)
 
     # Nested functions, not elegant but looks like the correct way when defining openEO.UDF
 
@@ -53,6 +89,28 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         Designed to be used with apply_ufunc or iteration.
         Assumes input arrays (sif_w, etc.) are 2D numpy arrays (window data).
         """
+        # For debugging
+        # import numpy as np
+        # import matplotlib.pyplot as plt
+
+        # sif_w = np.arange(11*11, dtype=float).reshape(11, 11)
+        # ogvi_w = np.random.rand(11,11)
+        # lst_w =  np.random.rand(11,11)
+
+        # adding NaNs
+
+        # sif_w[7,7] = np.nan
+        # plt.imshow(sif_w)
+        # plt.colorbar()
+        # plt.close()
+
+        # ogvi_w[5,3] = np.nan
+        # plt.imshow(ogvi_w)
+        # plt.close()
+
+        # lst_w[3,8] = np.nan
+        # plt.imshow(lst_w)
+        # plt.close()
         # Flatten the window arrays and filter out NaNs
         # Important: Filter consistently across all variables
         mask = ~np.isnan(sif_w) & ~np.isnan(ogvi_w) & ~np.isnan(lst_w)
@@ -62,9 +120,31 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
             # Not enough valid observations in the window
             return np.full(len(param_ini), np.nan, dtype=np.float32)
 
-        sif_obs_f = sif_w[mask]
-        vi_f = ogvi_w[mask]
-        lst_f = lst_w[mask]
+        # apply the same mask for all variables. Then sort the matrix values using a spiral matrix traversal
+        # where points close to the center are first and
+        # points far way are last. After sorting remove NaNs and only take the maximum number of points allowed
+
+        sif_obs_f = sif_w * mask
+        sif_obs_f = sif_obs_f.flatten()[spiral_index]
+        sif_obs_f = sif_obs_f[~np.isnan(sif_obs_f)]
+
+        # If central pixel is NaN the operation is not performed.
+
+        if np.isnan(sif_obs_f[0]):
+            return np.full(len(param_ini), np.nan, dtype=np.float32)
+
+        vi_f = ogvi_w * mask
+        vi_f = vi_f.flatten()[spiral_index]
+        vi_f = vi_f[~np.isnan(vi_f)]
+
+        lst_f = lst_w * mask
+        lst_f = lst_f.flatten()[spiral_index]
+        lst_f = lst_f[~np.isnan(lst_f)]
+
+        if len(sif_obs_f) > optimal_n:
+            sif_obs_f = sif_obs_f[range(optimal_n)]
+            vi_f = vi_f[range(optimal_n)]
+            lst_f = lst_f[range(optimal_n)]
 
         # Define bounds for L-BFGS-B
         bounds_scipy = list(zip(*param_bounds))  # [(min1, max1), (min2, max2), ...]
@@ -100,15 +180,15 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     parameters_cube = xarray.apply_ufunc(
         optimize_params_window,  # Function to apply
         # Input arrays:
-        SIF_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
-            x="lat_roll", y="lon_roll"
-        ),
-        VI_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
-            x="lat_roll", y="lon_roll"
-        ),
-        LST_w.rolling(x=window_size_lat, y=window_size_lon, center=True).construct(
-            x="lat_roll", y="lon_roll"
-        ),
+        SIF_w.rolling(
+            x=window_size_lat_big, y=window_size_lat_big, center=True
+        ).construct(x="lat_roll", y="lon_roll"),
+        VI_w.rolling(
+            x=window_size_lat_big, y=window_size_lat_big, center=True
+        ).construct(x="lat_roll", y="lon_roll"),
+        LST_w.rolling(
+            x=window_size_lat_big, y=window_size_lat_big, center=True
+        ).construct(x="lat_roll", y="lon_roll"),
         # Keyword arguments for the function:
         kwargs={
             "param_ini": param_ini,
