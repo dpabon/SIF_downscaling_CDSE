@@ -1,10 +1,10 @@
-import xarray
-import numpy as np
-from scipy.optimize import minimize
-from openeo.udf.debug import inspect
-
 
 def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
+    import xarray
+    import numpy as np
+    from scipy.optimize import minimize
+    from openeo.udf.debug import inspect
+
     input_cube_local = cube.to_dataset(dim="bands")  #
     inspect(input_cube_local, message="local dataset: ")
     inspect(context["param_ini"], message="context param_ini")
@@ -19,8 +19,6 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     window_size_lat_big = (window_size_lat * 2) + 1
 
     optimal_n = window_size_lat**2
-
-    import numpy as np
 
     def get_spiral_indices(n):
         # Create a grid of flat indices (0 to n^2 - 1)
@@ -94,8 +92,8 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         # import matplotlib.pyplot as plt
 
         # sif_w = np.arange(11*11, dtype=float).reshape(11, 11)
-        # ogvi_w = np.random.rand(11,11)
-        # lst_w =  np.random.rand(11,11)
+        # ogvi_w = np.arange(11*11, dtype=float).reshape(11, 11)
+        # lst_w =  np.arange(11*11, dtype=float).reshape(11, 11)
 
         # adding NaNs
 
@@ -109,12 +107,17 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         # plt.close()
 
         # lst_w[3,8] = np.nan
+        # lst_w[5,3] = np.nan
         # plt.imshow(lst_w)
         # plt.close()
         # Flatten the window arrays and filter out NaNs
         # Important: Filter consistently across all variables
         mask = ~np.isnan(sif_w) & ~np.isnan(ogvi_w) & ~np.isnan(lst_w)
         n_valid = np.sum(mask)
+        #replace False with Nan
+        mask = mask.astype(float) 
+        mask[mask == 0] = np.nan
+
 
         if n_valid < min_obs:
             # Not enough valid observations in the window
