@@ -787,8 +787,8 @@ sif_downscaled = cube_to_upscale.apply_neighborhood(
         {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 0, "unit": "px"},
-        {"dimension": "y", "value": 0, "unit": "px"},
+        {"dimension": "x", "value": 20, "unit": "px"},
+        {"dimension": "y", "value": 20, "unit": "px"},
     ],
 )
 ```
