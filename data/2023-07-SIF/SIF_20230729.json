@@ -55,7 +55,7 @@
     },
     "assets": {
         "SIF": {
-            "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230729.tif",
+            "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230729.tif",
             "title": "Daily SIF",
             "type": "image/tiff; application=geotiff; profile=cloud-optimized",
             "eo:bands": [

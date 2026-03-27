@@ -1,0 +1,73 @@
+{
+  "type": "Collection",
+  "stac_version": "1.1.0",
+  "id": "SIF_from_dong_li",
+  "description": "A demo collection of SIF items",
+  "license": "TBD",
+  "extent": {
+    "spatial": { "bbox": [[
+        -180.0,
+        -90.0,
+        180.0,
+        90.0
+    ]] },
+    "temporal": { "interval": [["2023-01-24T00:00:00Z", "2023-12-31T00:00:00Z"]] }
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "self",
+      "href": "./collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230724.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230725.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230726.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230727.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230728.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230729.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230730.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./SIF_20230731.json",
+      "type": "application/json"
+    }
+  ]
+}
