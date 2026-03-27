@@ -1,6 +1,9 @@
 {
   "type": "Collection",
   "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io"
+  ],
   "id": "SIF_from_dong_li",
   "description": "A demo collection of SIF items",
   "license": "TBD",
