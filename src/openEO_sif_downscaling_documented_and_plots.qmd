@@ -70,7 +70,7 @@ import numpy as np
 
 ## Area of Interest and Time Period
 
-Before going into the details of the datasets, we need to define an area of interest and time period for our analysis. For this example, we will focus on the Iberian Peninsula during the time period between 2023-07-17 and 2023-07-23.
+Before going into the details of the datasets, we need to define an area of interest and time period for our analysis. For this example, we will focus on part of Indonesia during the time period between 2023-07-24 and 2023-07-31.
 
 ```{python}
 spatial_extent_prototype = {
@@ -392,7 +392,6 @@ cube_nirv_local.plot(ax=axs[2])
 axs[2].set_title("NIRv")
 
 plt.tight_layout()
-
 
 ```
 
