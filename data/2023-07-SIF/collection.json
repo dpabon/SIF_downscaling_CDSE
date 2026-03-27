@@ -12,9 +12,8 @@
     "eo:bands": [
       {
         "name": "SIF",
-        "common_name": "sif",
+        "common_name": "SIF",
         "description": "Solar Induced Fluorescence",
-        "gsd": 500
       }
     ]
   },

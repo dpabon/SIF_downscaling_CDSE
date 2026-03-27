@@ -65,5 +65,12 @@
                 }
             ]
         }
-    }
+    },
+    "links": [
+        {
+            "rel": "collection",
+            "href": "./collection.json",
+            "type": "application/json"
+        }
+    ]
 }
