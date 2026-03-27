@@ -69,7 +69,7 @@
     "links": [
         {
             "rel": "collection",
-            "href": "./collection.json",
+            "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/collection.json",
             "type": "application/json"
         }
     ]
