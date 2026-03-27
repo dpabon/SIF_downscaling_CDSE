@@ -4,6 +4,16 @@
   "id": "SIF_from_dong_li",
   "description": "A demo collection of SIF items",
   "license": "TBD",
+   "summaries": {
+    "eo:bands": [
+      {
+        "name": "SIF",
+        "common_name": "sif",
+        "description": "Solar Induced Fluorescence",
+        "gsd": 500
+      }
+    ]
+  },
   "extent": {
     "spatial": { "bbox": [[
         -180.0,
