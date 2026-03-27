@@ -39,47 +39,47 @@
     },
     {
       "rel": "self",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/collection.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/collection.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230724.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230724.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230725.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230725.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230726.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230726.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230727.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230727.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230728.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230728.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230729.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230729.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230730.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230730.json",
       "type": "application/json"
     },
     {
       "rel": "item",
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/2023-07-SIF/SIF_20230731.json",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230731.json",
       "type": "application/json"
     }
   ]
