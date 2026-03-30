@@ -74,10 +74,10 @@ Before going into the details of the datasets, we need to define an area of inte
 
 ```{python}
 spatial_extent_prototype = {
-    "west": 113.0,
-    "east": 125.0,
-    "south": -5.0,
-    "north": 1.0,
+    "west": 114.0,
+    "east": 120.0,
+    "south": -6.0,
+    "north": 3.0,
 }
 
 temporal_extent_prototype = ["2023-07-24", "2023-07-31"]
@@ -524,12 +524,12 @@ Then we can apply our function to the data cube using:
 parameters_cube_low = dataset_SIF_low.apply_neighborhood(
     process=my_udf,
     size=[
-        {"dimension": "x", "value": 512, "unit": "px"},
-        {"dimension": "y", "value": 512, "unit": "px"},
+        {"dimension": "x", "value": 15, "unit": "px"},
+        {"dimension": "y", "value": 15, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 81, "unit": "px"},
-        {"dimension": "y", "value": 81, "unit": "px"},
+        {"dimension": "x", "value": 3, "unit": "px"},
+        {"dimension": "y", "value": 3, "unit": "px"},
     ],
 )
 
@@ -574,7 +574,7 @@ for i in [1, 2, 5, 6]:
     axs[counter].set_title(f"b{i}")
     counter += 1
 
-#plt.tight_layout()
+plt.tight_layout()
 ```
 
 ....
