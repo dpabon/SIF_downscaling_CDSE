@@ -524,12 +524,12 @@ Then we can apply our function to the data cube using:
 parameters_cube_low = dataset_SIF_low.apply_neighborhood(
     process=my_udf,
     size=[
-        {"dimension": "x", "value": 15, "unit": "px"},
-        {"dimension": "y", "value": 15, "unit": "px"},
+        {"dimension": "x", "value": 4, "unit": "px"},
+        {"dimension": "y", "value": 4, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 3, "unit": "px"},
-        {"dimension": "y", "value": 3, "unit": "px"},
+        {"dimension": "x", "value": 1, "unit": "px"},
+        {"dimension": "y", "value": 1, "unit": "px"},
     ],
 )
 
