@@ -240,8 +240,8 @@ Predictors:
 ```{python}
 # Testing SIF - Dong Li
 
-cube_SIF_original = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/collection.json",
+cube_SIF_original_median = connection.load_stac(
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230729.json",
     bands=["SIF"],
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
@@ -328,7 +328,7 @@ cube_LST_masked
 For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.
 
 ```{python}
-cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
+#cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
 
 cube_LST_median = cube_LST_masked.reduce_temporal(reducer="max")
 
@@ -524,12 +524,12 @@ Then we can apply our function to the data cube using:
 parameters_cube_low = dataset_SIF_low.apply_neighborhood(
     process=my_udf,
     size=[
-        {"dimension": "x", "value": 4, "unit": "px"},
-        {"dimension": "y", "value": 4, "unit": "px"},
+        {"dimension": "x", "value": 512, "unit": "px"},
+        {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 1, "unit": "px"},
-        {"dimension": "y", "value": 1, "unit": "px"},
+        {"dimension": "x", "value": 20, "unit": "px"},
+        {"dimension": "y", "value": 20, "unit": "px"},
     ],
 )
 
@@ -550,6 +550,17 @@ Now we will download the cube the optimized parameters to have a look and spatia
 ```{python}
 # | eval: false
 """
+job_options = {
+    "executor-memory": "4G",
+    "executor-memoryOverhead": "2G",
+    "soft-errors": 0.05,  # Tolerate up to 5% failure
+    "executor-cores": 1,
+    "task-cpus": 1,
+    "logging-threshold": "debug"
+}
+parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif", job_options=job_options)
+
+
 parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")
 """
 ```
