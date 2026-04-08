@@ -11,52 +11,52 @@
     "coordinates": [
       [
         [
-          -4.805921285933046e-13,
-          35.000000000000476
+          123.99999999999929,
+          -4.999999999999615
         ],
         [
-          -4.805921285933046e-13,
-          45.0
+          123.99999999999929,
+          3.0
         ],
         [
-          -10.0,
-          45.0
+          109.0,
+          3.0
         ],
         [
-          -10.0,
-          35.000000000000476
+          109.0,
+          -4.999999999999615
         ],
         [
-          -4.805921285933046e-13,
-          35.000000000000476
+          123.99999999999929,
+          -4.999999999999615
         ]
       ]
     ]
   },
   "bbox": [
-    -10.0,
-    35.000000000000476,
-    -4.805921285933046e-13,
-    45.0
+    109.0,
+    -4.999999999999615,
+    123.99999999999929,
+    3.0
   ],
   "properties": {
     "proj:code": "EPSG:4326",
     "proj:shape": [
-      1120,
-      1120
+      896,
+      1680
     ],
     "proj:bbox": [
-      -10.0,
-      35.000000000000476,
-      -4.805921285933046e-13,
-      45.0
+      109.0,
+      -4.999999999999615,
+      123.99999999999929,
+      3.0
     ],
-    "datetime": "2023-07-17T00:00:00Z"
+    "datetime": "2023-07-27T00:00:00Z"
   },
   "links": [],
   "assets": {
     "parameters": {
-      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/results_paramaters_high_resolution.tif",
       "type": "image/tiff; application=geotiff",
       "title": "Optimized Parameters High Resolution",
       "eo:bands": [

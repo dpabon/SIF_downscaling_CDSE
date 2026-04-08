@@ -74,13 +74,13 @@ Before going into the details of the datasets, we need to define an area of inte
 
 ```{python}
 spatial_extent_prototype = {
-    "west": 114.0,
-    "east": 120.0,
-    "south": -6.0,
+    "west": 109.0, # 114.0
+    "east": 124.0, #120.0
+    "south": -5.0,
     "north": 3.0,
 }
 
-temporal_extent_prototype = ["2023-07-24", "2023-07-31"]
+temporal_extent_prototype = ["2023-07-27", "2023-07-31"]
 ```
 
 ```{python}
@@ -241,7 +241,7 @@ Predictors:
 # Testing SIF - Dong Li
 
 cube_SIF_original_median = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230729.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/5_days_composites/SIF_20230727_20230731.json",
     bands=["SIF"],
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
@@ -328,7 +328,6 @@ cube_LST_masked
 For this analysis we will compute a composite of the area of interest using all the observations during the time period for all the variables except SIF that is already one time step observation.
 
 ```{python}
-#cube_SIF_original_median = cube_SIF_original.reduce_temporal(reducer = "median")
 
 cube_LST_median = cube_LST_masked.reduce_temporal(reducer="max")
 
@@ -383,7 +382,7 @@ cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask.tif")
 ```
 
 ```{python}
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
+fig, axs = plt.subplots(nrows=3, figsize=(10, 15))
 cube_sif_local.plot(ax=axs[0], vmin=0)
 axs[0].set_title("SIF")
 cube_lst_local.plot(ax=axs[1])
@@ -453,7 +452,7 @@ print(dataset_sif_low_local)
 ```
 
 ```{python}
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
+fig, axs = plt.subplots(nrows=3, figsize=(18, 15))
 dataset_sif_low_local["SIF"].plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF")
 dataset_sif_low_local["LST"].plot(ax=axs[1])
@@ -644,7 +643,7 @@ Change the following path accordindly to your github repository.
 # | code-fold: true
 # | eval: false
 
-output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/results_paramaters_high_resolution.tif"
 ```
 
 ```{python}
