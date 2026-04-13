@@ -15,8 +15,10 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     param_bounds = np.array([param_min, param_max])
     min_obs = context["min_obs"]
     window_size_lat = context["window_size_lat"]
+    window_size_lon = context["window_size_lon"]
 
     window_size_lat_big = (window_size_lat * 2) + 1
+    window_size_lon_big = (window_size_lon * 2) + 1
 
     optimal_n = window_size_lat**2
 
@@ -188,14 +190,14 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         optimize_params_window,  # Function to apply
         # Input arrays:
         SIF_w.rolling(
-            x=window_size_lat_big, y=window_size_lat_big, center=True
-        ).construct(x="lat_roll", y="lon_roll"),
+            y=window_size_lat_big, x=window_size_lon_big, center=True
+        ).construct(y="lat_roll", x="lon_roll"),
         VI_w.rolling(
-            x=window_size_lat_big, y=window_size_lat_big, center=True
-        ).construct(x="lat_roll", y="lon_roll"),
+            y=window_size_lat_big, x=window_size_lon_big, center=True
+        ).construct(y="lat_roll", x="lon_roll"),
         LST_w.rolling(
-            x=window_size_lat_big, y=window_size_lat_big, center=True
-        ).construct(x="lat_roll", y="lon_roll"),
+            y=window_size_lat_big, x=window_size_lon_big, center=True
+        ).construct(y="lat_roll", x="lon_roll"),
         # Keyword arguments for the function:
         kwargs={
             "param_ini": param_ini,
@@ -212,7 +214,7 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         output_core_dims=[["bands"]],
         dask_gufunc_kwargs={"output_sizes": {"bands": 4}},
         # Specify the parameters dimension coordinates:
-        dask="parallelized",  # Enable Dask parallelization
+        dask="forbidden",  # Enable Dask parallelization
         output_dtypes=[np.float64],  # Specify output data type
         vectorize=True,
         # Add a new dimension 'parameters' to the output

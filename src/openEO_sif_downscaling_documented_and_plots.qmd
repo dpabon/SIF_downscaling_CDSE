@@ -70,17 +70,17 @@ import numpy as np
 
 ## Area of Interest and Time Period
 
-Before going into the details of the datasets, we need to define an area of interest and time period for our analysis. For this example, we will focus on the Iberian Peninsula during the time period between 2023-07-17 and 2023-07-23.
+Before going into the details of the datasets, we need to define an area of interest and time period for our analysis. For this example, we will focus on part of Indonesia during the time period between 2023-07-24 and 2023-07-31.
 
 ```{python}
 spatial_extent_prototype = {
-    "west": -10.0,
-    "east": 0.0,
-    "south": 35.0,
-    "north": 45.0,
+    "west": 109.0, # 114.0
+    "east": 124.0, #120.0
+    "south": -5.0,
+    "north": 3.0,
 }
 
-temporal_extent_prototype = ["2023-07-17", "2023-07-23"]
+temporal_extent_prototype = ["2023-07-27", "2023-07-31"]
 ```
 
 ```{python}
@@ -237,18 +237,21 @@ Predictors:
 
 ### Creating openEO datacubes for the variables
 
-
-
 ```{python}
-
 # Testing SIF - Dong Li
 
 cube_SIF_original_median = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/2023-07-SIF/SIF_20230720.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/5_days_composites/SIF_20230727_20230731.json",
     bands=["SIF"],
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
 )
+
+```
+
+
+```{python}
+
 
 
 cube_LST = connection.load_collection(
@@ -379,7 +382,7 @@ cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask.tif")
 ```
 
 ```{python}
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
+fig, axs = plt.subplots(nrows=3, figsize=(10, 15))
 cube_sif_local.plot(ax=axs[0], vmin=0)
 axs[0].set_title("SIF")
 cube_lst_local.plot(ax=axs[1])
@@ -388,7 +391,6 @@ cube_nirv_local.plot(ax=axs[2])
 axs[2].set_title("NIRv")
 
 plt.tight_layout()
-
 
 ```
 
@@ -450,7 +452,7 @@ print(dataset_sif_low_local)
 ```
 
 ```{python}
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
+fig, axs = plt.subplots(nrows=3, figsize=(18, 15))
 dataset_sif_low_local["SIF"].plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF")
 dataset_sif_low_local["LST"].plot(ax=axs[1])
@@ -525,8 +527,8 @@ parameters_cube_low = dataset_SIF_low.apply_neighborhood(
         {"dimension": "y", "value": 512, "unit": "px"},
     ],
     overlap=[
-        {"dimension": "x", "value": 81, "unit": "px"},
-        {"dimension": "y", "value": 81, "unit": "px"},
+        {"dimension": "x", "value": 20, "unit": "px"},
+        {"dimension": "y", "value": 20, "unit": "px"},
     ],
 )
 
@@ -571,7 +573,7 @@ for i in [1, 2, 5, 6]:
     axs[counter].set_title(f"b{i}")
     counter += 1
 
-#plt.tight_layout()
+plt.tight_layout()
 ```
 
 ....
@@ -641,7 +643,7 @@ Change the following path accordindly to your github repository.
 # | code-fold: true
 # | eval: false
 
-output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/main/data/results_paramaters_high_resolution.tif"
+output_path = "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/results_paramaters_high_resolution.tif"
 ```
 
 ```{python}
@@ -695,7 +697,7 @@ print(item.to_dict())
 
 # pushing changes to the remote repo to access from openEO again
 
-git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "-a"]
+git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "data/results_paramaters_high_resolution.tif", "data/results_parameters_high_resolution.json"]
 
 subprocess.run(git_commit)
 
@@ -733,7 +735,7 @@ Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO
 
 ```{python}
 parameters_cube_high = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/results_parameters_high_resolution.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["b1", "b2", "b5", "b6"],
@@ -766,8 +768,24 @@ Checking that everything is in order with the code to upscale
 cube_to_upscale_local = xr.open_dataset("data/sif_predictors_cube_high.tif")
 
 print(cube_to_upscale_local)
+
 ```
 
+```{python}
+
+# plotting results
+# plt.clf()
+fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(8, 6))
+axs = axs.flatten()
+counter = 0
+for i in range(6):
+    cube_to_upscale_local["band_data"].isel(band=counter).plot(ax=axs[counter])
+    axs[counter].set_title(f"b{i}")
+    counter += 1
+
+plt.tight_layout()
+
+```
 
 ## Downscaling SIF
 
@@ -859,7 +877,7 @@ sif_downscaled_resampled = sif_downscaled_renamed.resample_cube_spatial(
 ```{python}
 sif_downscaled_resampled_local = rio.open_rasterio("data/sif_downscaled_resampled.tif")
 
-sif_downscaled_resampled_local = sif_downscaled_resampled_local.isel(x = range(100), y = range(0,100))
+sif_downscaled_resampled_local = sif_downscaled_resampled_local.isel(y = range(80), x = range(0,150))
 
 sif_downscaled_resampled_local = sif_downscaled_resampled_local.assign_coords({'x': cube_sif_local.x.values, 'y': cube_sif_local.y.values})
 ```

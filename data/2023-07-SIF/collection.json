@@ -1,0 +1,86 @@
+{
+  "type": "Collection",
+  "stac_version": "1.0.0",
+  "stac_extensions": [
+      "https://stac-extensions.github.io/eo/v1.1.0/schema.json",
+      "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "id": "SIF_from_dong_li",
+  "description": "A demo collection of SIF items",
+  "license": "TBD",
+   "summaries": {
+    "eo:bands": [
+      {
+        "name": "SIF",
+        "common_name": "SIF",
+        "description": "Solar Induced Fluorescence"
+      }
+    ]
+  },
+  "extent": {
+    "spatial": { "bbox": [[
+        -180.0,
+        -90.0,
+        180.0,
+        90.0
+    ]] },
+    "temporal": { "interval": [["2023-01-24T00:00:00Z", "2023-12-31T00:00:00Z"]] }
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "self",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230724.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230725.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230726.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230727.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230728.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230729.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230730.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "https://github.com/dpabon/SIF_downscaling_CDSE/raw/refs/heads/indonesia_downscaling_example/data/2023-07-SIF/SIF_20230731.json",
+      "type": "application/json"
+    }
+  ]
+}
