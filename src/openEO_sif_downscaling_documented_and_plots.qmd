@@ -697,7 +697,7 @@ print(item.to_dict())
 
 # pushing changes to the remote repo to access from openEO again
 
-git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "-a"]
+git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "data/results_paramaters_high_resolution.tif", "data/results_parameters_high_resolution.json"]
 
 subprocess.run(git_commit)
 
@@ -735,7 +735,7 @@ Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO
 
 ```{python}
 parameters_cube_high = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/results_parameters_high_resolution.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["b1", "b2", "b5", "b6"],
@@ -768,8 +768,24 @@ Checking that everything is in order with the code to upscale
 cube_to_upscale_local = xr.open_dataset("data/sif_predictors_cube_high.tif")
 
 print(cube_to_upscale_local)
+
 ```
 
+```{python}
+
+# plotting results
+# plt.clf()
+fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(8, 6))
+axs = axs.flatten()
+counter = 0
+for i in range(6):
+    cube_to_upscale_local["band_data"].isel(band=counter).plot(ax=axs[counter])
+    axs[counter].set_title(f"b{i}")
+    counter += 1
+
+plt.tight_layout()
+
+```
 
 ## Downscaling SIF
 
@@ -861,7 +877,7 @@ sif_downscaled_resampled = sif_downscaled_renamed.resample_cube_spatial(
 ```{python}
 sif_downscaled_resampled_local = rio.open_rasterio("data/sif_downscaled_resampled.tif")
 
-sif_downscaled_resampled_local = sif_downscaled_resampled_local.isel(x = range(100), y = range(0,100))
+sif_downscaled_resampled_local = sif_downscaled_resampled_local.isel(y = range(80), x = range(0,150))
 
 sif_downscaled_resampled_local = sif_downscaled_resampled_local.assign_coords({'x': cube_sif_local.x.values, 'y': cube_sif_local.y.values})
 ```

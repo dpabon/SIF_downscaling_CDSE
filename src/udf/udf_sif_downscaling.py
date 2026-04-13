@@ -10,7 +10,6 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     inspect(input_cube_local, message="local dataset: ")
 
     window_size_lat = context["window_size_lat"]
-    window_size_lon = context["window_size_lon"]
 
     window_size_lat_big = (window_size_lat * 2) + 1
 
@@ -106,6 +105,9 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         lst = lst.flatten()[spiral_index]
         lst = lst[~np.isnan(lst)]
 
+        if len(vi) == 0 or len(lst) == 0:
+            return np.array([np.nan])
+
         if (len(vi) > optimal_n):
             vi = vi[range(optimal_n)]
             lst = lst[range(optimal_n)]
@@ -145,7 +147,7 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
         # Output is scalar for each pixel (no core dims)
         output_core_dims=[["SIF_downscaled"]],
         dask_gufunc_kwargs={"output_sizes": {"SIF_downscaled": 1}},
-        dask="parallelized",
+        dask="forbidden",
         output_dtypes=[np.float64],
         vectorize=True,
         exclude_dims=set(("lat_roll", "lon_roll")),
@@ -161,7 +163,7 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     inspect(output_dataset, message="output_dataset pre: ")
 
     # adding dummy_bands
-    new_vars = ["dummy_" + str(x) for x in range(8)]
+    new_vars = ["dummy_" + str(x) for x in range(5)] # this needs to change based on the number of inputs in the model!!!
     for var in new_vars:
         output_dataset[var] = xarray.full_like(sif_cube_high, np.nan)
 
