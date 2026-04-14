@@ -1525,14 +1525,14 @@ item.add_asset(
 
 # Save as JSON
 
-with open("data/results_parameters_high_resolution.json", "w") as f:
+with open("data/results_parameters_high_resolution_indonesia_example.json", "w") as f:
     json.dump(item.to_dict(), f, indent=2)
 
 print(item.to_dict())
 
 # pushing changes to the remote repo to access from openEO again
 
-git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "data/results_paramaters_high_resolution.tif", "data/results_parameters_high_resolution.json"]
+git_commit = ["git", "commit", "-m", '"Upsampling of parameters updated"', "data/results_paramaters_high_resolution_indonesia_example.tif", "data/results_parameters_high_resolution_indonesia_example.json"]
 
 subprocess.run(git_commit)
 
