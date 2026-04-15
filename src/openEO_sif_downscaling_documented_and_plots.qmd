@@ -367,24 +367,24 @@ Then we will inspect the products, for that we need to execute the processors fo
 
 
 ```{python}
-# cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median.tif")
-# cube_LST_median.execute_batch(outputfile="data/cube_LST_median.tif")
-# cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask.tif")
+# cube_SIF_original_median.execute_batch(outputfile="data/cube_SIF_median_iberian_peninsula.tif")
+# cube_LST_median.execute_batch(outputfile="data/cube_LST_median_iberian_peninsula.tif")
+# cube_NIRv_median_1.execute_batch("data/cube_nirv_1km_mask_iberian_peninsula.tif")
 ```
 
 
 
 ```{python}
 cube_sif_local = rio.open_rasterio(
-    filename="data/cube_SIF_median.tif", mask_and_scale=True
+    filename="data/cube_SIF_median_iberian_peninsula.tif", mask_and_scale=True
 )
-cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median.tif")
-cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask.tif")
+cube_lst_local = rio.open_rasterio(filename="data/cube_LST_median_iberian_peninsula.tif")
+cube_nirv_local = rio.open_rasterio(filename="data/cube_nirv_1km_mask_iberian_peninsula.tif")
 
 ```
 
 ```{python}
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
+fig, axs = plt.subplots(nrows=3, figsize=(5, 12))
 cube_sif_local.plot(ax=axs[0], vmin=0)
 axs[0].set_title("SIF")
 cube_lst_local.plot(ax=axs[1])
@@ -443,18 +443,18 @@ dataset_SIF_low = dataset_SIF_low.merge_cubes(
 
 ```{python}
 # | eval: false
-# dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low.nc")
+# dataset_SIF_low.execute_batch(outputfile="data/sif_predictors_cube_low_iberian_peninsula.nc")
 ```
 
 Let's check the cube after resampling
 
 ```{python}
-dataset_sif_low_local = xr.open_dataset("data/sif_predictors_cube_low.nc")
+dataset_sif_low_local = xr.open_dataset("data/sif_predictors_cube_low_iberian_peninsula.nc")
 print(dataset_sif_low_local)
 ```
 
 ```{python}
-fig, axs = plt.subplots(nrows=3, figsize=(6, 15))
+fig, axs = plt.subplots(nrows=3, figsize=(5, 12))
 dataset_sif_low_local["SIF"].plot(ax=axs[0], vmin = 0)
 axs[0].set_title("SIF")
 dataset_sif_low_local["LST"].plot(ax=axs[1])
@@ -551,7 +551,7 @@ Now we will download the cube the optimized parameters to have a look and spatia
 ```{python}
 # | eval: false
 """
-parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution.tif")
+parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_optim_low_resolution_iberian_peninsula.tif")
 """
 ```
 
@@ -560,7 +560,7 @@ parameters_cube_low_rename.execute_batch(outputfile="data/results_parameters_opt
 
 ```{python}
 parameters_cube_local = rio.open_rasterio(
-    "data/results_parameters_optim_low_resolution.tif"
+    "data/results_parameters_optim_low_resolution_iberian_peninsula.tif"
 )
 print(parameters_cube_local)
 ```
@@ -603,13 +603,13 @@ This is a temporary solution
 # | code-fold: true
 # | eval: false
 
-parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution.tif")
+parameters_low = rio.open_rasterio("data/results_parameters_optim_low_resolution_iberian_peninsula.tif")
 
 parameters_low = parameters_low.drop_vars("spatial_ref")
 
 
 # LST high resolution local
-nirv_high = rio.open_rasterio("data/cube_nirv_1km_mask.tif")
+nirv_high = rio.open_rasterio("data/cube_nirv_1km_mask_iberian_peninsula.tif")
 
 nirv_high = nirv_high.drop_vars(["spatial_ref", "band"])
 
@@ -1570,7 +1570,7 @@ Meanwhile we can use ```load_stac``` to load again the parameters cube in openEO
 
 ```{python}
 parameters_cube_high = connection.load_stac(
-    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/indonesia_downscaling_example/data/results_parameters_high_resolution.json",
+    "https://raw.githubusercontent.com/dpabon/SIF_downscaling_CDSE/refs/heads/main/data/results_parameters_high_resolution_indonesia_example.json",
     spatial_extent=spatial_extent_prototype,
     temporal_extent=temporal_extent_prototype,
     bands=["b1", "b2", "b5", "b6"],
@@ -1595,12 +1595,12 @@ cube_to_upscale = cube_to_upscale.merge_cubes(cube_NIRv_median_1)
 
 ```{python}
 # | eval: false
-# cube_to_upscale.execute_batch(outputfile="data/sif_predictors_cube_high.tif")
+# cube_to_upscale.execute_batch(outputfile="data/sif_predictors_cube_high_indonesia_example.tif")
 ```
 
 Checking that everything is in order with the code to upscale
 ```{python}
-cube_to_upscale_local = xr.open_dataset("data/sif_predictors_cube_high.tif")
+cube_to_upscale_local = xr.open_dataset("data/sif_predictors_cube_high_indonesia_example.tif")
 
 print(cube_to_upscale_local)
 
@@ -1666,7 +1666,7 @@ Now we can run everthing and save the results
 ```{python}
 """
 sif_downscaled_renamed.execute_batch(
-    outputfile="data/openeo_sif_downscaled.tif",
+    outputfile="data/openeo_sif_downscaled_indonesia_example.tif",
     title="SIF_downscaling",
     description="Predicting SIF at high spatial resolution"
 )
@@ -1678,7 +1678,7 @@ sif_downscaled_renamed.execute_batch(
 Comparing the original SIF product at 5 km with the Downscaled SIF at 1 km.
 
 ```{python}
-sif_downscaled_local = rio.open_rasterio("data/openeo_sif_downscaled.tif")
+sif_downscaled_local = rio.open_rasterio("data/openeo_sif_downscaled_indonesia_example.tif")
 print(sif_downscaled_local)
 ```
 
@@ -1705,12 +1705,12 @@ sif_downscaled_resampled = sif_downscaled_renamed.resample_cube_spatial(
 ```
 
 ```{python}
-# sif_downscaled_resampled.execute_batch("data/sif_downscaled_resampled.tif")
+# sif_downscaled_resampled.execute_batch("data/sif_downscaled_resampled_indonesia_example.tif")
 ```
 
 
 ```{python}
-sif_downscaled_resampled_local = rio.open_rasterio("data/sif_downscaled_resampled.tif")
+sif_downscaled_resampled_local = rio.open_rasterio("data/sif_downscaled_resampled_indonesia_example.tif")
 
 sif_downscaled_resampled_local = sif_downscaled_resampled_local.isel(y = range(80), x = range(0,150))
 
